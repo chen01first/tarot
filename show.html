@@ -3,72 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>塔羅牌圖鑑</title>
+    <title>塔羅牌占卜結果</title>
     <style>
         body {
-            font-family: sans-serif;
-            background-color: #1a1a1a;
-            color: white;
+            font-family: 'PingFang TC', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
-        h1 { margin-bottom: 30px; }
+        h1 { color: #d4af37; margin-bottom: 40px; }
         
-        /* 圖片網格佈局 */
-        .gallery {
-            display: grid;
-            /* 自動填滿，每張圖最小 150px 寬 */
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            padding: 10px;
+        /* 三合開運陣佈局 */
+        .spread {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
         }
 
         .card {
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #d4af37; /* 金色邊框 */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            max-width: 200px;
+            transition: transform 0.3s;
         }
+        .card:hover { transform: translateY(-10px); }
 
         .card img {
             width: 100%;
             height: auto;
             border-radius: 4px;
-            display: block;
         }
 
         .card p {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #ccc;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        
+        .no-params {
+            padding: 50px;
+            border: 1px dashed #666;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>我的塔羅牌收藏</h1>
+    <h1 id="main-title">您的塔羅三合陣</h1>
 
-    <div class="gallery" id="tarot-gallery">
+    <div class="spread" id="tarot-spread">
         </div>
 
     <script>
-        const gallery = document.getElementById('tarot-gallery');
+        const spreadContainer = document.getElementById('tarot-spread');
+        const mainTitle = document.getElementById('main-title');
 
-        // 迴圈從 00 到 77
-        for (let i = 0; i <= 77; i++) {
-            // 將數字轉為兩位數，例如 1 變成 "01"
-            let fileName = i.toString().padStart(2, '0');
-            
-            // 建立卡片 HTML
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            card.innerHTML = `
-                <img src="tarot_${fileName}.jpg" alt="Tarot ${fileName}">
-                <p>卡片編號: ${fileName}</p>
+        // 1. 取得網址參數 (例如 ?c1=1&c2=22&c3=77)
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardIds = [
+            urlParams.get('c1'),
+            urlParams.get('c2'),
+            urlParams.get('c3')
+        ];
+
+        // 2. 檢查是否有傳入參數
+        const hasValidParams = cardIds.every(id => id !== null);
+
+        if (hasValidParams) {
+            cardIds.forEach((id, index) => {
+                // 自動補零，確保 5 變成 "05"
+                let fileName = id.toString().padStart(2, '0');
+                
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="tarot_${fileName}.jpg" alt="Tarot ${fileName}">
+                    <p>第 ${index + 1} 張：卡片 ${fileName}</p>
+                `;
+                spreadContainer.appendChild(card);
+            });
+        } else {
+            // 如果沒有參數，顯示提示文字
+            mainTitle.innerText = "請在網址輸入參數";
+            spreadContainer.innerHTML = `
+                <div class="no-params">
+                    <p>網址範例：show.html?c1=01&c2=15&c3=77</p>
+                    <p>(請確保 c1, c2, c3 都有數字)</p>
+                </div>
             `;
-            
-            gallery.appendChild(card);
         }
     </script>
 
