@@ -3,102 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>塔羅牌占卜結果</title>
+    <title>塔羅占卜：過去 現在 未來</title>
     <style>
-        body {
-            font-family: 'PingFang TC', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            text-align: center;
-            padding: 40px 20px;
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0a0a0a;
+            --card-bg: #161616;
+            --text-gray: #a0a0a0;
         }
-        h1 { color: #d4af37; margin-bottom: 40px; }
-        
-        /* 三合開運陣佈局 */
-        .spread {
+
+        body {
+            font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            width: 90%;
+            max-width: 1100px;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            font-weight: 300;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+        }
+
+        /* RWD 佈局：手機垂直，電腦水平 */
+        .tarot-spread {
+            display: flex;
+            flex-direction: column;
             gap: 30px;
+            align-items: center;
         }
 
-        .card {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #d4af37; /* 金色邊框 */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            max-width: 200px;
-            transition: transform 0.3s;
+        @media (min-width: 768px) {
+            .tarot-spread {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+            }
         }
-        .card:hover { transform: translateY(-10px); }
 
-        .card img {
+        /* 卡片外框時尚風格 */
+        .card-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            width: 260px;
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card-item:hover {
+            transform: translateY(-15px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 標籤設計 (過去/現在/未來) */
+        .time-label {
+            font-size: 0.9rem;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card-item img {
             width: 100%;
             height: auto;
-            border-radius: 4px;
+            border-radius: 8px;
+            filter: grayscale(20%);
+            transition: 0.5s;
         }
 
-        .card p {
-            margin-top: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #d4af37;
+        .card-item:hover img {
+            filter: grayscale(0%);
         }
-        
-        .no-params {
-            padding: 50px;
-            border: 1px dashed #666;
+
+        .card-number {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            font-family: 'Georgia', serif;
+        }
+
+        /* 錯誤提示區 */
+        .error-msg {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
             border-radius: 10px;
+            border: 1px dashed #444;
+            line-height: 2;
         }
     </style>
 </head>
 <body>
 
-    <h1 id="main-title">您的塔羅三合陣</h1>
-
-    <div class="spread" id="tarot-spread">
-        </div>
+    <div class="main-container">
+        <h1 id="page-title">您的塔羅過去現在未來</h1>
+        
+        <div class="tarot-spread" id="spread-container">
+            </div>
+    </div>
 
     <script>
-        const spreadContainer = document.getElementById('tarot-spread');
-        const mainTitle = document.getElementById('main-title');
-
-        // 1. 取得網址參數 (例如 ?c1=1&c2=22&c3=77)
-        const urlParams = new URLSearchParams(window.location.search);
-        const cardIds = [
-            urlParams.get('c1'),
-            urlParams.get('c2'),
-            urlParams.get('c3')
+        const params = new URLSearchParams(window.location.search);
+        const container = document.getElementById('spread-container');
+        
+        // 定義對應關係
+        const timeFlow = [
+            { key: 'c1', label: '過 去 · PAST' },
+            { key: 'c2', label: '現 在 · PRESENT' },
+            { key: 'c3', label: '未 來 · FUTURE' }
         ];
 
-        // 2. 檢查是否有傳入參數
-        const hasValidParams = cardIds.every(id => id !== null);
+        let contentHTML = '';
+        let hasValidData = true;
 
-        if (hasValidParams) {
-            cardIds.forEach((id, index) => {
-                // 自動補零，確保 5 變成 "05"
-                let fileName = id.toString().padStart(2, '0');
-                
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <img src="tarot_${fileName}.jpg" alt="Tarot ${fileName}">
-                    <p>第 ${index + 1} 張：卡片 ${fileName}</p>
+        timeFlow.forEach(item => {
+            const val = params.get(item.key);
+            if (val !== null) {
+                const imgNum = val.toString().padStart(2, '0');
+                contentHTML += `
+                    <div class="card-item">
+                        <div class="time-label">${item.label}</div>
+                        <img src="tarot_${imgNum}.jpg" alt="${item.label}">
+                        <div class="card-number">NO. ${imgNum}</div>
+                    </div>
                 `;
-                spreadContainer.appendChild(card);
-            });
+            } else {
+                hasValidData = false;
+            }
+        });
+
+        if (hasValidData) {
+            container.innerHTML = contentHTML;
         } else {
-            // 如果沒有參數，顯示提示文字
-            mainTitle.innerText = "請在網址輸入參數";
-            spreadContainer.innerHTML = `
-                <div class="no-params">
-                    <p>網址範例：show.html?c1=01&c2=15&c3=77</p>
-                    <p>(請確保 c1, c2, c3 都有數字)</p>
+            document.getElementById('page-title').innerText = "占卜引導";
+            container.innerHTML = `
+                <div class="error-msg">
+                    <p>請確認網址包含三張牌的參數，例如：</p>
+                    <code style="color:var(--gold)">?c1=08&c2=19&c3=77</code>
                 </div>
             `;
         }
     </script>
-
 </body>
 </html>
