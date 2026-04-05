@@ -1,10 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
-    <title>我的塔罗牌项目</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔羅牌圖鑑</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 { margin-bottom: 30px; }
+        
+        /* 圖片網格佈局 */
+        .gallery {
+            display: grid;
+            /* 自動填滿，每張圖最小 150px 寬 */
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .card {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .card p {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #ccc;
+        }
+    </style>
 </head>
 <body>
-    <h1>欢迎来到我的塔罗牌网页</h1>
-    <p>这是我的第一个 HTML 页面！</p>
+
+    <h1>我的塔羅牌收藏</h1>
+
+    <div class="gallery" id="tarot-gallery">
+        </div>
+
+    <script>
+        const gallery = document.getElementById('tarot-gallery');
+
+        // 迴圈從 00 到 77
+        for (let i = 0; i <= 77; i++) {
+            // 將數字轉為兩位數，例如 1 變成 "01"
+            let fileName = i.toString().padStart(2, '0');
+            
+            // 建立卡片 HTML
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            card.innerHTML = `
+                <img src="tarot_${fileName}.jpg" alt="Tarot ${fileName}">
+                <p>卡片編號: ${fileName}</p>
+            `;
+            
+            gallery.appendChild(card);
+        }
+    </script>
+
 </body>
 </html>
