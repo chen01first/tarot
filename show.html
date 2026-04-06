@@ -32,6 +32,7 @@
             max-width: 1200px;
             text-align: center;
             z-index: 1;
+            padding: 20px 0;
         }
 
         /* --- 畫面切換控制 --- */
@@ -97,7 +98,6 @@
             background: #1a1a1a;
         }
 
-        /* 牌背 */
         .card-back {
             background: linear-gradient(45deg, #1a1a2e, #4a148c);
             display: flex;
@@ -111,7 +111,6 @@
             filter: drop-shadow(0 0 5px gold);
         }
 
-        /* 牌面 */
         .card-front {
             transform: rotateY(180deg);
             z-index: 1;
@@ -119,12 +118,10 @@
         }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 翻牌 + 放大核心 CSS */
         .tarot-card.is-flipped {
             transform: rotateY(180deg) scale(1.4) translateZ(50px);
         }
 
-        /* 進度指示器 */
         .history-dots {
             display: flex;
             justify-content: center;
@@ -168,9 +165,21 @@
             cursor: pointer;
             transition: 0.3s;
             margin: 10px;
+            display: inline-block;
+            text-decoration: none;
         }
         .btn:hover { background: var(--primary-gold); color: #000; box-shadow: var(--glow); }
         
+        .btn-analysis {
+            background: var(--primary-gold);
+            color: #000;
+            font-weight: bold;
+        }
+        .btn-analysis:hover {
+            background: #fff;
+            color: #000;
+        }
+
         #copy-toast {
             visibility: hidden;
             position: fixed;
@@ -182,13 +191,14 @@
             padding: 10px 25px;
             border-radius: 5px;
             font-weight: bold;
+            z-index: 1000;
         }
 
-        /* RWD 微調 */
         @media (max-width: 600px) {
             .tarot-card.is-flipped { transform: rotateY(180deg) scale(1.1) translateZ(20px); }
             .result-item { width: 100px; }
             h1 { font-size: 1.5rem; }
+            .btn { width: 80%; padding: 12px 0; }
         }
     </style>
 </head>
@@ -198,7 +208,7 @@
         <div id="screen-intro" class="screen active">
             <h1>數位塔羅顧問</h1>
             <div class="breath-guide">吸氣...吐氣</div>
-            <p style="line-height: 2; max-width: 600px; margin: 0 auto;">
+            <p style="line-height: 2; max-width: 600px; margin: 0 auto; padding: 0 15px;">
                 「你好，我是你的數位塔羅顧問。在揭開命運的牌卡前，我們需要先建立連結。<br>
                 請找一個安靜的空間坐好，深呼吸三次。<br>
                 請在心中默想你的問題，直到它在腦海中變得清晰。<br>
@@ -222,19 +232,26 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
             </div>
-            <p id="draw-hint">準備抽出第 1 張牌...</p>
+            <p id="draw-hint" style="color: var(--primary-gold);">準備抽出第 1 張牌...</p>
         </div>
 
         <div id="screen-result" class="screen">
             <h1>命運的揭曉</h1>
             <div class="result-grid" id="result-grid"></div>
-            <button class="btn" onclick="copyResults()">複製名稱以供 AI 分析</button>
-            <br>
-            <button class="btn" style="border:none; font-size: 0.9rem; opacity: 0.6;" onclick="location.reload()">重新建立連結</button>
+            
+            <div class="action-area">
+                <button class="btn" onclick="copyResults()">1. 複製牌名</button>
+                <br>
+                <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" 
+                   target="_blank" 
+                   class="btn btn-analysis">2. 進行分析</a>
+                <br>
+                <button class="btn" style="border:none; font-size: 0.8rem; opacity: 0.5; margin-top: 20px;" onclick="location.reload()">重新建立連結</button>
+            </div>
         </div>
     </div>
 
-    <div id="copy-toast">牌組名稱已成功複製！</div>
+    <div id="copy-toast">牌組名稱已複製，請貼上至分析頁面</div>
 
     <script>
         const tarotNames = {
@@ -257,48 +274,38 @@
             if (isDrawing || pickedIndices.length >= 3) return;
             isDrawing = true;
 
-            // 1. 產生不重複隨機數
             let randomIndex;
             do {
                 randomIndex = Math.floor(Math.random() * 78).toString().padStart(2, '0');
             } while (pickedIndices.includes(randomIndex));
 
-            // 2. 準備正面圖
             const frontImg = document.getElementById('front-img');
             frontImg.src = `tarot_${randomIndex}.jpg`;
-            // 若無圖片則使用色塊占位
             frontImg.onerror = () => { frontImg.src = `https://via.placeholder.com/180x310/222/d4af37?text=${tarotNames[randomIndex]}`; };
 
-            // 3. 觸發 3D 翻牌與放大
             const card = document.getElementById('main-card');
             card.classList.add('is-flipped');
 
-            // 4. 動畫演出時間軸
             setTimeout(() => {
                 pickedIndices.push(randomIndex);
-                
-                // 更新進度點
                 const dots = document.querySelectorAll('.dot');
                 dots[pickedIndices.length - 1].classList.add('active');
 
-                // 翻牌結束後，縮回並準備下一張
                 setTimeout(() => {
                     card.classList.remove('is-flipped');
-                    
                     if (pickedIndices.length === 3) {
                         setTimeout(showResults, 800);
                     } else {
                         document.getElementById('draw-hint').innerText = `準備抽出第 ${pickedIndices.length + 1} 張牌...`;
                         isDrawing = false;
                     }
-                }, 1200); // 讓使用者看清楚牌的時間
+                }, 1200);
             }, 800);
         }
 
         function showResults() {
             document.getElementById('screen-draw').classList.remove('active');
             document.getElementById('screen-result').classList.add('active');
-
             const grid = document.getElementById('result-grid');
             grid.innerHTML = '';
 
