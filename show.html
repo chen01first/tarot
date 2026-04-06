@@ -7,10 +7,10 @@
     <style>
         :root {
             --primary-gold: #d4af37;
-            --bg-dark: #0a0a12;
+            --bg-dark: #080810;
             --text-light: #e0e0e0;
-            --accent-purple: #311b92;
-            --deep-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            --accent-purple: #2a1b4e;
+            --glow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
         body {
@@ -23,81 +23,120 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
-            perspective: 1200px;
+            perspective: 1500px;
         }
 
-        .container { width: 90%; max-width: 800px; text-align: center; padding: 40px 20px; }
+        .container { width: 90%; max-width: 700px; text-align: center; padding: 20px; }
+
+        /* --- 呼吸與引導動畫 --- */
+        .breath-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 40px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .breath-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
+            border: 2px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: breathCycle 8s infinite ease-in-out;
+            box-shadow: var(--glow);
+        }
+
+        .breath-text {
+            position: relative;
+            z-index: 2;
+            color: var(--primary-gold);
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: textFade 8s infinite ease-in-out;
+        }
+
+        @keyframes breathCycle {
+            0%, 100% { transform: scale(0.8); opacity: 0.3; }
+            50% { transform: scale(1.4); opacity: 0.9; box-shadow: 0 0 40px var(--primary-gold); }
+        }
+
+        @keyframes textFade {
+            0%, 10%, 90%, 100% { opacity: 0.5; content: "吐氣..."; }
+            40%, 60% { opacity: 1; content: "吸氣..."; }
+        }
 
         /* --- 畫面切換 --- */
-        .screen { display: none; animation: fadeIn 1.2s ease-out forwards; }
+        .screen { display: none; animation: screenFade 1.2s forwards; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes screenFade { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- 文案排版 --- */
-        .intro-text { line-height: 1.8; margin-bottom: 30px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
-        .intro-text h2 { color: var(--primary-gold); font-size: 1.2rem; margin-top: 25px; border-left: 3px solid var(--primary-gold); padding-left: 15px; }
-        .intro-text p { color: #bbb; margin-left: 18px; }
-
-        /* --- 呼吸感 --- */
-        .breath-guide {
-            width: 120px; height: 120px;
-            background: radial-gradient(circle, var(--accent-purple), transparent 70%);
-            border-radius: 50%; margin: 30px auto;
-            border: 1px solid var(--primary-gold);
-            animation: breathAction 8s infinite ease-in-out;
+        /* --- 引導文案排版 --- */
+        .ritual-content { text-align: left; line-height: 1.8; margin-bottom: 40px; }
+        .ritual-section { margin-bottom: 25px; }
+        .ritual-header { 
+            color: var(--primary-gold); 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
         }
-        @keyframes breathAction {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 30px var(--primary-gold); }
-        }
+        .ritual-header::before { content: "✦"; margin-right: 10px; }
+        .ritual-p { padding-left: 24px; color: #aaa; margin: 0; }
 
-        /* --- 3D 抽牌區 --- */
-        .deck-wrapper { height: 350px; display: flex; justify-content: center; align-items: center; position: relative; }
+        /* --- 抽牌視覺 --- */
+        .card-zone { height: 380px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .tarot-card {
-            width: 170px; height: 290px; position: relative;
-            transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 180px; height: 310px; position: relative;
+            transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
         }
         .card-face {
             position: absolute; width: 100%; height: 100%;
             backface-visibility: hidden; border-radius: 12px;
-            border: 2px solid var(--primary-gold); background: #1a1a1a;
+            border: 2px solid var(--primary-gold); background: #111;
         }
         .card-back {
-            background: linear-gradient(135deg, #1a1a2e, #4a148c);
+            background: linear-gradient(135deg, #1a1a2e 0%, #4a148c 100%);
             display: flex; justify-content: center; align-items: center;
         }
-        .card-back::after { content: "✨"; font-size: 3rem; filter: drop-shadow(0 0 5px gold); }
+        .card-back::after { content: "◈"; color: var(--primary-gold); font-size: 3rem; }
         .card-front { transform: rotateY(180deg); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .tarot-card.is-flipped { transform: rotateY(180deg) scale(1.4) translateZ(50px); }
+        .tarot-card.flipped { transform: rotateY(180deg) scale(1.3) translateZ(50px); }
 
-        .dot-progress { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; background: #333; border: 1px solid #555; transition: 0.5s; }
-        .dot.active { background: var(--primary-gold); box-shadow: 0 0 10px var(--primary-gold); }
+        /* --- 結果與 AI 整合 --- */
+        .result-row { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 30px 0; }
+        .card-result { width: 120px; text-align: center; font-size: 0.85rem; }
+        .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; margin-bottom: 10px; }
 
-        /* --- 結果與按鈕 --- */
-        .result-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 30px 0; }
-        .result-item { width: 120px; text-align: center; animation: pop 0.5s forwards; }
-        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .mode-selector { margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .mode-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px; border-radius: 12px; margin: 20px 0;
+        }
+
         .btn {
-            background: transparent; border: 1px solid var(--primary-gold);
-            color: var(--primary-gold); padding: 12px 30px; border-radius: 50px;
-            cursor: pointer; transition: 0.3s; margin: 10px 5px; font-size: 1rem;
+            background: transparent; border: 1.5px solid var(--primary-gold);
+            color: var(--primary-gold); padding: 14px 30px; border-radius: 50px;
+            cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 8px;
             text-decoration: none; display: inline-block;
         }
-        .btn:hover { background: var(--primary-gold); color: #000; box-shadow: 0 0 15px var(--primary-gold); }
-        .btn-primary { background: var(--primary-gold); color: #000; font-weight: bold; }
-        
-        #copy-toast {
+        .btn:hover { background: var(--primary-gold); color: #000; box-shadow: 0 0 20px var(--primary-gold); }
+        .btn-main { background: var(--primary-gold); color: #000; font-weight: bold; }
+
+        #toast {
             visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--primary-gold); color: #000; padding: 12px 24px; border-radius: 8px; font-weight: bold; z-index: 100;
+            background: var(--primary-gold); color: #000; padding: 12px 30px; border-radius: 8px; font-weight: bold;
         }
 
         @media (max-width: 600px) {
-            .tarot-card.is-flipped { transform: rotateY(180deg) scale(1.15); }
+            .ritual-p { font-size: 0.95rem; }
+            .tarot-card.flipped { transform: rotateY(180deg) scale(1.1); }
             .btn { width: 100%; box-sizing: border-box; }
         }
     </style>
@@ -106,64 +145,73 @@
 
     <div class="container">
         <div id="screen-intro" class="screen active">
-            <h1 style="color:var(--primary-gold)">數位塔羅</h1>
-            <div class="intro-text">
-                <p>「辛苦了。外面的世界很吵吧？進到這裡，讓心靜下來。我是你的數位塔羅顧問。」</p>
-                <p style="font-size: 0.9rem; opacity: 0.8;">這裡不需要正確答案，只需要你最真實的倒影。</p>
-                
-                <h2>【調頻：卸下重擔】</h2>
-                <p>就在原地，深、呼、吸。想像吐氣時，那些「不得不」的壓力正隨煙霧排空。感受這份專屬於你的安穩。</p>
-                
-                <h2>【觀想：化繁為簡】</h2>
-                <p>不必急著理清思緒。試著把糾結的心事縮小，直到它安靜地浮現在腦海中。別擔心，這裡會接住你的迷惘。</p>
+            <div class="ritual-content">
+                <p>「辛苦了。外面的世界很吵吧？進到這裡，讓心靜下來。我是你的數位塔羅顧問。」<br>
+                <small style="opacity: 0.6;">這裡不需要正確答案，只需要你最真實的倒影。</small></p>
+
+                <div class="ritual-section">
+                    <div class="ritual-header">【調頻：卸下重擔】</div>
+                    <p class="ritual-p">就在原地，隨圓圈的律動深、呼、吸。想像吐氣時，那些「不得不」的壓力正隨煙霧排空。感受這份專屬於你的安穩。</p>
+                </div>
+
+                <div class="ritual-section">
+                    <div class="ritual-header">【觀想：化繁為簡】</div>
+                    <p class="ritual-p">你想問的內容觀想在腦海中。別擔心，這裡會接住你的迷惘。</p>
+                </div>
             </div>
-            <div class="breath-guide"></div>
-            <button class="btn btn-primary" onclick="goToDraw()">開啟命運之門</button>
+
+            <div class="breath-wrapper">
+                <div class="breath-circle"></div>
+                <div class="breath-text" id="b-text">吸氣...</div>
+            </div>
+
+            <p style="color: var(--primary-gold); font-size: 0.9rem;">準備好後，請點擊開啟</p>
+            <button class="btn btn-main" onclick="nextScreen('screen-draw')">開啟命運之門</button>
         </div>
 
         <div id="screen-draw" class="screen">
-            <p id="draw-hint">請輕觸牌面，抽出第一張連結...</p>
-            <div class="deck-wrapper">
-                <div class="tarot-card" id="main-card" onclick="drawCard()">
+            <h3 id="draw-label">感受腦海中的觀想，點擊卡牌</h3>
+            <div class="card-zone">
+                <div class="tarot-card" id="tarot-card" onclick="doPick()">
                     <div class="card-face card-back"></div>
                     <div class="card-face card-front">
                         <img src="" id="front-img">
                     </div>
                 </div>
             </div>
-            <div class="dot-progress">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            <div id="progress-dots" style="display:flex; justify-content:center; gap:10px;">
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
             </div>
         </div>
 
         <div id="screen-result" class="screen">
-            <h2 style="color:var(--primary-gold)">牌陣已成</h2>
-            <div class="result-grid" id="result-grid"></div>
+            <h2 style="color: var(--primary-gold);">揭曉：命運的倒影</h2>
+            <div class="result-row" id="result-row"></div>
 
-            <div class="mode-selector">
-                <p style="margin-top:0; font-size:0.9rem;">選擇分析風格：</p>
-                <input type="radio" id="mode-std" name="ai-mode" value="standard" checked>
-                <label for="mode-std">一般解析</label>
-                &nbsp;&nbsp;
-                <input type="radio" id="mode-think" name="ai-mode" value="think">
-                <label for="mode-think">🧠 深度思考型 (更具邏輯與洞察力)</label>
+            <div class="mode-box">
+                <p style="margin-top:0; font-weight:bold; color:var(--primary-gold);">選擇分析深度</p>
+                <label style="cursor:pointer;"><input type="radio" name="mode" value="normal" checked> 一般分析模式</label>
+                &nbsp;&nbsp;&nbsp;
+                <label style="cursor:pointer;"><input type="radio" name="mode" value="think"> 🧠 深度思考/推理模式</label>
             </div>
 
             <div class="action-steps">
-                <button class="btn btn-primary" onclick="copyResults()">步驟 1：複製牌名</button>
+                <button class="btn btn-main" onclick="copyResult()">步驟 1：複製牌名</button>
                 <br>
                 <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" 
-                   target="_blank" class="btn">步驟 2：進行分析 (前往 Gemini)</a>
-                <p style="font-size:0.8rem; color:#888;">* 點擊步驟 2 後，請在對話框貼上並送出即可。</p>
-                <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4;" onclick="location.reload()">重新連結</button>
+                   target="_blank" class="btn">步驟 2：進行分析</a>
+                <p style="font-size: 0.8rem; opacity: 0.5;">點擊「進行分析」後，在對話框貼上並送出即可。</p>
+                <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4;" onclick="location.reload()">重新調頻</button>
             </div>
         </div>
     </div>
 
-    <div id="copy-toast">牌名已複製！請前往 Gemini 貼上</div>
+    <div id="toast">牌組名稱已複製</div>
 
     <script>
-        const tarotData = {
+        const tarotNames = {
             "00": "00-愚者", "01": "01-魔術師", "02": "02-女祭司", "03": "03-皇后", "04": "04-皇帝", "05": "05-教皇", "06": "06-戀人", "07": "07-戰車", "08": "08-力量", "09": "09-隱者", "10": "10-命運之輪", "11": "11-正義", "12": "12-倒吊人", "13": "13-死神", "14": "14-節制", "15": "15-惡魔", "16": "16-塔", "17": "17-星星", "18": "18-月亮", "19": "19-太陽", "20": "20-審判", "21": "21-世界",
             "22": "22-權杖王牌", "23": "23-權杖二", "24": "24-權杖三", "25": "25-權杖四", "26": "26-權杖五", "27": "27-權杖六", "28": "28-權杖七", "29": "29-權杖八", "30": "30-權杖九", "31": "31-權杖十", "32": "32-權杖侍者", "33": "33-權杖騎士", "34": "34-權杖王后", "35": "35-權杖國王",
             "36": "36-聖杯王牌", "37": "37-聖杯二", "38": "38-聖杯三", "39": "39-聖杯四", "40": "40-聖杯五", "41": "41-聖杯六", "42": "42-聖杯七", "43": "43-聖杯八", "44": "44-聖杯九", "45": "45-聖杯十", "46": "46-聖杯侍者", "47": "47-聖杯騎士", "48": "48-聖杯王后", "49": "49-聖杯國王",
@@ -171,70 +219,75 @@
             "64": "64-錢幣王牌", "65": "65-錢幣二", "66": "66-錢幣三", "67": "67-錢幣四", "68": "68-錢幣五", "69": "69-錢幣六", "70": "70-錢幣七", "71": "71-錢幣八", "72": "72-錢幣九", "73": "73-錢幣十", "74": "74-錢幣侍者", "75": "75-錢幣騎士", "76": "76-錢幣王后", "77": "77-錢幣國王"
         };
 
-        let picked = [];
-        let drawing = false;
+        let pickedIds = [];
+        let picking = false;
 
-        function goToDraw() {
-            document.getElementById('screen-intro').classList.remove('active');
-            document.getElementById('screen-draw').classList.add('active');
+        // 呼吸文字切換邏輯
+        setInterval(() => {
+            const bt = document.getElementById('b-text');
+            bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
+        }, 4000);
+
+        function nextScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function drawCard() {
-            if (drawing || picked.length >= 3) return;
-            drawing = true;
+        function doPick() {
+            if (picking || pickedIds.length >= 3) return;
+            picking = true;
 
-            let id;
-            do { id = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (picked.includes(id));
+            let rid;
+            do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
 
             const img = document.getElementById('front-img');
-            img.src = `tarot_${id}.jpg`;
-            img.onerror = () => { img.src = `https://via.placeholder.com/170x290/222/d4af37?text=${tarotData[id]}`; };
+            img.src = `tarot_${rid}.jpg`;
+            img.onerror = () => { img.src = `https://via.placeholder.com/180x310/222/d4af37?text=${tarotNames[rid]}`; };
 
-            const card = document.getElementById('main-card');
-            card.classList.add('is-flipped');
+            const card = document.getElementById('tarot-card');
+            card.classList.add('flipped');
 
             setTimeout(() => {
-                picked.push(id);
-                document.querySelectorAll('.dot')[picked.length - 1].classList.add('active');
+                pickedIds.push(rid);
+                document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
                 
                 setTimeout(() => {
-                    card.classList.remove('is-flipped');
-                    if (picked.length === 3) {
-                        setTimeout(showResults, 800);
+                    card.classList.remove('flipped');
+                    if (pickedIds.length === 3) {
+                        setTimeout(showFinal, 800);
                     } else {
-                        document.getElementById('draw-hint').innerText = `已感受第 ${picked.length} 張能量，請抽下一張...`;
-                        drawing = false;
+                        document.getElementById('draw-label').innerText = `已感受第 ${pickedIds.length} 張牌，請抽下一張...`;
+                        picking = false;
                     }
-                }, 1200);
+                }, 1500);
             }, 800);
         }
 
-        function showResults() {
-            document.getElementById('screen-draw').classList.remove('active');
-            document.getElementById('screen-result').classList.add('active');
-            const grid = document.getElementById('result-grid');
-            grid.innerHTML = '';
-            picked.forEach(id => {
-                grid.innerHTML += `<div class="result-item">
-                    <img src="tarot_${id}.jpg" style="width:100%; border-radius:8px; border:1px solid gold;" onerror="this.src='https://via.placeholder.com/120x200/222/d4af37?text=Card'">
-                    <p style="font-size:0.8rem; color:gold; margin:8px 0;">${tarotData[id]}</p>
+        function showFinal() {
+            nextScreen('screen-result');
+            const row = document.getElementById('result-row');
+            row.innerHTML = '';
+            pickedIds.forEach(id => {
+                row.innerHTML += `<div class="card-result">
+                    <img src="tarot_${id}.jpg" onerror="this.src='https://via.placeholder.com/120x200/222/d4af37?text=Card'">
+                    <p>${tarotNames[id]}</p>
                 </div>`;
             });
         }
 
-        function copyResults() {
-            const names = picked.map(id => tarotData[id]).join('、');
-            const isThink = document.getElementById('mode-think').checked;
+        function copyResult() {
+            const names = pickedIds.map(id => tarotNames[id]).join('、');
+            const isThink = document.querySelector('input[name="mode"]:checked').value === 'think';
             
             let prompt = "";
             if (isThink) {
-                prompt = `請啟動【深度思考/推理模式】。我抽到的塔羅牌是：【${names}】。請運用占星對應、符號學與心理映射，對這三張牌進行嚴密的邏輯推演與直覺分析，並給予我深層的行動指引。`;
+                prompt = `請啟動【深度思考/推理模式】。我觀想的問題已具象化，抽出的牌組為：【${names}】。請運用占星對應、象徵主義與行為心理學，進行多維度的邏輯推演，並給予我突破性的分析與指引。`;
             } else {
-                prompt = `我抽到了三張塔羅牌：【${names}】。請幫我分析這三張牌的含義，並針對我目前的情況提供溫暖的建議。`;
+                prompt = `我抽到了三張塔羅牌：【${names}】。請針對我腦海中觀想的問題，提供解析與溫暖的指引。`;
             }
 
             navigator.clipboard.writeText(prompt).then(() => {
-                const toast = document.getElementById('copy-toast');
+                const toast = document.getElementById('toast');
                 toast.style.visibility = 'visible';
                 setTimeout(() => toast.style.visibility = 'hidden', 3000);
             });
