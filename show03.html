@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>數位塔羅：開啟命運之門</title>
     <style>
         :root {
@@ -13,6 +13,8 @@
             --glow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
 
+        * { box-sizing: border-box; } /* 防止邊距撐破版面 */
+
         body {
             margin: 0; background-color: var(--bg-dark); color: var(--text-light);
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
@@ -20,7 +22,10 @@
             overflow-x: hidden; perspective: 1500px;
         }
 
-        .container { width: 95%; max-width: 800px; text-align: center; padding: 20px; }
+        .container { 
+            width: 100%; max-width: 800px; text-align: center; 
+            padding: 15px; margin: auto;
+        }
 
         /* --- 呼吸動畫 --- */
         .breath-wrapper {
@@ -33,7 +38,7 @@
             border: 1px solid var(--primary-gold); border-radius: 50%;
             animation: breathCycle 8s infinite ease-in-out;
         }
-        .breath-text { position: relative; z-index: 2; color: var(--primary-gold); font-size: 0.7rem; font-weight: bold; }
+        .breath-text { position: relative; z-index: 2; color: var(--primary-gold); font-size: 0.75rem; font-weight: bold; }
 
         @keyframes breathCycle {
             0%, 100% { transform: scale(0.9); opacity: 0.3; }
@@ -41,7 +46,7 @@
         }
 
         /* --- 畫面切換 --- */
-        .screen { display: none; animation: screenFade 0.6s forwards; }
+        .screen { display: none; animation: screenFade 0.6s forwards; width: 100%; }
         .screen.active { display: block; }
         @keyframes screenFade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -60,26 +65,24 @@
         .detail-panel {
             background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold);
             border-radius: 10px; padding: 15px; text-align: left; margin-bottom: 20px;
-            animation: slideDown 0.4s ease-out;
         }
-        @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-        
         .detail-title { font-size: 0.85rem; color: var(--primary-gold); margin-bottom: 10px; display: block; font-weight: bold; }
         .form-group { margin-bottom: 10px; }
         .form-input {
             width: 100%; background: rgba(0,0,0,0.3); border: 1px solid #444;
-            color: white; padding: 10px; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box;
+            color: white; padding: 12px; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;
             outline: none; transition: 0.3s;
         }
         .form-input:focus { border-color: var(--primary-gold); background: rgba(255,255,255,0.05); }
 
-        /* 錯誤提示 */
         #validate-msg { color: #ff4d4d; font-size: 0.8rem; margin-bottom: 10px; display: block; height: 1.2rem; }
 
-        /* --- 抽牌視覺 --- */
-        .card-zone { height: 320px; display: flex; justify-content: center; align-items: center; }
+        /* --- 抽牌視覺 (RWD 優化) --- */
+        .card-zone { 
+            height: 350px; width: 100%; display: flex; justify-content: center; align-items: center; overflow: visible;
+        }
         .tarot-card {
-            width: 160px; height: 275px; position: relative;
+            width: 150px; height: 260px; position: relative;
             transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
         }
@@ -91,14 +94,30 @@
         .card-back::after { content: "◈"; color: var(--primary-gold); font-size: 2.5rem; }
         .card-front { transform: rotateY(180deg); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .tarot-card.flipped { transform: rotateY(180deg) scale(1.25) translateZ(50px); }
+        
+        /* 翻牌放大效果：手機版 scale 較小防止跑版 */
+        .tarot-card.flipped { transform: rotateY(180deg) scale(1.3) translateZ(50px); }
+
+        /* --- 結果顯示區 (修復跑版關鍵) --- */
+        .result-row { 
+            display: flex; justify-content: center; align-items: flex-start;
+            gap: 12px; flex-wrap: wrap; margin: 20px auto; width: 100%;
+        }
+        .card-result { 
+            width: calc(33% - 10px); min-width: 100px; max-width: 140px;
+            text-align: center; font-size: 0.8rem; color: var(--primary-gold); 
+        }
+        .card-result img { 
+            width: 100%; height: auto; border-radius: 8px; border: 1px solid gold; margin-bottom: 5px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
 
         /* --- 按鈕樣式 --- */
         .btn {
             background: transparent; border: 1.5px solid var(--primary-gold);
-            color: var(--primary-gold); padding: 12px 35px; border-radius: 50px;
+            color: var(--primary-gold); padding: 12px 30px; border-radius: 50px;
             cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px;
-            text-decoration: none; display: inline-block;
+            text-decoration: none; display: inline-block; max-width: 100%;
         }
         .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; opacity: 0.5; }
         .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: var(--glow); }
@@ -107,6 +126,15 @@
         #toast {
             visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--primary-gold); color: #000; padding: 10px 30px; border-radius: 8px; font-weight: bold; z-index: 999;
+        }
+
+        /* 手機版微調 */
+        @media (max-width: 600px) {
+            .question-grid { grid-template-columns: repeat(2, 1fr); }
+            .tarot-card.flipped { transform: rotateY(180deg) scale(1.15) translateZ(30px); }
+            .card-result { width: calc(50% - 10px); } /* 手機版兩張一排，第三張自動換行 */
+            .btn { width: 100%; padding: 12px 10px; }
+            .ritual-header { font-size: 1rem; }
         }
     </style>
 </head>
@@ -117,12 +145,10 @@
             <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「辛苦了。外面的世界很吵吧？讓心靜下來。」</p>
             
             <div class="ritual-header">【選擇占卜主題】</div>
-            <div class="question-grid" id="theme-selector">
-                </div>
+            <div class="question-grid" id="theme-selector"></div>
 
             <div class="ritual-header">【提供能量細節】</div>
-            <div id="detail-area" class="detail-panel">
-                </div>
+            <div id="detail-area" class="detail-panel"></div>
 
             <span id="validate-msg">請至少填寫一項細節，以開啟命運之門</span>
 
@@ -143,38 +169,38 @@
                 </div>
             </div>
             <div id="progress-dots" style="display:flex; justify-content:center; gap:10px;">
-                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
-                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
-                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;" class="p-dot"></div>
             </div>
         </div>
 
         <div id="screen-result" class="screen">
             <h2 style="color: var(--primary-gold);">命運的倒影</h2>
             <div class="result-row" id="result-row"></div>
-            <div class="mode-box" style="margin-bottom: 20px;">
+            
+            <div class="mode-box" style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
                 <label><input type="radio" name="mode" value="normal" checked> 一般解析</label>
                 &nbsp;&nbsp;
-                <label><input type="radio" name="mode" value="think"> 🧠 深度思考模式</label>
+                <label><input type="radio" name="mode" value="think"> 🧠 深度思考</label>
             </div>
+
             <button class="btn btn-main" onclick="copyResult()">步驟 1：複製分析指令</button>
-            <p style="font-size: 0.8rem; opacity: 0.6; margin: 15px 0; color: var(--primary-gold);">✦ 前往 Gemini 貼上並送出即可 ✦</p>
-            <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="btn">步驟 2：開啟分析網頁</a>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin: 15px 0; color: var(--primary-gold);">✦ 點擊「前往分析」後貼上並送出 ✦</p>
+            <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="btn">步驟 2：前往分析網頁</a>
+            <br>
+            <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4; margin-top:20px;" onclick="location.reload()">重新調頻</button>
         </div>
     </div>
-    <div id="toast">已複製結構化問題與牌組！</div>
+
+    <div id="toast">已複製指令！</div>
 
     <script>
         const themes = {
             "感情發展": ["目前關係階段 (如：曖昧、交往中)", "對方的態度或最近一次互動", "我內心的主要不安點"],
-            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況 (如：斷聯、點讚)", "對方目前的感情狀態 (若知曉)"],
-            "職涯發展": ["目前職業狀態 (如：待業、在職)", "心儀的目標 (如：某公司、升遷)", "主要的壓力來源或阻礙"],
-            "正緣桃花": ["過去的感情痛點", "理想伴侶的特質", "目前的社交活躍程度"],
-            "財運投資": ["投資類別 (如：股票、副業)", "對風險的承受度", "期望獲利的時間點"],
-            "職場人際": ["對方的角色 (如：小人、主管)", "最近一次衝突點", "我希望達成的理想關係"],
-            "身心健康": ["目前的情緒狀態 (如：焦慮、低落)", "特定的身體不適或壓力感", "近期的睡眠或能量品質"],
-            "自我探索": ["目前的人生困惑", "靈魂課題或反覆出現的行為", "想尋找的內在力量"],
-            "二選一決策": ["路徑 A 的預期 (如：留任)", "路徑 B 的預期 (如：跳槽)", "猶豫不決的核心原因"],
+            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況 (如：斷聯、點讚)", "對方目前的感情狀態"],
+            "職涯發展": ["目前職業狀態 (如：待業、在職)", "心儀的目標 (如：某公司、升遷)", "主要的壓力來源"],
+            "正緣桃花": ["過去的感情痛點", "理想伴侶的特質", "目前的社交活躍度"],
             "其它問題": ["請詳述您的問題背景", "相關的人事物細節", "您最想知道的結果"]
         };
 
@@ -190,7 +216,6 @@
         let picking = false;
         let selectedTheme = "感情發展";
 
-        // 初始化主題選單
         function initThemes() {
             const container = document.getElementById('theme-selector');
             Object.keys(themes).forEach((t, index) => {
@@ -203,7 +228,6 @@
             switchTheme(selectedTheme);
         }
 
-        // 切換主題細節
         function switchTheme(theme) {
             selectedTheme = theme;
             const area = document.getElementById('detail-area');
@@ -218,27 +242,19 @@
             validateForm();
         }
 
-        // 驗證是否至少填寫一項
         function validateForm() {
             const inputs = document.querySelectorAll('.detail-input');
             const btn = document.getElementById('start-btn');
             const msg = document.getElementById('validate-msg');
             let hasValue = false;
             inputs.forEach(i => { if(i.value.trim() !== '') hasValue = true; });
-
-            if(hasValue) {
-                btn.disabled = false;
-                msg.style.opacity = '0';
-            } else {
-                btn.disabled = true;
-                msg.style.opacity = '1';
-            }
+            btn.disabled = !hasValue;
+            msg.style.opacity = hasValue ? '0' : '1';
         }
 
-        // 呼吸文字切換
         setInterval(() => {
             const bt = document.getElementById('b-text');
-            bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
+            if (bt) bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
         }, 4000);
 
         function goToDraw() {
@@ -251,18 +267,27 @@
             picking = true;
             let rid;
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
+            
             const img = document.getElementById('front-img');
             img.src = `tarot_${rid}.jpg`;
-            img.onerror = () => { img.src = `https://via.placeholder.com/160x275/222/d4af37?text=${tarotNames[rid]}`; };
+            img.onerror = () => { img.src = `https://via.placeholder.com/150x260/222/d4af37?text=${tarotNames[rid]}`; };
+            
             const card = document.getElementById('tarot-card');
             card.classList.add('flipped');
+            
             setTimeout(() => {
                 pickedIds.push(rid);
-                document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
+                const dots = document.querySelectorAll('.p-dot');
+                dots[pickedIds.length - 1].style.background = 'var(--primary-gold)';
+                
                 setTimeout(() => {
                     card.classList.remove('flipped');
-                    if (pickedIds.length === 3) { setTimeout(showFinal, 800); }
-                    else { picking = false; }
+                    if (pickedIds.length === 3) {
+                        setTimeout(showFinal, 800);
+                    } else {
+                        document.getElementById('draw-label').innerText = `已連結 ${pickedIds.length} 張牌，續抽下一張...`;
+                        picking = false;
+                    }
                 }, 1500);
             }, 800);
         }
@@ -271,6 +296,7 @@
             document.getElementById('screen-draw').classList.remove('active');
             document.getElementById('screen-result').classList.add('active');
             const row = document.getElementById('result-row');
+            row.innerHTML = '';
             pickedIds.forEach(id => {
                 row.innerHTML += `<div class="card-result"><img src="tarot_${id}.jpg" onerror="this.src='https://via.placeholder.com/100x160/222/d4af37?text=Card'"><p>${tarotNames[id]}</p></div>`;
             });
@@ -287,12 +313,11 @@
                 }
             });
 
-            let prompt = `【塔羅占卜委託書】\n核心主題：${selectedTheme}\n問題細節：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
-            
+            let prompt = `【塔羅占卜委託】\n核心主題：${selectedTheme}\n細節背景：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
             if (mode === 'think') {
-                prompt += `請啟動【深度思考/推理模式】。結合上述背景，運用符號學與行為心理學進行多維度分析，並給予具備策略性的具體建議。`;
+                prompt += `請啟動【深度思考/推理模式】。請根據以上資訊進行符號學與行為心理學分析，提供精準建議。`;
             } else {
-                prompt += `請針對我的情況提供溫暖且專業的塔羅解析。`;
+                prompt += `請針對以上資訊提供溫暖專業的解析。`;
             }
 
             navigator.clipboard.writeText(prompt).then(() => {
