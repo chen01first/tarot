@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>開運塔羅占卜：命運入口</title>
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --bg-dark: #0a0a12;
+            --text-light: #e0e0e0;
+            --accent-purple: #1a0b2e;
+            --glow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 40px 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            color: var(--primary-gold);
+            letter-spacing: 5px;
+            margin-bottom: 40px;
+            font-size: 1.8rem;
+            text-shadow: var(--glow);
+        }
+
+        /* 偵測中的動畫 */
+        #status-msg {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        /* 入口列表佈局 */
+        #entry-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .entry-item {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 18px;
+            border-radius: 12px;
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes popIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .entry-item:hover {
+            background: var(--primary-gold);
+            color: #000;
+            box-shadow: var(--glow);
+            transform: scale(1.02);
+        }
+
+        .entry-item::after {
+            content: "✦";
+            font-size: 1.2rem;
+        }
+
+        /* 無檔案樣式 */
+        #empty-msg {
+            display: none;
+            padding: 40px;
+            color: #666;
+            border: 1px dashed #444;
+            border-radius: 12px;
+        }
+
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-gold);
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>命運入口選單</h1>
+        
+        <div id="status-msg">
+            <span class="loader" id="loader"></span>
+            <span id="status-text">正在連結星辰檔案...</span>
+        </div>
+
+        <div id="entry-list">
+            </div>
+
+        <div id="empty-msg">
+            <p>【 星辰寂靜 】</p>
+            <p style="font-size: 0.8rem;">暫時偵測不到可用的占卜入口</p>
+        </div>
+    </div>
+
+    <script>
+        // 設定要檢查的檔案清單 (show.html + 01 到 05)
+        const filesToCheck = [
+            { url: 'show.html', label: '主要入口：命運之門' },
+            { url: 'show01.html', label: '心裡想的問題--進行占卜' },
+            { url: 'show02.html', label: '點選問題的方向--進行占卜' },
+            { url: 'show03.html', label: '尚無03' },
+            { url: 'show04.html', label: '尚無04' },
+            { url: 'show05.html', label: '尚無05' }
+        ];
+
+        async function detectEntries() {
+            const listContainer = document.getElementById('entry-list');
+            const emptyMsg = document.getElementById('empty-msg');
+            const loader = document.getElementById('loader');
+            const statusText = document.getElementById('status-text');
+            
+            let foundCount = 0;
+
+            // 遍歷檢查每個檔案是否存在
+            for (const file of filesToCheck) {
+                try {
+                    // 使用 HEAD 請求，只檢查檔案標頭，不下載整個網頁，效能較好
+                    const response = await fetch(file.url, { method: 'HEAD' });
+                    
+                    if (response.ok) {
+                        foundCount++;
+                        createEntryLink(file);
+                    }
+                } catch (error) {
+                    // 檔案不存在會進入這裡，直接跳過即可
+                }
+            }
+
+            // 偵測結束後的處理
+            loader.style.display = 'none';
+            if (foundCount === 0) {
+                statusText.innerText = "偵測完成";
+                emptyMsg.style.display = 'block';
+            } else {
+                statusText.innerText = `偵測完成，發現 ${foundCount} 個能量入口`;
+            }
+        }
+
+        function createEntryLink(file) {
+            const listContainer = document.getElementById('entry-list');
+            const a = document.createElement('a');
+            a.href = file.url;
+            a.className = 'entry-item';
+            a.innerHTML = `<span>${file.label}</span>`;
+            listContainer.appendChild(a);
+        }
+
+        // 執行偵測
+        detectEntries();
+    </script>
+</body>
+</html>
