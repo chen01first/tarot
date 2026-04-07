@@ -20,7 +20,7 @@
             margin: 0; background-color: var(--bg-dark); color: var(--text-light);
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
-            overflow: hidden;
+            overflow-x: hidden; perspective: 1500px;
         }
 
         .container { width: 100%; max-width: 800px; text-align: center; padding: 15px; margin: auto; }
@@ -28,25 +28,20 @@
         /* --- 畫面切換 --- */
         .screen { display: none; animation: fadeIn 1.2s forwards; width: 100%; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+        @keyframes fadeIn { from { opacity: 0; filter: blur(10px); transform: scale(0.95); } to { opacity: 1; filter: blur(0); transform: scale(1); } }
 
-        /* --- 1. 創意優化：立體水晶球座 --- */
+        /* --- 儀式開場：立體水晶球座 --- */
         .ritual-landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; }
         
         .crystal-set {
-            position: relative;
-            width: 200px;
-            height: 250px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+            position: relative; width: 220px; height: 280px;
+            display: flex; flex-direction: column; align-items: center;
+            filter: drop-shadow(0 0 30px rgba(74, 20, 140, 0.4));
         }
 
-        /* 強化版水晶球體 */
+        /* 水晶球體 */
         .crystal-sphere {
-            width: 150px; height: 150px;
-            border-radius: 50%; cursor: pointer;
+            width: 160px; height: 160px; border-radius: 50%; cursor: pointer;
             position: relative; z-index: 5;
             background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 20%),
                         radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.2), rgba(0, 0, 0, 0.6)),
@@ -57,52 +52,41 @@
             transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow: hidden;
         }
+        .crystal-sphere:hover { transform: scale(1.05); }
 
-        /* 內部流動煙霧 */
+        /* 內部流動能量 */
         .crystal-sphere::before {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(from 0deg, transparent, var(--primary-gold), transparent, var(--crystal-inner), transparent);
             opacity: 0.2; animation: swirl 15s infinite linear; filter: blur(20px);
         }
 
-        /* 靈魂核心點 */
+        /* 靈魂核心脈衝 */
         .crystal-sphere::after {
             content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 4px; height: 4px; background: white; border-radius: 50%;
             box-shadow: 0 0 15px 5px white; animation: pulse 2s infinite;
         }
 
-        /* --- 實體重力感底座 --- */
-        .crystal-base-v2 {
-            position: relative; width: 130px; height: 60px; margin-top: -20px; /* 讓球嵌進去 */
-            z-index: 4;
-        }
-
-        /* 底座頂層：承接球體的凹槽支架 */
+        /* 實體重力感底座 */
+        .crystal-base { position: relative; width: 140px; height: 60px; margin-top: -20px; z-index: 4; }
         .base-top {
             width: 100%; height: 25px;
             background: linear-gradient(to right, #1a1a1a, #4d3d1a, #b89b5e, #4d3d1a, #1a1a1a);
             clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
             border-bottom: 2px solid rgba(0,0,0,0.5);
         }
-
-        /* 球體與底座的接點陰影 (Ambient Occlusion) */
         .contact-shadow {
             position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
             width: 100px; height: 20px;
             background: radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, transparent 80%);
             z-index: 6; pointer-events: none;
         }
-
-        /* 底座中段：縮腰裝飾 */
         .base-mid {
             width: 70%; height: 15px; margin: 0 auto;
             background: linear-gradient(to right, #000, #333, #000);
-            border-left: 2px solid var(--dark-gold);
-            border-right: 2px solid var(--dark-gold);
+            border-left: 2px solid var(--dark-gold); border-right: 2px solid var(--dark-gold);
         }
-
-        /* 底座底層：寬闊支撐 */
         .base-bottom {
             width: 110%; height: 25px; margin-left: -5%;
             background: linear-gradient(to bottom, var(--dark-gold), #111);
@@ -110,55 +94,50 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.8);
             position: relative;
         }
-
-        /* 裝飾符號 */
         .base-bottom::after {
             content: "✧ ◈ ✧"; font-size: 0.7rem; color: rgba(255,255,255,0.3);
-            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
-            letter-spacing: 5px;
+            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); letter-spacing: 5px;
         }
 
         @keyframes swirl { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(2); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(2.5); } }
 
-        /* --- 2. 導引與細節 (承襲前版本優點) --- */
+        /* --- 呼吸動畫 --- */
+        .breath-wrapper { position: relative; width: 80px; height: 80px; margin: 10px auto; display: flex; justify-content: center; align-items: center; }
+        .breath-circle { position: absolute; width: 100%; height: 100%; border: 1px solid var(--primary-gold); border-radius: 50%; animation: breathCycle 8s infinite ease-in-out; opacity: 0.3; }
+        @keyframes breathCycle { 0%, 100% { transform: scale(0.8); opacity: 0.2; } 50% { transform: scale(1.2); opacity: 0.6; } }
+
+        /* --- 表格與內容佈局 --- */
         .ritual-header { color: var(--primary-gold); font-size: 1.1rem; font-weight: bold; margin: 15px 0 10px 0; border-left: 3px solid var(--primary-gold); padding-left: 10px; text-align: left;}
-        .question-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 8px; text-align: left; background: rgba(255,255,255,0.03);
-            padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(212,175,55,0.1);
-        }
+        .question-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; text-align: left; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(212,175,55,0.1); }
         .q-item { font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; color: #ccc; padding: 5px; }
         .q-item input { margin-right: 8px; accent-color: var(--primary-gold); }
         .detail-panel { background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold); border-radius: 10px; padding: 15px; text-align: left; margin-bottom: 15px; }
         .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 12px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 8px; outline: none; }
-        .form-input:focus { border-color: var(--primary-gold); }
-        #validate-msg { color: #ff4d4d; font-size: 0.8rem; display: block; height: 1.2rem; opacity: 1; transition: 0.3s; }
-
-        /* --- 3. 抽牌與結果 --- */
-        .card-zone { height: 350px; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .tarot-card { width: 150px; height: 260px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
+        
+        /* --- 抽牌 --- */
+        .card-zone { height: 320px; display: flex; justify-content: center; align-items: center; }
+        .tarot-card { width: 140px; height: 240px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 2px solid var(--primary-gold); background: #111; }
         .card-back { background: linear-gradient(135deg, #1a1a2e, #4a148c); display: flex; justify-content: center; align-items: center; }
         .card-back::after { content: "◈"; color: var(--primary-gold); font-size: 2.5rem; }
         .card-front { transform: rotateY(180deg); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
-        .tarot-card.flipped { transform: rotateY(180deg) scale(1.3) translateZ(50px); }
+        .tarot-card.flipped { transform: rotateY(180deg) scale(1.2); }
 
-        .result-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px auto; width: 100%; }
-        .card-result { width: calc(33% - 10px); min-width: 100px; max-width: 140px; text-align: center; font-size: 0.8rem; color: var(--primary-gold); }
-        .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .result-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 20px auto; }
+        .card-result { width: calc(33% - 10px); min-width: 90px; text-align: center; font-size: 0.75rem; color: var(--primary-gold); }
+        .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; margin-bottom: 5px; }
 
         .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px; }
-        .btn:disabled { border-color: #444; color: #666; opacity: 0.5; cursor: not-allowed; }
+        .btn:disabled { border-color: #444; color: #666; opacity: 0.5; }
         .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: 0 0 20px var(--primary-gold); }
         .btn-main { background: var(--primary-gold); color: #000; font-weight: bold; }
 
         #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: #000; padding: 10px 30px; border-radius: 8px; font-weight: bold; z-index: 999; }
-
+        
         @media (max-width: 600px) {
             .question-grid { grid-template-columns: repeat(2, 1fr); }
-            .tarot-card.flipped { transform: rotateY(180deg) scale(1.1) translateZ(30px); }
             .card-result { width: calc(50% - 10px); }
             .btn { width: 100%; }
         }
@@ -168,28 +147,29 @@
 
     <div class="container">
         <div id="screen-ritual" class="screen active ritual-landing">
-            <h2 style="color: var(--primary-gold); letter-spacing: 5px; margin-bottom: 40px; text-shadow: 0 0 10px rgba(212,175,55,0.5);">觸碰水晶，連結潛意識</h2>
+            <h2 style="color: var(--primary-gold); letter-spacing: 5px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(212,175,55,0.5);">觸碰水晶，連結潛意識</h2>
             
             <div class="crystal-set">
                 <div class="crystal-sphere" onclick="startRitual()"></div>
-                
-                <div class="crystal-base-v2">
+                <div class="crystal-base">
                     <div class="contact-shadow"></div>
                     <div class="base-top"></div>
                     <div class="base-mid"></div>
                     <div class="base-bottom"></div>
                 </div>
             </div>
-            <p style="color: #666; font-size: 0.85rem; margin-top: 30px; letter-spacing: 2px;">能量已在虛空交會...</p>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 40px; letter-spacing: 2px;">能量已在虛空交會，靜待您的共鳴...</p>
         </div>
 
         <div id="screen-intro" class="screen">
-            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「辛苦了。外面的世界很吵吧？讓心靜下來。」</p>
+            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「外面的世界很吵吧？讓心靜下來，專注於當下。」</p>
             <div class="ritual-header">【選擇占卜主題】</div>
             <div class="question-grid" id="theme-selector"></div>
             <div class="ritual-header">【提供能量細節】</div>
             <div id="detail-area" class="detail-panel"></div>
-            <span id="validate-msg">請至少填寫一項細節，以開啟命運之門</span>
+            <span id="validate-msg" style="color: #ff4d4d; font-size: 0.8rem; display: block; margin-bottom: 10px;">請至少填寫一項細節，以開啟命運之門</span>
+            
+            <div class="breath-wrapper"><div class="breath-circle"></div></div>
             <button class="btn btn-main" id="start-btn" onclick="goToDraw()" disabled>開啟命運之門</button>
         </div>
 
@@ -201,17 +181,17 @@
                     <div class="card-face card-front"><img src="" id="front-img"></div>
                 </div>
             </div>
-            <div style="display:flex; justify-content:center; gap:10px;">
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
+            <div id="progress-dots" style="display:flex; justify-content:center; gap:10px;">
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
+                <div style="width:10px; height:10px; border-radius:50%; background:#333;" class="p-dot"></div>
             </div>
         </div>
 
         <div id="screen-result" class="screen">
             <h2 style="color: var(--primary-gold);">命運的倒影</h2>
             <div class="result-row" id="result-row"></div>
-            <div style="margin: 20px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+            <div style="margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
                 <label><input type="radio" name="mode" value="normal" checked> 一般解析</label>
                 &nbsp;&nbsp;
                 <label><input type="radio" name="mode" value="think"> 🧠 深度思考</label>
@@ -225,15 +205,13 @@
 
     <script>
         const themes = {
-            "感情發展": ["目前關係階段 (如：曖昧、交往中)", "對方的態度或最近一次互動", "我內心的主要不安點"],
-            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況 (如：斷聯、點讚)", "對方目前的感情狀態"],
-            "職涯發展": ["目前職業狀態 (如：待業、在職)", "心儀的目標 (如：某公司、升遷)", "主要的壓力來源"],
+            "感情發展": ["目前關係階段", "對方的態度或最近一次互動", "我內心的主要不安點"],
+            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況", "對方目前的感情狀態"],
+            "職涯發展": ["目前職業狀態", "心儀的目標", "主要的壓力來源"],
             "正緣桃花": ["過去的感情痛點", "理想伴侶的特質", "目前的社交活躍度"],
-            "財運投資": ["投資類別 (如：股票、副業)", "對風險的承受度", "期望獲利的時間點"],
-            "職場人際": ["對方的角色 (如：主管、前任)", "最近一次衝突點", "理想的關係發展"],
-            "身心健康": ["目前情緒狀態", "特定壓力來源", "近期能量品質"],
+            "財運投資": ["投資類別", "對風險的承受度", "期望獲利的時間點"],
+            "職場人際": ["對方的角色", "最近一次衝突點", "理想的關係發展"],
             "自我探索": ["目前的人生困惑", "靈魂課題", "想尋找的力量"],
-            "二選一決策": ["路徑 A 的預期", "路徑 B 的預期", "核心猶豫點"],
             "其它問題": ["問題背景細節", "想知道的結果"]
         };
 
@@ -257,7 +235,7 @@
 
         function initThemes() {
             const container = document.getElementById('theme-selector');
-            if (container.innerHTML !== "") return;
+            if(container.innerHTML !== "") return;
             Object.keys(themes).forEach((t, i) => {
                 const label = document.createElement('label');
                 label.className = 'q-item';
@@ -271,7 +249,7 @@
         function switchTheme(theme) {
             selectedTheme = theme;
             const area = document.getElementById('detail-area');
-            area.innerHTML = `<span style="font-size:0.8rem; color:var(--primary-gold); display:block; margin-bottom:10px;">✦ ${theme} 能量導引 ✦</span>`;
+            area.innerHTML = `<span style="font-size:0.8rem; color:var(--primary-gold); display:block; margin-bottom:8px;">✦ 【${theme}】導引：</span>`;
             themes[theme].forEach(q => {
                 area.innerHTML += `<input type="text" class="form-input detail-input" placeholder="${q}" oninput="validateForm()">`;
             });
@@ -295,15 +273,19 @@
             picking = true;
             let rid;
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
+            
             const img = document.getElementById('front-img');
             img.src = `tarot_${rid}.jpg`;
             img.onerror = () => { img.src = `https://via.placeholder.com/150x260/222/d4af37?text=${tarotNames[rid]}`; };
-            document.getElementById('tarot-card').classList.add('flipped');
+            
+            const card = document.getElementById('tarot-card');
+            card.classList.add('flipped');
+            
             setTimeout(() => {
                 pickedIds.push(rid);
                 document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
                 setTimeout(() => {
-                    document.getElementById('tarot-card').classList.remove('flipped');
+                    card.classList.remove('flipped');
                     if (pickedIds.length === 3) setTimeout(showFinal, 800);
                     else picking = false;
                 }, 1500);
@@ -325,8 +307,10 @@
             const mode = document.querySelector('input[name="mode"]:checked').value;
             let details = [];
             inputs.forEach((input, i) => { if(input.value.trim() !== '') details.push(`${themes[selectedTheme][i]}：${input.value.trim()}`); });
-            let prompt = `【塔羅占卜委託】\n核心主題：${selectedTheme}\n細節背景：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
-            prompt += (mode === 'think') ? `啟動【深度思考】進行多維度分析並給予建議。` : `請提供專業解析建議。`;
+
+            let prompt = `【塔羅占卜委託】\n主題：${selectedTheme}\n細節：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
+            prompt += (mode === 'think') ? `請開啟【深度思考】進行多維度解析。` : `請提供專業建議。`;
+
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast');
                 t.style.visibility = 'visible';
