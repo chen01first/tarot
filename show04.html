@@ -57,15 +57,15 @@
         .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 15px; border-radius: 8px; font-size: 1rem; outline: none; }
 
         /* --- 4. 抽牌交互核心 --- */
-        .draw-container { position: relative; width: 100%; height: 500px; margin-top: 20px; }
+        .draw-container { position: relative; width: 100%; height: 500px; margin-top: 10px; display: flex; flex-direction: column; align-items: center; }
         
         /* 水平排列收納框 */
         .card-placeholders { 
             display: flex; 
             justify-content: center; 
             align-items: center;
-            gap: 20px; /* 固定寬度間隔 */
-            margin: 0 auto 40px auto; 
+            gap: 20px; 
+            margin: 0 auto 30px auto; 
             height: 130px;
             width: 100%;
         }
@@ -83,12 +83,12 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.6);
         }
 
-        .fan-spread { position: absolute; width: 100%; height: 280px; bottom: 0; left: 0; display: none; justify-content: center; align-items: flex-end; padding-bottom: 30px; }
+        .fan-spread { position: absolute; width: 100%; height: 280px; bottom: 0; left: 0; display: none; justify-content: center; align-items: flex-end; padding-bottom: 20px; }
         .fan-card {
             position: absolute; width: 75px; height: 115px;
             background: linear-gradient(135deg, #1a1a2e, #4a148c);
             border: 1.5px solid var(--primary-gold); border-radius: 6px;
-            cursor: pointer; transform-origin: center 250px;
+            cursor: pointer; transform-origin: center 260px;
             transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
             display: flex; justify-content: center; align-items: center; color: rgba(212,175,55,0.3);
             overflow: hidden; z-index: 10;
@@ -110,10 +110,15 @@
 
         #toast { visibility: hidden; position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: #000; padding: 12px 30px; border-radius: 8px; font-weight: bold; z-index: 10000; }
 
+        /* --- 手機 RWD 優化 --- */
         @media (max-width: 600px) {
-            .fan-card { width: 50px; height: 80px; transform-origin: center 180px; }
-            .placeholder-box { width: 65px; height: 100px; }
-            .card-result { width: calc(50% - 15px); }
+            .draw-container { height: 350px; margin-top: 5px; } /* 縮小垂直空間，讓兩者靠近 */
+            .card-placeholders { margin-bottom: 20px; gap: 12px; height: 100px; }
+            .placeholder-box { width: 60px; height: 95px; font-size: 1.2rem; }
+            .fan-card { width: 50px; height: 80px; transform-origin: center 160px; } /* 縮小扇形半徑 */
+            .fan-spread { height: 200px; padding-bottom: 10px; }
+            .ritual-header { font-size: 1rem; }
+            .btn { padding: 12px 25px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -144,13 +149,13 @@
                 <div class="placeholder-box" id="frame-1">✦</div>
                 <div class="placeholder-box" id="frame-2">✦</div>
             </div>
-            <h3 id="draw-info" style="color: var(--primary-gold); letter-spacing: 2px;">感應宇宙頻率中...</h3>
+            <h3 id="draw-info" style="color: var(--primary-gold); letter-spacing: 2px; font-size: 1rem;">感應宇宙頻率中...</h3>
             <div class="draw-container" id="draw-container">
                 <div id="shuffle-deck" class="shuffle-zone"></div>
                 <div id="fan-spread" class="fan-spread"></div>
             </div>
             <button class="btn btn-main" id="stop-shuffle-btn" onclick="stopShuffle()">感應結束，停止洗牌</button>
-            <p id="fan-hint" style="display:none; color: #888; margin-top:15px;">✦ 連點 2 下選取三張牌 (已抽 <span id="picked-count">0</span>/3) ✦</p>
+            <p id="fan-hint" style="display:none; color: #888; margin-top:10px; font-size: 0.8rem;">✦ 連點 2 下選取三張牌 (已抽 <span id="picked-count">0</span>/3) ✦</p>
         </div>
 
         <div id="screen-result" class="screen">
@@ -166,11 +171,10 @@
 
     <script>
         const themes = {
-            "感情與關係": ["能量狀態： 我們目前互動的能量流向與心理動力處於什麼樣的階段？", "對方感受： 對方內心對我的定位，以及他對這段關係的真實想法為何？", "核心問題： 阻礙我們關係深入發展的最關鍵瓶頸（或潛在衝突點）是什麼？", "聯絡發展： 若我採取主動聯絡，雙方的互動頻率與未來走向可能產生什麼質變？", "關係功課： 這段關係目前正引領我面對哪些個人成長的課題或靈魂契機？", "優化關係： 為了讓這段關係邁向更健康的循環，我現在最需要調整的行為或觀點是什麼？", "心理盲點： 在這段感情中，有哪些我一直選擇忽視或尚未察覺的真實狀況？", "關係角色： 在彼此的生命藍圖中，我們各自正扮演著什麼樣的心理投射角色？", "執著根源： 分手後這份難以釋懷的執念，背後揭示了我內在哪些尚未滿足的需求？", "下段準備： 在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？", "模式根源： 我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？", "溝通盲點： 在溝通失準的背後，我們各自存在著什麼樣的認知偏見或防衛機制？", "未來走向： 基於目前的互動基調，這段關係在可預見的未來最可能的演變路徑為何？", "家庭能量： 對方家人的態度背後隱藏著什麼樣的家族動力？我該如何保持自我中心而不受干擾？", "同質吸引： 我反覆吸引到類似特質的人，這反映了我內在哪些尚未整合的心理陰影或特質？"],
-            "工作與職涯": ["離職轉型： 離開現有職位對我的生命路徑會產生什麼樣的結構性影響？", "優勢定位： 結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖是什麼？", "現況啟啟： 近期職場上的挑戰，是為了訓練我具備哪種更高階的職涯能力？", "轉職注意： 針對目前的轉職計畫，有哪些隱藏的風險或關鍵機會是我需要留意的？", "主管關係： 我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？", "創業評估： 在創業這條路上，我的優勢動能與待補足的專業缺口分別是什麼？", "成就感缺失： 排除外在回報，我在工作中感到枯竭的核心心理因素為何？", "機會對比： 面前這兩個職涯選項，分別代表了哪兩種不同的生命擴張方向？", "副業潛力： 我目前的副業模型在市場競爭力與可持續性發展上的潛力如何？", "阻礙覺察： 排除努力程度，是什麼樣的潛意識限制或思維框架讓我感覺原地踏步？", "自由工作： 轉向自由職業前，我應如何建立足夠的心理韌性與系統化支持？", "斜槓切入點： 根據我現有的資源組合，哪個方向是目前阻力最小且回收最高的切入點？"],
-            "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在恐懼什麼樣的人生狀態？", "原生家庭： 父母的金錢觀如何形塑了我現在對財富的處理方式與限制？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "不夠用的信念： 「錢永遠不夠」這個念頭背後，隱藏著什麼樣的自我匱乏信念？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？", "消費對映： 我的金錢支出模式，反映了我內在哪些情感補償或心理防禦？", "收入提升： 為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？", "配得感： 我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？", "財富課題： 在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？", "半年預測： 若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"],
-            "人際關係": ["關係演變： 與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？", "過度付出： 這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？", "界線建立： 我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？", "社交能量： 在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？", "父母療癒： 我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？", "群體格格不入： 這種疏離感是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？", "推開善意： 當他人展現善意時我本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？", "長期關係： 難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？", "關係天賦： 我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？", "收回付出： 為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"],
-            "自我探索與靈性成長": ["我最近一直覺得很迷惘，我的內在到底在渴望什麼？", "我覺得人生卡住了，這個「卡住」的背後是什麼能量？", "人生卡住了，那個突破點是什麼？", "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？", "關於人生方向，此刻的我最需要看見什麼？", "我一直感覺有什麼東西在召喚我，那是什麼？", "在這個人生階段，我的核心課題是什麼？", "「我不夠好」這個念頭一直跟著我，它的根源是什麼？", "我的靈魂最想讓我知道的一件事是什麼？", "我的高我想對我說的一句話？", "從高我的角度來看，我的天賦是什麼？", "我的指導靈個性？祂擅長用什麼方式引導我？"]
+            "感情與關係": ["能量狀態： 我們目前互動的能量流向與心理動力處於什麼樣的階段？", "對方感受： 對方內心對我的定位，以及他對這段關係的真實想法為何？", "核心問題： 阻礙我們關係深入發展的最關鍵瓶頸是什麼？", "關係功課： 這段關係目前正引領我面對哪些個人成長課題或靈魂契機？", "心理盲點： 在這段感情中，有哪些我一直選擇忽視或尚未察覺的真實狀況？", "下段準備： 在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？", "模式根源： 我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？"],
+            "工作與職涯": ["離職轉型： 離開現有職位對我的生命路徑會產生什麼樣的結構性影響？", "優勢定位： 結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖？", "現況啟示： 近期職場挑戰，是為了訓練我具備哪種更高階的能力？", "主管關係： 我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？", "阻礙覺察： 是什麼潛意識限制或思維框架讓我感覺原地踏步？"],
+            "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在恐懼什麼樣的人生狀態？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？"],
+            "自我探索與靈性": ["我最近一直覺得很迷惘，我的內在到底在渴望什麼？", "我覺得人生卡住了，這個「卡住」的背後是什麼能量？", "關於人生方向，此刻的我最需要看見什麼？", "在這個人生階段，我的核心課題是什麼？", "我的高我想對我說的一句話？", "我的靈魂最想讓我知道的一件事是什麼？"]
         };
 
         const tarotNames = { "00": "00-愚者", "01": "01-魔術師", "02": "02-女祭司", "03": "03-皇后", "04": "04-皇帝", "05": "05-教皇", "06": "06-戀人", "07": "07-戰車", "08": "08-力量", "09": "09-隱者", "10": "10-命運之輪", "11": "11-正義", "12": "12-倒吊人", "13": "13-死神", "14": "14-節制", "15": "15-惡魔", "16": "16-塔", "17": "17-星星", "18": "18-月亮", "19": "19-太陽", "20": "20-審判", "21": "21-世界", "22": "22-權杖王牌", "23": "23-權杖二", "24": "24-權杖三", "25": "25-權杖四", "26": "26-權杖五", "27": "27-權杖六", "28": "28-權杖七", "29": "29-權杖八", "30": "30-權杖九", "31": "31-權杖十", "32": "32-權杖侍者", "33": "33-權杖騎士", "34": "34-權杖王后", "35": "35-權杖國王", "36": "36-聖杯王牌", "37": "37-聖杯二", "38": "38-聖杯三", "39": "39-聖杯四", "40": "40-聖杯五", "41": "41-聖杯六", "42": "42-聖杯七", "43": "43-聖杯八", "44": "44-聖杯九", "45": "45-聖杯十", "46": "46-聖杯侍者", "47": "47-聖杯騎士", "48": "48-聖杯王后", "49": "49-聖杯國王", "50": "50-寶劍王牌", "51": "51-寶劍二", "52": "52-寶劍三", "53": "53-寶劍四", "54": "54-寶劍五", "55": "55-寶劍六", "56": "56-寶劍七", "57": "57-寶劍八", "58": "58-寶劍九", "59": "59-寶劍十", "60": "60-寶劍侍者", "61": "61-寶劍騎士", "62": "62-寶劍王后", "63": "63-寶劍國王", "64": "64-錢幣王牌", "65": "65-錢幣二", "66": "66-錢幣三", "67": "67-錢幣四", "68": "68-錢幣五", "69": "69-錢幣六", "70": "70-錢幣七", "71": "71-錢幣八", "72": "72-錢幣九", "73": "73-錢幣十", "74": "74-錢幣侍者", "75": "75-錢幣騎士", "76": "76-錢幣王后", "77": "77-錢幣國王" };
@@ -235,8 +239,8 @@
             for (let i = 0; i < 15; i++) {
                 const c = document.createElement('div');
                 c.className = "deck-card";
-                const x = Math.random() * 260 - 130;
-                const y = Math.random() * 120 - 60;
+                const x = Math.random() * 240 - 120;
+                const y = Math.random() * 100 - 50;
                 const rot = Math.random() * 720 + 360;
                 c.animate([
                     { transform: `translate(0,0) rotate(0deg)`, zIndex: 1 },
@@ -250,7 +254,7 @@
         function stopShuffle() {
             document.getElementById('shuffle-deck').style.display = "none";
             document.getElementById('stop-shuffle-btn').style.display = "none";
-            document.getElementById('draw-info').innerText = "深呼吸...請連點 2 下挑選三張牌";
+            document.getElementById('draw-info').innerText = "感應靈魂...請連點 2 下選取三張牌";
             document.getElementById('fan-spread').style.display = "flex";
             document.getElementById('fan-hint').style.display = "block";
             
@@ -282,7 +286,6 @@
             const isReversed = Math.random() > 0.5;
             pickedCards.push({ id: rid, isReversed: isReversed });
 
-            // 準備顯示內容
             const img = document.createElement('img');
             img.src = `tarot_${rid}.jpg`;
             img.style.display = "block";
@@ -290,25 +293,17 @@
             img.onerror = () => { img.src = `https://via.placeholder.com/80x120/111/d4af37?text=TAROT`; };
             el.appendChild(img);
 
-            // --- 精準位移計算 ---
+            // 精準對位計算
             el.classList.add('picked');
-            
-            // 1. 強制重置卡牌的旋轉中心為中心點，並抓取目前螢幕上的物理位置
             el.style.transformOrigin = "center center";
             const cardRect = el.getBoundingClientRect();
             const frameRect = targetFrame.getBoundingClientRect();
-            
-            // 2. 計算目前卡牌中心到目標框框中心的物理距離 (dx, dy)
             const dx = (frameRect.left + frameRect.width / 2) - (cardRect.left + cardRect.width / 2);
             const dy = (frameRect.top + frameRect.height / 2) - (cardRect.top + cardRect.height / 2);
-
-            // 3. 計算縮放比例，確保卡牌大小與框框完美契合
             const scaleX = frameRect.width / el.offsetWidth;
             const scaleY = frameRect.height / el.offsetHeight;
 
-            // 4. 執行飛入：物理位移 + 歸零旋轉角度 + 強制水平對齊
             el.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(${scaleX}, ${scaleY})`;
-            
             targetFrame.style.borderStyle = "solid";
             targetFrame.innerText = "";
 
@@ -335,8 +330,8 @@
             const cardStr = pickedCards.map(c => (c.isReversed ? "[反位]" : "[正位]") + tarotNames[c.id]).join('、');
             const context = document.getElementById('custom-context').value.trim();
             let prompt = `【星辰之眼占卜委託書】\n核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n`;
-            if (context) prompt += `補充細節背景：${context}\n`;
-            prompt += `\n【抽出牌組】：${cardStr}\n\n啟動【深度思考/多維解構模式】。請結合提問內容與牌組正逆位狀態，運用神祕學與行為心理學深度解析，並給予具備策略性的行動建議。`;
+            if (context) prompt += `補充背景：${context}\n`;
+            prompt += `\n【抽出牌組】：${cardStr}\n\n啟動【深度思考/多維解構模式】。請結合提問內容與牌組正逆位狀態，運用神祕學與榮格心理學深度解析，並給予具備策略性的具體建議。`;
             
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast');
