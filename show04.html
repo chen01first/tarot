@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>數位塔羅：開啟命運之門</title>
+    <title>數位塔羅：星辰之眼</title>
     <style>
         :root {
             --primary-gold: #d4af37;
-            --bg-dark: #05050a;
+            --dark-gold: #856d28;
+            --bg-dark: #050508;
             --text-light: #e0e0e0;
             --accent-purple: #1a0b2e;
-            --crystal-glow: 0 0 50px rgba(106, 27, 154, 0.5);
-            --specular-light: 0 0 15px rgba(255, 255, 255, 0.8);
+            --crystal-inner: #4a148c;
         }
 
         * { box-sizing: border-box; }
@@ -20,127 +20,109 @@
             margin: 0; background-color: var(--bg-dark); color: var(--text-light);
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             min-height: 100vh; display: flex; justify-content: center; align-items: center;
-            overflow-x: hidden; perspective: 1500px;
+            overflow: hidden;
         }
 
         .container { width: 100%; max-width: 800px; text-align: center; padding: 15px; margin: auto; }
 
-        /* --- 畫面切換系統 --- */
-        .screen { display: none; animation: fadeIn 1.5s forwards; width: 100%; }
+        /* --- 畫面切換 --- */
+        .screen { display: none; animation: fadeIn 1.2s forwards; width: 100%; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
 
-        /* --- 1. 儀式開場：水晶球與底座 (創意優化) --- */
-        .ritual-landing { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* --- 1. 創意優化：立體水晶球座 --- */
+        .ritual-landing { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; }
         
-        .crystal-ball-container {
+        .crystal-set {
             position: relative;
-            width: 140px;
-            height: 220px; /* 預留底座高度 */
-            margin-bottom: 60px;
+            width: 200px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
         }
 
-        /* 水晶球體主體 */
+        /* 強化版水晶球體 */
         .crystal-sphere {
-            width: 140px; height: 140px;
+            width: 150px; height: 150px;
             border-radius: 50%; cursor: pointer;
-            position: absolute; top: 0; left: 0;
-            
-            /* 深度漸層，模擬玻璃和內部的混濁 */
-            background: 
-                /* 高光點 */
-                radial-gradient(circle at 30% 30%, #fff, rgba(255, 255, 255, 0) 15%),
-                /* 玻璃邊緣光 */
-                radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.4), rgba(212, 175, 55, 0) 50%),
-                /* 深層色彩 */
-                radial-gradient(circle at center, #fff, #4a148c, #1a0b2e);
-            
-            box-shadow: 
-                /* 外光暈 */
-                0 0 40px rgba(106, 27, 154, 0.4),
-                /* 內陰影定義球體形狀 */
-                inset 0 0 20px rgba(0, 0, 0, 0.8);
-            
-            animation: pulseGlow 5s infinite ease-in-out;
-            transition: transform 0.3s;
-            z-index: 2; /* 在底座之上 */
+            position: relative; z-index: 5;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 20%),
+                        radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.2), rgba(0, 0, 0, 0.6)),
+                        radial-gradient(circle at center, var(--crystal-inner), #000);
+            box-shadow: inset -10px -10px 30px rgba(0,0,0,0.8),
+                        inset 10px 10px 30px rgba(255,255,255,0.1),
+                        0 0 40px rgba(139, 92, 246, 0.3);
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow: hidden;
         }
-        .crystal-sphere:hover { transform: scale(1.05); }
 
-        /* 水晶球內部的「封印星雲」 */
+        /* 內部流動煙霧 */
         .crystal-sphere::before {
-            content: "";
-            position: absolute; top: 20%; left: 20%;
-            width: 60%; height: 60%;
-            border-radius: 50%;
-            background: radial-gradient(circle, #fff, #4a148c, #1a0b2e);
-            filter: blur(8px);
-            opacity: 0.6;
-            animation: cloudSwirl 10s infinite linear;
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--primary-gold), transparent, var(--crystal-inner), transparent);
+            opacity: 0.2; animation: swirl 15s infinite linear; filter: blur(20px);
         }
 
-        /* 水晶球底座 */
-        .crystal-base {
-            width: 120px; height: 90px;
-            background: linear-gradient(135deg, #222, #000);
-            border: 2px solid #333;
-            border-top: none;
-            border-radius: 0 0 12px 12px;
-            position: absolute; bottom: 0; left: 10px; /* 對齊球體 */
-            z-index: 1; /* 在球體之下 */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        /* 靈魂核心點 */
+        .crystal-sphere::after {
+            content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 4px; height: 4px; background: white; border-radius: 50%;
+            box-shadow: 0 0 15px 5px white; animation: pulse 2s infinite;
         }
 
-        /* 底座上的符號裝飾 (偽元素) */
-        .crystal-base::after {
-            content: "◈ ✦ ◈";
-            color: rgba(212, 175, 55, 0.3);
-            font-size: 1.1rem;
-            position: absolute; bottom: 15px; left: 50%;
-            transform: translateX(-50%);
-            letter-spacing: 10px;
+        /* --- 實體重力感底座 --- */
+        .crystal-base-v2 {
+            position: relative; width: 130px; height: 60px; margin-top: -20px; /* 讓球嵌進去 */
+            z-index: 4;
         }
 
-        /* 底座上方的提示文字 */
-        .crystal-base::before {
-            content: "點擊注入能量"; position: absolute; top: -25px; left: 50%;
-            transform: translateX(-50%); color: var(--primary-gold); font-size: 0.85rem;
-            white-space: nowrap; letter-spacing: 2px;
-            opacity: 0.7;
+        /* 底座頂層：承接球體的凹槽支架 */
+        .base-top {
+            width: 100%; height: 25px;
+            background: linear-gradient(to right, #1a1a1a, #4d3d1a, #b89b5e, #4d3d1a, #1a1a1a);
+            clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+            border-bottom: 2px solid rgba(0,0,0,0.5);
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 30px rgba(106, 27, 154, 0.3); }
-            50% { box-shadow: 0 0 60px rgba(212, 175, 55, 0.6); }
+        /* 球體與底座的接點陰影 (Ambient Occlusion) */
+        .contact-shadow {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 20px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, transparent 80%);
+            z-index: 6; pointer-events: none;
         }
 
-        @keyframes cloudSwirl {
-            0% { transform: rotate(0deg) scale(1); opacity: 0.4; }
-            50% { transform: rotate(180deg) scale(1.1); opacity: 0.6; }
-            100% { transform: rotate(360deg) scale(1); opacity: 0.4; }
+        /* 底座中段：縮腰裝飾 */
+        .base-mid {
+            width: 70%; height: 15px; margin: 0 auto;
+            background: linear-gradient(to right, #000, #333, #000);
+            border-left: 2px solid var(--dark-gold);
+            border-right: 2px solid var(--dark-gold);
         }
 
-        /* --- 2. 導引與呼吸 --- */
-        .breath-wrapper {
-            position: relative; width: 100px; height: 100px; margin: 15px auto;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .breath-circle {
-            position: absolute; width: 100%; height: 100%;
-            background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
-            border: 1px solid var(--primary-gold); border-radius: 50%;
-            animation: breathCycle 8s infinite ease-in-out;
-        }
-        .breath-text { position: relative; z-index: 2; color: var(--primary-gold); font-size: 0.75rem; font-weight: bold; }
-
-        @keyframes breathCycle {
-            0%, 100% { transform: scale(0.9); opacity: 0.3; }
-            50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 30px var(--primary-gold); }
+        /* 底座底層：寬闊支撐 */
+        .base-bottom {
+            width: 110%; height: 25px; margin-left: -5%;
+            background: linear-gradient(to bottom, var(--dark-gold), #111);
+            border-radius: 5px 5px 15px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            position: relative;
         }
 
-        /* --- 3. 主題與細節 --- */
+        /* 裝飾符號 */
+        .base-bottom::after {
+            content: "✧ ◈ ✧"; font-size: 0.7rem; color: rgba(255,255,255,0.3);
+            position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
+            letter-spacing: 5px;
+        }
+
+        @keyframes swirl { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(2); } }
+
+        /* --- 2. 導引與細節 (承襲前版本優點) --- */
         .ritual-header { color: var(--primary-gold); font-size: 1.1rem; font-weight: bold; margin: 15px 0 10px 0; border-left: 3px solid var(--primary-gold); padding-left: 10px; text-align: left;}
-        
         .question-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 8px; text-align: left; background: rgba(255,255,255,0.03);
@@ -148,64 +130,35 @@
         }
         .q-item { font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; color: #ccc; padding: 5px; }
         .q-item input { margin-right: 8px; accent-color: var(--primary-gold); }
+        .detail-panel { background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold); border-radius: 10px; padding: 15px; text-align: left; margin-bottom: 15px; }
+        .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 12px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 8px; outline: none; }
+        .form-input:focus { border-color: var(--primary-gold); }
+        #validate-msg { color: #ff4d4d; font-size: 0.8rem; display: block; height: 1.2rem; opacity: 1; transition: 0.3s; }
 
-        .detail-panel {
-            background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold);
-            border-radius: 10px; padding: 15px; text-align: left; margin-bottom: 15px;
-        }
-        .form-input {
-            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444;
-            color: white; padding: 12px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 8px;
-        }
-
-        #validate-msg { color: #ff4d4d; font-size: 0.8rem; display: block; height: 1.2rem; }
-
-        /* --- 4. 抽牌視覺 --- */
+        /* --- 3. 抽牌與結果 --- */
         .card-zone { height: 350px; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .tarot-card {
-            width: 150px; height: 260px; position: relative;
-            transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer;
-        }
-        .card-face {
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            border-radius: 12px; border: 2px solid var(--primary-gold); background: #111;
-        }
+        .tarot-card { width: 150px; height: 260px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 2px solid var(--primary-gold); background: #111; }
         .card-back { background: linear-gradient(135deg, #1a1a2e, #4a148c); display: flex; justify-content: center; align-items: center; }
         .card-back::after { content: "◈"; color: var(--primary-gold); font-size: 2.5rem; }
         .card-front { transform: rotateY(180deg); overflow: hidden; }
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
         .tarot-card.flipped { transform: rotateY(180deg) scale(1.3) translateZ(50px); }
 
-        /* --- 5. 結果顯示 RWD --- */
-        .result-row { 
-            display: flex; justify-content: center; align-items: flex-start;
-            gap: 12px; flex-wrap: wrap; margin: 20px auto; width: 100%;
-        }
-        .card-result { 
-            width: calc(33% - 10px); min-width: 100px; max-width: 140px;
-            text-align: center; font-size: 0.8rem; color: var(--primary-gold); 
-        }
-        .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; margin-bottom: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .result-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px auto; width: 100%; }
+        .card-result { width: calc(33% - 10px); min-width: 100px; max-width: 140px; text-align: center; font-size: 0.8rem; color: var(--primary-gold); }
+        .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        /* --- 按鈕 --- */
-        .btn {
-            background: transparent; border: 1.5px solid var(--primary-gold);
-            color: var(--primary-gold); padding: 12px 30px; border-radius: 50px;
-            cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px;
-        }
-        .btn:disabled { border-color: #444; color: #666; opacity: 0.5; }
-        .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: var(--glow-gold); }
+        .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px; }
+        .btn:disabled { border-color: #444; color: #666; opacity: 0.5; cursor: not-allowed; }
+        .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: 0 0 20px var(--primary-gold); }
         .btn-main { background: var(--primary-gold); color: #000; font-weight: bold; }
 
-        #toast {
-            visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--primary-gold); color: #000; padding: 10px 30px; border-radius: 8px; font-weight: bold; z-index: 999;
-        }
+        #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: #000; padding: 10px 30px; border-radius: 8px; font-weight: bold; z-index: 999; }
 
         @media (max-width: 600px) {
             .question-grid { grid-template-columns: repeat(2, 1fr); }
-            .tarot-card.flipped { transform: rotateY(180deg) scale(1.15) translateZ(30px); }
+            .tarot-card.flipped { transform: rotateY(180deg) scale(1.1) translateZ(30px); }
             .card-result { width: calc(50% - 10px); }
             .btn { width: 100%; }
         }
@@ -215,12 +168,19 @@
 
     <div class="container">
         <div id="screen-ritual" class="screen active ritual-landing">
-            <h2 style="color: var(--primary-gold); letter-spacing: 3px; margin-bottom: 50px;">靜心，連結場域</h2>
+            <h2 style="color: var(--primary-gold); letter-spacing: 5px; margin-bottom: 40px; text-shadow: 0 0 10px rgba(212,175,55,0.5);">觸碰水晶，連結潛意識</h2>
             
-            <div class="crystal-ball-container">
+            <div class="crystal-set">
                 <div class="crystal-sphere" onclick="startRitual()"></div>
-                <div class="crystal-base"></div>
+                
+                <div class="crystal-base-v2">
+                    <div class="contact-shadow"></div>
+                    <div class="base-top"></div>
+                    <div class="base-mid"></div>
+                    <div class="base-bottom"></div>
+                </div>
             </div>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 30px; letter-spacing: 2px;">能量已在虛空交會...</p>
         </div>
 
         <div id="screen-intro" class="screen">
@@ -230,10 +190,6 @@
             <div class="ritual-header">【提供能量細節】</div>
             <div id="detail-area" class="detail-panel"></div>
             <span id="validate-msg">請至少填寫一項細節，以開啟命運之門</span>
-            <div class="breath-wrapper">
-                <div class="breath-circle"></div>
-                <div class="breath-text" id="b-text">吸氣...</div>
-            </div>
             <button class="btn btn-main" id="start-btn" onclick="goToDraw()" disabled>開啟命運之門</button>
         </div>
 
@@ -246,9 +202,9 @@
                 </div>
             </div>
             <div style="display:flex; justify-content:center; gap:10px;">
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;"></div>
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;"></div>
-                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333; transition: 0.5s;"></div>
+                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
+                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
+                <div class="p-dot" style="width:10px; height:10px; border-radius:50%; background:#333;"></div>
             </div>
         </div>
 
@@ -261,7 +217,6 @@
                 <label><input type="radio" name="mode" value="think"> 🧠 深度思考</label>
             </div>
             <button class="btn btn-main" onclick="copyResult()">步驟 1：複製分析指令</button>
-            <p style="font-size: 0.8rem; opacity: 0.7; margin: 15px 0; color: var(--primary-gold);">✦ 點擊後前往分析網頁貼上即可 ✦</p>
             <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="btn">步驟 2：前往分析網頁</a>
         </div>
     </div>
@@ -274,7 +229,12 @@
             "復合可能": ["分手原因與經過時間", "目前的聯絡狀況 (如：斷聯、點讚)", "對方目前的感情狀態"],
             "職涯發展": ["目前職業狀態 (如：待業、在職)", "心儀的目標 (如：某公司、升遷)", "主要的壓力來源"],
             "正緣桃花": ["過去的感情痛點", "理想伴侶的特質", "目前的社交活躍度"],
-            "其它問題": ["請詳述您的問題背景", "相關的人事物細節", "您最想知道的結果"]
+            "財運投資": ["投資類別 (如：股票、副業)", "對風險的承受度", "期望獲利的時間點"],
+            "職場人際": ["對方的角色 (如：主管、前任)", "最近一次衝突點", "理想的關係發展"],
+            "身心健康": ["目前情緒狀態", "特定壓力來源", "近期能量品質"],
+            "自我探索": ["目前的人生困惑", "靈魂課題", "想尋找的力量"],
+            "二選一決策": ["路徑 A 的預期", "路徑 B 的預期", "核心猶豫點"],
+            "其它問題": ["問題背景細節", "想知道的結果"]
         };
 
         const tarotNames = {
@@ -289,7 +249,6 @@
         let picking = false;
         let selectedTheme = "感情發展";
 
-        // 儀式開始
         function startRitual() {
             document.getElementById('screen-ritual').classList.remove('active');
             document.getElementById('screen-intro').classList.add('active');
@@ -299,10 +258,10 @@
         function initThemes() {
             const container = document.getElementById('theme-selector');
             if (container.innerHTML !== "") return;
-            Object.keys(themes).forEach((t, index) => {
+            Object.keys(themes).forEach((t, i) => {
                 const label = document.createElement('label');
                 label.className = 'q-item';
-                label.innerHTML = `<input type="radio" name="theme" value="${t}" ${index===0?'checked':''}> ${t}`;
+                label.innerHTML = `<input type="radio" name="theme" value="${t}" ${i===0?'checked':''}> ${t}`;
                 label.onclick = () => switchTheme(t);
                 container.appendChild(label);
             });
@@ -312,8 +271,8 @@
         function switchTheme(theme) {
             selectedTheme = theme;
             const area = document.getElementById('detail-area');
-            area.innerHTML = `<span class="detail-title">【${theme}】導引觀想：</span>`;
-            themes[theme].forEach((q) => {
+            area.innerHTML = `<span style="font-size:0.8rem; color:var(--primary-gold); display:block; margin-bottom:10px;">✦ ${theme} 能量導引 ✦</span>`;
+            themes[theme].forEach(q => {
                 area.innerHTML += `<input type="text" class="form-input detail-input" placeholder="${q}" oninput="validateForm()">`;
             });
             validateForm();
@@ -326,11 +285,6 @@
             document.getElementById('validate-msg').style.opacity = hasValue ? '0' : '1';
         }
 
-        setInterval(() => {
-            const bt = document.getElementById('b-text');
-            if (bt) bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
-        }, 4000);
-
         function goToDraw() {
             document.getElementById('screen-intro').classList.remove('active');
             document.getElementById('screen-draw').classList.add('active');
@@ -341,16 +295,13 @@
             picking = true;
             let rid;
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
-            
             const img = document.getElementById('front-img');
             img.src = `tarot_${rid}.jpg`;
             img.onerror = () => { img.src = `https://via.placeholder.com/150x260/222/d4af37?text=${tarotNames[rid]}`; };
             document.getElementById('tarot-card').classList.add('flipped');
-            
             setTimeout(() => {
                 pickedIds.push(rid);
-                const dots = document.querySelectorAll('.p-dot');
-                dots[pickedIds.length - 1].style.background = 'var(--primary-gold)';
+                document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
                 setTimeout(() => {
                     document.getElementById('tarot-card').classList.remove('flipped');
                     if (pickedIds.length === 3) setTimeout(showFinal, 800);
@@ -373,13 +324,9 @@
             const inputs = document.querySelectorAll('.detail-input');
             const mode = document.querySelector('input[name="mode"]:checked').value;
             let details = [];
-            inputs.forEach((input, index) => {
-                if(input.value.trim() !== '') details.push(`${themes[selectedTheme][index]}：${input.value.trim()}`);
-            });
-
-            let prompt = `【塔羅占卜委託書】\n核心主題：${selectedTheme}\n細節背景：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
-            prompt += (mode === 'think') ? `請啟動【深度思考模式】進行多維度分析並給予具體建議。` : `請根據以上背景提供專業解析。`;
-
+            inputs.forEach((input, i) => { if(input.value.trim() !== '') details.push(`${themes[selectedTheme][i]}：${input.value.trim()}`); });
+            let prompt = `【塔羅占卜委託】\n核心主題：${selectedTheme}\n細節背景：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
+            prompt += (mode === 'think') ? `啟動【深度思考】進行多維度分析並給予建議。` : `請提供專業解析建議。`;
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast');
                 t.style.visibility = 'visible';
