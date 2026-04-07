@@ -28,7 +28,7 @@
             padding: 20px 15px 100px 15px; margin: auto; position: relative; z-index: 10; 
         }
 
-        /* --- 1. 開場儀式感 (維持原視覺) --- */
+        /* --- 1. 開場儀式感 --- */
         #screen-ritual-opening {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #1a0b2e 0%, #05050a 100%);
@@ -59,37 +59,20 @@
         .screen.active { display: block; }
         @keyframes screenFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 3. 修正後的選單佈局 --- */
         .ritual-header { color: var(--primary-gold); font-size: 1.1rem; font-weight: bold; margin: 25px 0 10px 0; border-left: 4px solid var(--primary-gold); padding-left: 12px; text-align: left; }
         
-        /* 大分類按鈕 */
-        .category-grid { 
-            display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-start; margin-bottom: 20px;
-        }
-        .cat-btn {
-            padding: 10px 18px; border: 1px solid rgba(212,175,55,0.3); border-radius: 30px;
-            background: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
-        }
-        .cat-btn.active {
-            background: var(--primary-gold); color: #000; border-color: var(--primary-gold); font-weight: bold; box-shadow: 0 0 15px rgba(212,175,55,0.4);
-        }
+        .category-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-start; margin-bottom: 20px; }
+        .cat-btn { padding: 10px 18px; border: 1px solid rgba(212,175,55,0.3); border-radius: 30px; background: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; font-size: 0.9rem; transition: 0.3s; }
+        .cat-btn.active { background: var(--primary-gold); color: #000; border-color: var(--primary-gold); font-weight: bold; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
 
-        /* 小分類清單 */
-        .sub-theme-list {
-            text-align: left; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(212,175,55,0.1);
-            overflow: hidden; margin-bottom: 20px;
-        }
-        .sub-item {
-            padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-            display: flex; align-items: flex-start; transition: 0.2s;
-        }
+        .sub-theme-list { text-align: left; background: rgba(255,255,255,0.03); border-radius: 15px; border: 1px solid rgba(212,175,55,0.1); overflow: hidden; margin-bottom: 20px; }
+        .sub-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; align-items: flex-start; transition: 0.2s; }
         .sub-item:last-child { border-bottom: none; }
         .sub-item:hover { background: rgba(212,175,55,0.05); }
         .sub-item.selected { background: rgba(212,175,55,0.15); border-left: 5px solid var(--primary-gold); }
         .sub-item input { margin-top: 4px; margin-right: 12px; accent-color: var(--primary-gold); transform: scale(1.2); }
         .sub-text { font-size: 0.95rem; line-height: 1.5; color: #eee; }
 
-        /* 補充說明區 */
         .detail-panel { background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold); border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 20px; }
         .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 15px; border-radius: 8px; font-size: 1rem; outline: none; }
         
@@ -105,11 +88,17 @@
         .card-front img { width: 100%; height: 100%; object-fit: cover; }
         .tarot-card.flipped { transform: rotateY(180deg) scale(1.2); }
 
+        /* 反位旋轉效果 */
+        .reversed-img { transform: rotate(180deg); }
+
         .result-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px auto; }
-        .card-result { width: calc(33% - 10px); min-width: 100px; text-align: center; color: var(--primary-gold); }
+        .card-result { width: calc(33% - 10px); min-width: 100px; text-align: center; color: var(--primary-gold); font-weight: bold; font-size: 0.85rem; }
         .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; margin-bottom: 8px; }
 
-        .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1.1rem; font-weight: bold; text-decoration: none; display: inline-block; }
+        /* 步驟盒子 */
+        .step-box { margin: 15px auto; max-width: 400px; }
+        .step-hint { display: block; font-size: 0.9rem; color: #888; margin-top: 8px; letter-spacing: 1px; }
+        .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 15px 40px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1.1rem; font-weight: bold; text-decoration: none; display: inline-block; width: 100%; }
         .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; opacity: 0.5; }
         .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: var(--glow); }
         .btn-main { background: var(--primary-gold); color: #000; border: none; }
@@ -119,7 +108,6 @@
         @media (max-width: 600px) {
             .cat-btn { padding: 8px 15px; font-size: 0.85rem; }
             .sub-text { font-size: 0.9rem; }
-            .btn { width: 100%; }
             .card-result { width: calc(50% - 10px); }
         }
     </style>
@@ -143,21 +131,13 @@
 
     <div class="container">
         <div id="screen-intro" class="screen">
-            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「外面的世界很吵吧？讓心靜下來，與內在連結。」</p>
-            
+            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「辛苦了。讓心靜下來，與內在連結。」</p>
             <div class="ritual-header">【第一步：選擇能量領域】</div>
             <div class="category-grid" id="category-selector"></div>
-
             <div class="ritual-header">【第二步：點選靈魂提問】</div>
-            <div class="sub-theme-list" id="sub-theme-list">
-                <p style="padding: 20px; color: #666; font-style: italic;">請先選擇上方領域...</p>
-            </div>
-
+            <div class="sub-theme-list" id="sub-theme-list"><p style="padding: 20px; color: #666; font-style: italic;">請先選擇上方領域...</p></div>
             <div class="ritual-header">【第三步：補充背景 (選填)】</div>
-            <div class="detail-panel">
-                <textarea class="form-input" id="custom-context" rows="2" placeholder="您可以輸入具體人名、日期或目前的心情，能讓解析更精準..."></textarea>
-            </div>
-
+            <div class="detail-panel"><textarea class="form-input" id="custom-context" rows="2" placeholder="您可以輸入具體內容讓解析更精準..."></textarea></div>
             <span id="validate-msg">請點選上方的一個提問，以開啟命運之門</span>
             <button class="btn btn-main" id="start-btn" onclick="goToDraw()" disabled>開啟命運之門</button>
         </div>
@@ -178,94 +158,31 @@
         </div>
 
         <div id="screen-result" class="screen">
-            <h2 style="color: var(--primary-gold);">命運的倒影</h2>
+            <h2 style="color: var(--primary-gold); margin-bottom: 30px;">命運的倒影</h2>
             <div class="result-row" id="result-row"></div>
-            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(212,175,55,0.1);">
-                <label style="cursor:pointer;"><input type="radio" name="mode" value="normal" checked> 一般解析</label>
-                &nbsp;&nbsp;&nbsp;
-                <label style="cursor:pointer;"><input type="radio" name="mode" value="think"> 🧠 深度思考</label>
+            
+            <div class="step-box">
+                <button class="btn btn-main" onclick="copyResult()">點選步驟 1</button>
+                <span class="step-hint">複製占卜能量指令</span>
             </div>
-            <button class="btn btn-main" onclick="copyResult()">步驟 1：複製占卜指令</button>
-            <a href="https://gemini.google.com/" target="_blank" class="btn">步驟 2：前往分析網頁</a>
+            <div class="step-box">
+                <a href="https://gemini.google.com/" target="_blank" class="btn">點選步驟 2</a>
+                <span class="step-hint">在 gemini 的對話貼上它</span>
+            </div>
             <br>
-            <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4; margin-top:20px;" onclick="location.reload()">重新調頻</button>
+            <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4; margin-top:10px; width: auto;" onclick="location.reload()">重新調頻</button>
         </div>
     </div>
 
-    <div id="toast">已複製指令！</div>
+    <div id="toast">指令已成功注入靈魂！</div>
 
     <script>
         const themes = {
-            "感情與關係": [
-                "能量狀態：我們目前互動的能量流向與心理動力處於什麼樣的階段？",
-                "對方感受：對方內心對我的定位，以及他對這段關係的真實想法為何？",
-                "核心問題：阻礙我們關係深入發展的最關鍵瓶頸（或潛在衝突點）是什麼？",
-                "聯絡發展：若我採取主動聯絡，雙方的互動頻率與未來走向可能產生什麼質變？",
-                "關係功課：這段關係目前正引領我面對哪些個人成長的課題或靈魂契機？",
-                "優化關係：為了讓這段關係邁向更健康的循環，我現在最需要調整的行為或觀點是什麼？",
-                "心理盲點：在這段感情中，有哪些我一直選擇忽視或尚未察覺的真實狀況？",
-                "關係角色：在彼此的生命藍圖中，我們各自正扮演著什麼樣的心理投射角色？",
-                "執著根源：分手後這份難以釋懷的執念，背後揭示了我內在哪些尚未滿足的需求？",
-                "下段準備：在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？",
-                "模式根源：我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？",
-                "溝通盲點：在溝通失準的背後，我們各自存在著什麼樣的認知偏見或防衛機制？",
-                "未來走向：基於目前的互動基調，這段關係在可預見的未來最可能的演變路徑為何？",
-                "家庭能量：對方家人的態度背後隱藏著什麼樣的家族動力？我該如何保持自我中心而不受干擾？",
-                "同質吸引：我反覆吸引到類似特質的人，這反映了我內在哪些尚未整合的心理陰影或特質？"
-            ],
-            "工作與職涯": [
-                "離職轉型：離開現有職位對我的生命路徑會產生什麼樣的結構性影響？",
-                "優勢定位：結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖是什麼？",
-                "現況啟示：近期職場上的挑戰，是為了訓練我具備哪種更高階的職涯能力？",
-                "轉職注意：針對目前的轉職計畫，有哪些隱藏的風險或關鍵機會是我需要留意的？",
-                "主管關係：我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？",
-                "創業評估：在創業這條路上，我的優勢動能與待補足的專業缺口分別是什麼？",
-                "成就感缺失：排除外在回報，我在工作中感到枯竭的核心心理因素為何？",
-                "機會對比：面前這兩個職涯選項，分別代表了哪兩種不同的生命擴張方向？",
-                "副業潛力：我目前的副業模型在市場競爭力與可持續性發展上的潛力如何？",
-                "阻礙覺察：排除努力程度，是什麼樣的潛意識限制或思維框架讓我感覺原地踏步？",
-                "自由工作：轉向自由職業前，我應如何建立足夠的心理韌性與系統化支持？",
-                "斜槓切入點：根據我現有的資源組合，哪個方向是目前阻力最小且回收最高的切入點？"
-            ],
-            "金錢與豐盛": [
-                "金錢能量：我目前的財務流動狀態與我的內在豐盛感是否達成一致？",
-                "匱乏根源：我對金錢的不安全感，本質上是在恐懼什麼樣的人生狀態？",
-                "原生家庭：父母的金錢觀如何形塑了我現在對財富的處理方式與限制？",
-                "財務盲點：在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？",
-                "錢永遠不夠：背後隱藏著什麼樣的自我匱乏信念？",
-                "調頻豐盛：我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？",
-                "消費對映：我的金錢支出模式，反映了我內在哪些情感補償或心理防禦？",
-                "收入提升：為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？",
-                "配得感：我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？",
-                "財富課題：在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？",
-                "半年預測：若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"
-            ],
-            "人際關係": [
-                "關係演變：與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？",
-                "過度付出：這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？",
-                "界線建立：我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？",
-                "社交能量：在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？",
-                "父母療癒：我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？",
-                "群體疏離：是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？",
-                "推開善意：當他人展現善意時我本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？",
-                "長期關係：難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？",
-                "關係天賦：我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？",
-                "收回付出：為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"
-            ],
-            "自我探索與靈性": [
-                "我最近一直覺得很迷惘，我的內在到底在渴望什麼？",
-                "我覺得人生卡住了，這個「卡住」的背後是什麼能量？",
-                "人生卡住了，那個突破點是什麼？",
-                "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？",
-                "關於人生方向，此刻的我最需要看見什麼？",
-                "我一直感覺有什麼東西在召喚我，那是什麼？",
-                "在這個人生階段，我的核心課題是什麼？",
-                "「我不夠好」這個念頭一直跟著我，它的根源是什麼？",
-                "我的靈魂最想讓我知道的一件事是什麼？",
-                "我的高我想對我說的一句話？",
-                "從高我的角度來看，我的天賦是什麼？",
-                "我的指導靈個性？祂擅長用什麼方式引導我？"
-            ]
+            "感情與關係": ["能量狀態： 我們目前互動的能量流向與心理動力處於什麼樣的階段？", "對方感受： 對方內心對我的定位，以及他對這段關係的真實想法為何？", "核心問題： 阻礙我們關係深入發展的最關鍵瓶頸（或潛在衝突點）是什麼？", "聯絡發展： 若我採取主動聯絡，雙方的互動頻率與未來走向可能產生什麼質變？", "關係功課： 這段關係目前正引領我面對哪些個人成長的課題或靈魂契機？", "優化關係： 為了讓這段關係邁向更健康的循環，我現在最需要調整的行為或觀點是什麼？", "心理盲點： 在這段感情中，有哪些我一直選擇忽視或尚未察覺的真實狀況？", "關係角色： 在彼此的生命藍圖中，我們各自正扮演著什麼樣的心理投射角色？", "執著根源： 分手後這份難以釋懷的執念，背後揭示了我內在哪些尚未滿足的需求？", "下段準備： 在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？", "模式根源： 我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？", "溝通盲點： 在溝通失準的背後，我們各自存在著什麼樣的認知偏見或防衛機制？", "未來走向： 基於目前的互動基調，這段關係在可預見的未來最可能的演變路徑為何？", "家庭能量： 對方家人的態度背後隱藏著什麼樣的家族動力？我該如何保持自我中心而不受干擾？", "同質吸引： 我反覆吸引到類似特質的人，這反映了我內在哪些尚未整合的心理陰影或特質？"],
+            "工作與職涯": ["離職轉型： 離開現有職位對我的生命路徑會產生什麼樣的結構性影響？", "優勢定位： 結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖是什麼？", "現況啟啟： 近期職場上的挑戰，是為了訓練我具備哪種更高階的職涯能力？", "轉職注意： 針對目前的轉職計畫，有哪些隱藏的風險或關鍵機會是我需要留意的？", "主管關係： 我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？", "創業評估： 在創業這條路上，我的優勢動能與待補足的專業缺口分別是什麼？", "成就感缺失： 排除外在回報，我在工作中感到枯竭的核心心理因素為何？", "機會對比： 面前這兩個職涯選項，分別代表了哪兩種不同的生命擴張方向？", "副業潛力： 我目前的副業模型在市場競爭力與可持續性發展上的潛力如何？", "阻礙覺察： 排除努力程度，是什麼樣的潛意識限制或思維框架讓我感覺原地踏步？", "自由工作： 轉向自由職業前，我應如何建立足夠的心理韌性與系統化支持？", "斜槓切入點： 根據我現有的資源組合，哪個方向是目前阻力最小且回收最高的切入點？"],
+            "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在恐懼什麼樣的人生狀態？", "原生家庭： 父母的金錢觀如何形塑了我現在對財富的處理方式與限制？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "不夠用的信念： 「錢永遠不夠」這個念頭背後，隱藏著什麼樣的自我匱乏信念？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？", "消費對映： 我的金錢支出模式，反映了我內在哪些情感補償或心理防禦？", "收入提升： 為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？", "配得感： 我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？", "財富課題： 在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？", "半年預測： 若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"],
+            "人際關係": ["關係演變： 與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？", "過度付出： 這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？", "界線建立： 我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？", "社交能量： 在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？", "父母療癒： 我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？", "群體格格不入： 這種疏離感是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？", "推開善意： 當他人展現善意時我本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？", "長期關係： 難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？", "關係天賦： 我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？", "收回付出： 為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"],
+            "自我探索與靈性成長": ["我最近一直覺得很迷惘，我的內在到底在渴望什麼？", "我覺得人生卡住了，這個「卡住」的背後是什麼能量？", "人生卡住了，那個突破點是什麼？", "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？", "關於人生方向，此刻的我最需要看見什麼？", "我一直感覺有什麼東西在召喚我，那是什麼？", "在這個人生階段，我的核心課題是什麼？", "「我不夠好」這個念頭一直跟著我，它的根源是什麼？", "我的靈魂最想讓我知道的一件事是什麼？", "我的高我想對我說的一句話？", "從高我的角度來看，我的天賦是什麼？", "我的指導靈個性？祂擅長用什麼方式引導我？"]
         };
 
         const tarotNames = {
@@ -276,12 +193,12 @@
             "64": "64-錢幣王牌", "65": "65-錢幣二", "66": "66-錢幣三", "67": "67-錢幣四", "68": "68-錢幣五", "69": "69-錢幣六", "70": "70-錢幣七", "71": "71-錢幣八", "72": "72-錢幣九", "73": "73-錢幣十", "74": "74-錢幣侍者", "75": "75-錢幣騎士", "76": "76-錢幣王后", "77": "77-錢幣國王"
         };
 
-        let pickedIds = [];
+        // 結構更新：存儲 ID 與 正逆位狀態
+        let pickedCards = [];
         let picking = false;
         let selectedCategory = "";
         let selectedQuestion = "";
 
-        // 開場
         function start转场儀式() {
             const op = document.getElementById('screen-ritual-opening');
             op.style.filter = "blur(20px) brightness(2)";
@@ -293,7 +210,6 @@
             }, 1200);
         }
 
-        // 初始化大分類
         function initCategories() {
             const container = document.getElementById('category-selector');
             container.innerHTML = "";
@@ -306,26 +222,18 @@
             });
         }
 
-        // 點選大分類
         function selectCategory(cat, btnElement) {
             selectedCategory = cat;
-            selectedQuestion = ""; // 切換大分類時清除已選小分類
+            selectedQuestion = "";
             validateForm();
-
-            // 更新按鈕樣式
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
-
-            // 渲染小分類提問
             const subList = document.getElementById('sub-theme-list');
             subList.innerHTML = "";
             themes[cat].forEach(q => {
                 const item = document.createElement('div');
                 item.className = "sub-item";
-                item.innerHTML = `
-                    <input type="radio" name="sub-q">
-                    <div class="sub-text">${q}</div>
-                `;
+                item.innerHTML = `<input type="radio" name="sub-q"><div class="sub-text">${q}</div>`;
                 item.onclick = () => {
                     document.querySelectorAll('.sub-item').forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
@@ -340,13 +248,8 @@
         function validateForm() {
             const btn = document.getElementById('start-btn');
             const msg = document.getElementById('validate-msg');
-            if (selectedQuestion !== "") {
-                btn.disabled = false;
-                msg.style.opacity = "0";
-            } else {
-                btn.disabled = true;
-                msg.style.opacity = "1";
-            }
+            if (selectedQuestion !== "") { btn.disabled = false; msg.style.opacity = "0"; } 
+            else { btn.disabled = true; msg.style.opacity = "1"; }
         }
 
         function goToDraw() {
@@ -356,26 +259,33 @@
         }
 
         function doPick() {
-            if (picking || pickedIds.length >= 3) return;
+            if (picking || pickedCards.length >= 3) return;
             picking = true;
             let rid;
-            do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
+            do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedCards.some(c => c.id === rid));
             
+            // 隨機決定正逆位 (50%)
+            const isReversed = Math.random() > 0.5;
+
             const img = document.getElementById('front-img');
             img.src = `tarot_${rid}.jpg`;
             img.onerror = () => { img.src = `https://via.placeholder.com/150x260/222/d4af37?text=${tarotNames[rid]}`; };
             
+            // 如果是逆位，旋轉圖片
+            if (isReversed) img.classList.add('reversed-img');
+            else img.classList.remove('reversed-img');
+
             const card = document.getElementById('tarot-card');
             card.classList.add('flipped');
             
             setTimeout(() => {
-                pickedIds.push(rid);
-                document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
+                pickedCards.push({ id: rid, isReversed: isReversed });
+                document.querySelectorAll('.p-dot')[pickedCards.length - 1].style.background = 'var(--primary-gold)';
                 setTimeout(() => {
                     card.classList.remove('flipped');
-                    if (pickedIds.length === 3) setTimeout(showFinal, 800);
+                    if (pickedCards.length === 3) setTimeout(showFinal, 800);
                     else {
-                        document.getElementById('draw-label').innerText = `已連結 ${pickedIds.length} 張能量，續抽下一張...`;
+                        document.getElementById('draw-label').innerText = `已連結 ${pickedCards.length} 張能量，續抽下一張...`;
                         picking = false;
                     }
                 }, 1500);
@@ -387,25 +297,31 @@
             document.getElementById('screen-draw').classList.remove('active');
             document.getElementById('screen-result').classList.add('active');
             const row = document.getElementById('result-row');
-            pickedIds.forEach(id => {
-                row.innerHTML += `<div class="card-result"><img src="tarot_${id}.jpg" onerror="this.src='https://via.placeholder.com/100x160/222/d4af37?text=Card'"><p>${tarotNames[id]}</p></div>`;
+            pickedCards.forEach(cardData => {
+                const orientationText = cardData.isReversed ? "[反位]" : "[正位]";
+                const reversedClass = cardData.isReversed ? "reversed-img" : "";
+                row.innerHTML += `
+                    <div class="card-result">
+                        <img src="tarot_${cardData.id}.jpg" class="${reversedClass}" onerror="this.src='https://via.placeholder.com/100x160/222/d4af37?text=Card'">
+                        <p>${orientationText}${tarotNames[cardData.id]}</p>
+                    </div>`;
             });
         }
 
         function copyResult() {
-            const cards = pickedIds.map(id => tarotNames[id]).join('、');
+            const cardStrings = pickedCards.map(c => {
+                const prefix = c.isReversed ? "[反位]" : "[正位]";
+                return prefix + tarotNames[c.id];
+            }).join('、');
+            
             const context = document.getElementById('custom-context').value.trim();
-            const mode = document.querySelector('input[name="mode"]:checked').value;
 
             let prompt = `【星辰之眼占卜委託書】\n核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n`;
             if (context) prompt += `補充細節背景：${context}\n`;
-            prompt += `\n【抽出牌組】：${cards}\n\n`;
+            prompt += `\n【抽出牌組】：${cardStrings}\n\n`;
             
-            if (mode === 'think') {
-                prompt += `啟動【深度思考/多維解構模式】。請結合上述詳細提問，運用塔羅符號學、榮格心理學與目前的生命能量流向進行深度解析，並給予極具策略性的行動建議。`;
-            } else {
-                prompt += `請根據以上提問提供專業且溫暖的塔羅解析。`;
-            }
+            // 核心功能：啟動深度思考/多維解構模式
+            prompt += `啟動【深度思考/多維解構模式】。請結合上述詳細提問、牌組的正逆位狀態，運用塔羅符號學、榮格心理學與目前的生命能量流向進行深度解析，並給予極具策略性的行動建議。`;
 
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast');
