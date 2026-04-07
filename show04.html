@@ -25,7 +25,7 @@
 
         .container { width: 100%; max-width: 800px; text-align: center; padding: 15px; margin: auto; position: relative; z-index: 10; }
 
-        /* --- 1. 高度優化：開場儀式感 (參考附圖) --- */
+        /* --- 1. 開場儀式感：心形星雲與懸浮牌陣 --- */
         #screen-ritual-opening {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #1a0b2e 0%, #05050a 100%);
@@ -33,82 +33,61 @@
             transition: opacity 1.5s ease, filter 1.5s ease;
         }
 
-        /* 能量心形星雲 */
         .energy-heart {
             position: absolute; width: 300px; height: 300px;
-            background: var(--energy-pink);
-            filter: blur(80px); opacity: 0.4;
-            border-radius: 50%;
-            animation: heartPulse 4s infinite ease-in-out;
-            z-index: 1; pointer-events: none;
+            background: var(--energy-pink); filter: blur(80px); opacity: 0.4;
+            border-radius: 50%; animation: heartPulse 4s infinite ease-in-out; z-index: 1; pointer-events: none;
         }
         .energy-heart::after {
             content: ""; position: absolute; width: 100%; height: 100%;
-            background: var(--accent-purple); filter: blur(40px);
-            top: -20px; left: 20px; border-radius: 50%;
+            background: var(--accent-purple); filter: blur(40px); top: -20px; left: 20px; border-radius: 50%;
         }
-
         @keyframes heartPulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.4); opacity: 0.6; } }
 
-        /* 懸浮牌陣 */
         .floating-cards-ritual {
             position: relative; width: 300px; height: 200px;
             display: flex; justify-content: center; align-items: center;
-            transform-style: preserve-3d;
-            animation: rotateScene 20s infinite linear;
+            transform-style: preserve-3d; animation: rotateScene 20s infinite linear;
             z-index: 5; cursor: pointer;
         }
         .mini-card {
             position: absolute; width: 80px; height: 130px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--primary-gold);
-            border-radius: 5px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(212,175,55,0.3);
-            display: flex; justify-content: center; align-items: center;
-            backface-visibility: hidden;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--primary-gold);
+            border-radius: 5px; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(212,175,55,0.3);
+            display: flex; justify-content: center; align-items: center; backface-visibility: hidden;
         }
         .mini-card::after { content: "◈"; color: var(--primary-gold); font-size: 1.5rem; opacity: 0.5; }
-
         .c1 { transform: rotateY(0deg) translateZ(120px); }
         .c2 { transform: rotateY(120deg) translateZ(120px); }
         .c3 { transform: rotateY(240deg) translateZ(120px); }
-
         @keyframes rotateScene { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
-        /* 儀式桌面 */
-        .ritual-table {
-            position: absolute; bottom: 0; width: 100%; height: 25vh;
-            background: linear-gradient(to top, #1a0510, transparent);
-            z-index: 2;
-        }
-        
-        /* 燭火感 */
-        .candles {
-            position: absolute; bottom: 10vh; right: 10%;
-            width: 60px; height: 100px; z-index: 3;
-        }
-        .candle-flame {
-            width: 10px; height: 15px; background: #ffca28;
-            border-radius: 50% 50% 20% 20%;
-            filter: blur(2px); box-shadow: 0 0 15px #ff8f00;
-            animation: flicker 0.1s infinite alternate;
-        }
+        .ritual-table { position: absolute; bottom: 0; width: 100%; height: 25vh; background: linear-gradient(to top, #1a0510, transparent); z-index: 2; }
+        .candles { position: absolute; bottom: 10vh; right: 10%; width: 60px; height: 100px; z-index: 3; }
+        .candle-flame { width: 10px; height: 15px; background: #ffca28; border-radius: 50% 50% 20% 20%; filter: blur(2px); box-shadow: 0 0 15px #ff8f00; animation: flicker 0.1s infinite alternate; }
         @keyframes flicker { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1) translateX(1px); opacity: 1; } }
 
-        /* --- 2. 原本結構：功能畫面 (初始隱藏) --- */
+        /* --- 2. 應用主結構 --- */
         .screen { display: none; width: 100%; animation: screenFade 0.8s forwards; }
         .screen.active { display: block; }
         @keyframes screenFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .ritual-header { color: var(--primary-gold); font-size: 1.1rem; font-weight: bold; margin: 15px 0 10px 0; border-left: 3px solid var(--primary-gold); padding-left: 10px; text-align: left;}
-        .question-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; text-align: left; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(212,175,55,0.1); }
-        .q-item { font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; color: #ccc; padding: 5px; }
+        
+        .question-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 8px; text-align: left; background: rgba(255,255,255,0.03); 
+            padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(212,175,55,0.1); 
+        }
+        .q-item { font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; color: #ccc; padding: 5px; transition: 0.3s; }
         .q-item input { margin-right: 8px; accent-color: var(--primary-gold); }
+
         .detail-panel { background: rgba(212, 175, 55, 0.05); border: 1px dashed var(--primary-gold); border-radius: 10px; padding: 15px; text-align: left; margin-bottom: 15px; }
         .form-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; padding: 12px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 8px; outline: none; }
         
-        /* 抽牌與結果保持不變 */
+        #validate-msg { color: #ff4d4d; font-size: 0.8rem; margin-bottom: 10px; display: block; height: 1.2rem; opacity: 1; }
+
+        /* 抽牌區 */
         .card-zone { height: 350px; display: flex; justify-content: center; align-items: center; }
         .tarot-card { width: 150px; height: 260px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 2px solid var(--primary-gold); background: #111; }
@@ -122,8 +101,8 @@
         .card-result { width: calc(33% - 10px); min-width: 100px; text-align: center; font-size: 0.8rem; color: var(--primary-gold); }
         .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px; }
-        .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; }
+        .btn { background: transparent; border: 1.5px solid var(--primary-gold); color: var(--primary-gold); padding: 12px 30px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-size: 1rem; margin: 5px; text-decoration: none; display: inline-block;}
+        .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; opacity: 0.5; }
         .btn:not(:disabled):hover { background: var(--primary-gold); color: #000; box-shadow: var(--glow); }
         .btn-main { background: var(--primary-gold); color: #000; font-weight: bold; }
 
@@ -158,12 +137,14 @@
 
     <div class="container">
         <div id="screen-intro" class="screen">
-            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「外面的世界很吵吧？讓心靜下來，專注於當下。」</p>
+            <p style="text-align: left; opacity: 0.8; font-size: 0.9rem;">「辛苦了。讓心靜下來，與你的內在連結。」</p>
             <div class="ritual-header">【選擇占卜主題】</div>
             <div class="question-grid" id="theme-selector"></div>
+
             <div class="ritual-header">【提供能量細節】</div>
             <div id="detail-area" class="detail-panel"></div>
-            <span id="validate-msg" style="color: #ff4d4d; font-size: 0.8rem; display: block; margin-bottom: 10px; opacity: 1;">請至少填寫一項細節</span>
+
+            <span id="validate-msg">請至少填寫一項細節，以開啟命運之門</span>
             <button class="btn btn-main" id="start-btn" onclick="goToDraw()" disabled>開啟命運之門</button>
         </div>
 
@@ -191,20 +172,26 @@
                 <label><input type="radio" name="mode" value="think"> 🧠 深度思考</label>
             </div>
             <button class="btn btn-main" onclick="copyResult()">步驟 1：複製分析指令</button>
-            <a href="https://gemini.google.com/" target="_blank" class="btn">步驟 2：前往分析</a>
+            <a href="https://gemini.google.com/" target="_blank" class="btn">步驟 2：前往分析網頁</a>
+            <br>
+            <button class="btn" style="border:none; font-size:0.8rem; opacity:0.4; margin-top:20px;" onclick="location.reload()">重新調頻</button>
         </div>
     </div>
 
-    <div id="toast">已複製指令！</div>
+    <div id="toast">已複製占卜能量指令！</div>
 
     <script>
+        // 修正後的主題與細節數據
         const themes = {
-            "感情發展": ["目前關係階段", "對方的態度或最近一次互動", "我內心的主要不安點"],
-            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況", "對方目前的感情狀態"],
-            "職涯發展": ["目前職業狀態", "心儀的目標", "主要的壓力來源"],
-            "財運投資": ["投資類別", "對風險的承受度", "期望獲利的時間點"],
-            "職場人際": ["對方的角色", "最近一次衝突點", "理想的關係發展"],
+            "感情發展": ["目前關係階段 (如：曖昧、交往中)", "對方的態度或最近一次互動", "我內心的主要不安點"],
+            "復合可能": ["分手原因與經過時間", "目前的聯絡狀況 (如：斷聯、點讚)", "對方目前的感情狀態"],
+            "職涯發展": ["目前職業狀態 (如：待業、在職)", "心儀的目標 (如：某公司、升遷)", "主要的壓力來源"],
+            "正緣桃花": ["過去的感情痛點", "理想伴侶的特質", "目前的社交活躍度"],
+            "財運投資": ["投資類別 (如：股票、副業)", "對風險的承受度", "期望獲利的時間點"],
+            "職場人際": ["對方的角色 (如：主管、前任)", "最近一次衝突點", "理想的關係發展"],
+            "身心健康": ["目前情緒狀態", "特定壓力來源", "近期能量品質"],
             "自我探索": ["目前的人生困惑", "靈魂課題", "想尋找的力量"],
+            "二選一決策": ["路徑 A 的預期", "路徑 B 的預期", "核心猶豫點"],
             "其它問題": ["問題背景細節", "想知道的結果"]
         };
 
@@ -220,6 +207,7 @@
         let picking = false;
         let selectedTheme = "感情發展";
 
+        // 開場轉場
         function start转场儀式() {
             const op = document.getElementById('screen-ritual-opening');
             op.style.filter = "blur(20px) brightness(2)";
@@ -231,6 +219,7 @@
             }, 1200);
         }
 
+        // 初始化主題選單
         function initThemes() {
             const container = document.getElementById('theme-selector');
             if(container.innerHTML !== "") return;
@@ -244,12 +233,19 @@
             switchTheme(selectedTheme);
         }
 
+        // 動態生成細節輸入框 (修正邏輯)
         function switchTheme(theme) {
             selectedTheme = theme;
             const area = document.getElementById('detail-area');
-            area.innerHTML = `<span style="font-size:0.85rem; color:var(--primary-gold); display:block; margin-bottom:8px;">✦ 【${theme}】能量觀想：</span>`;
-            themes[theme].forEach(q => {
-                area.innerHTML += `<input type="text" class="form-input detail-input" placeholder="${q}" oninput="validateForm()">`;
+            area.innerHTML = `<span style="font-size:0.85rem; color:var(--primary-gold); display:block; margin-bottom:10px; font-weight:bold;">✦ 【${theme}】能量導引：</span>`;
+            
+            themes[theme].forEach((q, index) => {
+                const input = document.createElement('input');
+                input.type = "text";
+                input.className = "form-input detail-input";
+                input.placeholder = q;
+                input.oninput = validateForm;
+                area.appendChild(input);
             });
             validateForm();
         }
@@ -271,18 +267,24 @@
             picking = true;
             let rid;
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
+            
             const img = document.getElementById('front-img');
             img.src = `tarot_${rid}.jpg`;
             img.onerror = () => { img.src = `https://via.placeholder.com/150x260/222/d4af37?text=${tarotNames[rid]}`; };
+            
             const card = document.getElementById('tarot-card');
             card.classList.add('flipped');
+            
             setTimeout(() => {
                 pickedIds.push(rid);
                 document.querySelectorAll('.p-dot')[pickedIds.length - 1].style.background = 'var(--primary-gold)';
                 setTimeout(() => {
                     card.classList.remove('flipped');
                     if (pickedIds.length === 3) setTimeout(showFinal, 800);
-                    else picking = false;
+                    else {
+                        document.getElementById('draw-label').innerText = `已連結 ${pickedIds.length} 張能量，續抽下一張...`;
+                        picking = false;
+                    }
                 }, 1500);
             }, 800);
         }
@@ -301,9 +303,22 @@
             const inputs = document.querySelectorAll('.detail-input');
             const mode = document.querySelector('input[name="mode"]:checked').value;
             let details = [];
-            inputs.forEach((input, i) => { if(input.value.trim() !== '') details.push(`${themes[selectedTheme][i]}：${input.value.trim()}`); });
-            let prompt = `【星辰之眼占卜委託】\n主題：${selectedTheme}\n觀想細節：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
-            prompt += (mode === 'think') ? `請以大師視角開啟【深度思考】進行多維度深度解析。` : `請提供專業的直覺解析。`;
+            
+            // 抓取當前輸入框的值並對應其主題下的問題
+            inputs.forEach((input, i) => {
+                if(input.value.trim() !== '') {
+                    details.push(`${themes[selectedTheme][i]}：${input.value.trim()}`);
+                }
+            });
+
+            let prompt = `【星辰之眼占卜委託書】\n核心主題：${selectedTheme}\n問題背景細節：\n- ${details.join('\n- ')}\n\n【抽出牌組】：${cards}\n\n`;
+            
+            if (mode === 'think') {
+                prompt += `啟動【深度思考】模式。請結合上述背景，運用塔羅符號學與榮格原型理論進行深度解析，並給予極具洞察力的具體指引。`;
+            } else {
+                prompt += `請根據以上背景提供專業的塔羅解析與直覺建議。`;
+            }
+
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast');
                 t.style.visibility = 'visible';
