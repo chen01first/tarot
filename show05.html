@@ -27,7 +27,6 @@
 
         .serif-font { font-family: 'Cinzel', serif; }
 
-        /* --- 基礎容器 --- */
         .page-stage {
             position: fixed;
             inset: 0;
@@ -52,7 +51,7 @@
             gap: 2rem;
         }
 
-        /* --- 呼吸 & 共振 --- */
+        /* --- Stage 1 & 2 視覺元件 --- */
         .breath-wrapper { position: relative; width: 160px; height: 160px; margin: 20px auto; display: flex; justify-content: center; align-items: center; }
         .breath-circle { position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, var(--accent-violet) 0%, transparent 70%); border: 2px solid var(--primary-gold); border-radius: 50%; animation: breathCycle 8s infinite ease-in-out; box-shadow: var(--glow); }
         .breath-text { position: relative; z-index: 2; color: var(--primary-gold); font-weight: 900; letter-spacing: 4px; font-size: 1.4rem; }
@@ -76,29 +75,42 @@
         .theme-item { padding: 0.8rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; font-size: 0.9rem; color: rgba(255,255,255,0.4); }
         .theme-item.active { background: rgba(34, 211, 238, 0.1); color: var(--accent-cyan); border-left: 3px solid var(--accent-cyan); }
 
-        /* --- Stage 4: 抽牌系統 (對齊修正) --- */
+        /* --- Stage 4: 抽牌系統 --- */
         .card-placeholders { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
         .placeholder-box { width: 60px; height: 90px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: var(--primary-gold); font-size: 1.2rem; background: rgba(255,255,255,0.02); position: relative; overflow: hidden; }
-        .placeholder-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .placeholder-box img { width: 100%; height: 100%; object-fit: cover; }
         
-        .shuffle-zone { position: relative; height: 180px; width: 100%; display: flex; justify-content: center; align-items: center; overflow: visible; }
+        .shuffle-zone { position: relative; height: 180px; width: 100%; display: flex; justify-content: center; align-items: center; }
         .deck-card { position: absolute; width: 60px; height: 90px; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 1px solid var(--primary-gold); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); left: 50%; top: 50%; transform: translate(-50%, -50%); }
         
         .fan-spread { position: relative; height: 200px; width: 100%; display: none; justify-content: center; align-items: flex-end; margin-top: 20px; }
-        .fan-card { position: absolute; width: 55px; height: 85px; background: #111; border: 1px solid rgba(251, 191, 36, 0.4); border-radius: 4px; transform-origin: bottom center; cursor: pointer; transition: transform 0.4s, border-color 0.4s; left: 50%; bottom: 20px; margin-left: -27px; }
-        .fan-card:hover { border-color: white; transform: translateY(-25px) scale(1.1) !important; z-index: 100 !important; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .fan-card { position: absolute; width: 55px; height: 85px; background: #111; border: 1px solid rgba(251, 191, 36, 0.4); border-radius: 4px; transform-origin: bottom center; cursor: pointer; transition: transform 0.4s; left: 50%; bottom: 20px; margin-left: -27px; }
         .fan-card.picked-anim { position: fixed !important; z-index: 1000 !important; pointer-events: none; border-color: white; box-shadow: 0 0 30px white; transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
         .reversed-img { transform: rotate(180deg); }
 
-        /* --- Stage 5: 結果報告 --- */
-        .result-row { display: grid; grid-template-cols: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-        .card-result { text-align: center; }
-        .card-result img { width: 100%; border-radius: 0.5rem; border: 1px solid var(--primary-gold); margin-bottom: 0.5rem; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
-        .card-result p { font-size: 0.7rem; color: var(--primary-gold); font-weight: bold; line-height: 1.2; }
+        /* --- Stage 5: 結果呈現 (RWD 修正重點) --- */
+        .result-row { 
+            display: grid; 
+            grid-template-cols: 1fr; /* 手機端：垂直呈現 */
+            gap: 2.5rem; 
+            margin: 2rem auto; 
+            width: 100%;
+            justify-items: center;
+        }
+        @media (min-width: 768px) {
+            .result-row { 
+                grid-template-cols: repeat(3, 1fr); /* 筆電平板端：水平三個呈現 */
+                gap: 3.5rem; /* 固定間隔 */
+                max-width: 900px;
+            }
+        }
+        .card-result { text-align: center; width: 100%; max-width: 180px; }
+        .card-result img { width: 100%; border-radius: 0.8rem; border: 1px solid var(--primary-gold); margin-bottom: 1rem; box-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+        .card-result p { font-size: 1rem; color: var(--primary-gold); font-weight: 900; letter-spacing: 0.1em; }
 
-        .step-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
-        .step-hint { font-size: 0.8rem; color: rgba(255,255,255,0.5); text-align: left; }
+        .step-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 1.2rem; border-radius: 1.2rem; display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+        .step-hint { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-align: left; line-height: 1.4; }
 
         .btn-ritual { transition: all 0.5s ease; border: 1px solid rgba(255,255,255,0.15); border-radius: 3rem; text-transform: uppercase; font-weight: 900; letter-spacing: 0.2em; }
         .btn-ritual:hover { background: white; color: black; box-shadow: 0 0 40px rgba(139, 92, 246, 0.4); }
@@ -117,7 +129,7 @@
         <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-900/30 rounded-full blur-[120px]"></div>
     </div>
 
-    <nav class="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-50">
+    <nav class="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-50">
         <div class="text-xl md:text-2xl font-black serif-font">AURA <span class="font-normal text-white/30">TRINITY</span></div>
         <div id="stepDots" class="flex gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-white transition-all scale-150"></div>
@@ -145,7 +157,7 @@
                     <div class="step-animate p-6 border border-white/10 rounded-2xl bg-white/5" style="animation-delay: 1s;"><span class="block text-violet-400/50 mb-2 italic text-xs font-mono">Step 05</span><span class="text-2xl md:text-3xl font-black tracking-widest text-white">靈魂對話</span></div>
                 </div>
             </div>
-            <button onclick="nextStage(1)" class="btn-ritual px-16 py-5 rounded-full font-black text-sm border border-white/20 hover:bg-white hover:text-black">啟動儀式 (Start)</button>
+            <button onclick="nextStage(1)" class="btn-ritual px-16 py-5 rounded-full font-black text-sm border border-white/20 hover:bg-white hover:text-black">啟動儀式 (Start Ritual)</button>
         </div>
     </section>
 
@@ -201,27 +213,27 @@
     </section>
 
     <section id="stage5" class="page-stage">
-        <div class="content-wrapper text-center max-w-3xl pb-20">
-            <h2 class="text-3xl font-black serif-font text-[var(--primary-gold)] mb-6">命運的倒影</h2>
+        <div class="content-wrapper text-center max-w-4xl pb-20">
+            <h2 class="text-3xl md:text-5xl font-black serif-font text-[var(--primary-gold)] mb-8">命運的倒影</h2>
             <div class="result-row" id="result-row"></div>
-            <div class="space-y-4">
-                <div class="step-box"><button class="px-6 py-3 bg-white text-black font-bold rounded-lg text-xs" onclick="copyResult()">點選步驟 1</button><span class="step-hint">複製占卜指令 (啟動深度思考)</span></div>
-                <div class="step-box"><a href="https://gemini.google.com/" target="_blank" class="px-6 py-3 bg-white/10 text-white font-bold rounded-lg text-xs border border-white/20">點選步驟 2</a><span class="step-hint">在 Gemini 貼上指令並送出</span></div>
+            <div class="space-y-4 w-full max-w-2xl mx-auto">
+                <div class="step-box"><button class="px-6 py-3 bg-white text-black font-bold rounded-lg text-xs" onclick="copyResult()">步驟 1</button><span class="step-hint">複製占卜指令 (啟動深度思考)</span></div>
+                <div class="step-box"><a href="https://gemini.google.com/" target="_blank" class="px-6 py-3 bg-white/10 text-white font-bold rounded-lg text-xs border border-white/20">步驟 2</a><span class="step-hint">在 Gemini 貼上指令並送出</span></div>
             </div>
-            <button onclick="location.reload()" class="mt-12 opacity-30 text-xs underline uppercase">重新調頻</button>
+            <button onclick="location.reload()" class="mt-12 opacity-30 text-xs underline uppercase tracking-widest">重新調頻</button>
         </div>
     </section>
 
     <script>
         const themes = {
-            "感情關係": ["能量狀態：互動的心理動力為何？", "對方感受：真實的想法與定位？", "核心問題：關係發展的最關鍵瓶頸？", "未來走向：最可能的演變路徑？"],
-            "職涯工作": ["離職轉型：結構性的影響為何？", "優勢定位：最能發揮價值的藍圖？", "近期挑戰：為了具備哪種更高階能力？"],
-            "豐盛金錢": ["金錢能量：財務流動與內在豐盛感是否一致？", "匱乏根源：本質上是在恐懼什麼？", "半年預測：維持現狀財務將如何演變？"],
-            "人際能量": ["界線建立：如何堅定保護能量？", "社交場域：哪些能量在支持或拖累我？"],
-            "靈魂探索": ["我最近一直覺得很迷惘，內在到底在渴望什麼？", "人生卡住了，那個突破點與能量出口在哪裡？", "我的高我想對我說的一句話？"]
+            "感情關係": ["我們目前的互動能量流向處於什麼階段？", "對方內心對我的定位與真實想法？", "阻礙深入發展的最關鍵瓶頸是什麼？", "未來半年演變路徑最可能的走向？"],
+            "職涯工作": ["離開現有職位對我的結構性影響為何？", "結合我的核心天賦，最能發揮價值的藍圖？", "近期挑戰是為了訓練我具備哪種能力？"],
+            "豐盛金錢": ["我目前的財務流動與內在豐盛感是否一致？", "金錢匱乏感的本質是在恐懼什麼？", "未來半年若決策慣性不變，面臨什麼結果？"],
+            "人際能量": ["與特定對象的距離感反映了什麼價值差異？", "我該如何優雅且堅定地設立能量界線？", "社交圈中有哪些能量正支持或拖累我？"],
+            "靈魂探索": ["我最近一直覺得很迷惘，內在到底在渴望什麼？", "人生卡住了，那個能量突破點在哪裡？", "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？"]
         };
 
-        const tarotNames = { "00": "00-愚者", "01": "01-魔術師", "02": "02-女祭司", "03": "03-皇后", "04": "04-皇帝", "05": "05-教皇", "06": "06-戀人", "07": "07-戰車", "08": "08-力量", "09": "09-隱者", "10": "10-命運之輪", "11": "11-正義", "12": "12-倒吊人", "13": "13-死神", "14": "14-節制", "15": "15-惡魔", "16": "16-塔", "17": "17-星星", "18": "18-月亮", "19": "19-太陽", "20": "20-審判", "21": "21-世界", "22": "22-權杖王牌", "23": "23-權杖二", "24": "24-權杖三", "25": "25-權杖四", "26": "26-權杖五", "27": "27-權杖六", "28": "28-權杖七", "29": "29-權杖八", "30": "30-權杖九", "31": "31-權杖十", "32": "32-權杖侍者", "33": "33-權杖騎士", "34": "34-權杖王后", "35": "35-權杖國王", "36": "36-聖杯王牌", "37": "37-聖杯二", "38": "38-聖杯三", "39": "39-聖杯四", "40": "40-聖杯五", "41": "41-聖杯六", "42": "42-聖杯七", "43": "43-聖杯八", "44": "44-聖杯九", "45": "45-聖杯十", "46": "46-聖杯侍者", "47": "47-聖杯騎士", "48": "48-聖杯王后", "49": "49-聖杯國王", "50": "50-寶劍王牌", "51": "51-寶劍二", "52": "52-寶劍三", "53": "53-寶劍四", "54": "54-寶劍五", "55": "55-寶劍六", "56": "56-寶劍七", "57": "57-寶劍八", "58": "58-寶劍九", "59": "59-寶劍十", "60": "60-寶劍侍者", "61": "61-寶劍騎士", "62": "62-寶劍王后", "63": "63-寶劍國王", "64": "64-錢幣王牌", "65": "65-錢幣二", "66": "66-錢幣三", "67": "67-錢幣四", "68": "68-錢幣五", "69": "69-錢幣六", "70": "70-錢幣七", "71": "71-錢幣八", "72": "72-錢幣九", "73": "73-錢幣十", "74": "74-錢幣侍者", "75": "75-錢幣騎士", "76": "76-錢幣王后", "77": "77-錢幣國王" };
+        const tarotNames = { "00": "愚者", "01": "魔術師", "02": "女祭司", "03": "皇后", "04": "皇帝", "05": "教皇", "06": "戀人", "07": "戰車", "08": "力量", "09": "隱者", "10": "命運之輪", "11": "正義", "12": "倒吊人", "13": "死神", "14": "節制", "15": "惡魔", "16": "塔", "17": "星星", "18": "月亮", "19": "太陽", "20": "審判", "21": "世界", "22": "權杖王牌", "23": "權杖二", "24": "權杖三", "25": "權杖四", "26": "權杖五", "27": "權杖六", "28": "權杖七", "29": "權杖八", "30": "權杖九", "31": "權杖十", "32": "權杖侍者", "33": "權杖騎士", "34": "權杖王后", "35": "權杖國王", "36": "聖杯王牌", "37": "聖杯二", "38": "聖杯三", "39": "聖杯四", "40": "聖杯五", "41": "聖杯六", "42": "聖杯七", "43": "聖杯八", "44": "聖杯九", "45": "聖杯十", "46": "聖杯侍者", "47": "聖杯騎士", "48": "聖杯王后", "49": "49-聖杯國王", "50": "50-寶劍王牌", "51": "51-寶劍二", "52": "52-寶劍三", "53": "53-寶劍四", "54": "54-寶劍五", "55": "55-寶劍六", "56": "56-寶劍七", "57": "57-寶劍八", "58": "58-寶劍九", "59": "59-寶劍十", "60": "60-寶劍侍者", "61": "61-寶劍騎士", "62": "62-寶劍王后", "63": "63-寶劍國王", "64": "64-錢幣王牌", "65": "65-錢幣二", "66": "66-錢幣三", "67": "67-錢幣四", "68": "68-錢幣五", "69": "69-錢幣六", "70": "70-錢幣七", "71": "71-錢幣八", "72": "72-錢幣九", "73": "73-錢幣十", "74": "74-錢幣侍者", "75": "75-錢幣騎士", "76": "76-錢幣王后", "77": "77-錢幣國王" };
 
         let currentStage = 0, selectedCategory = "內在引導", selectedQuestion = "自主冥想", pickedCards = [];
         let audioCtx, osc, noiseGain, pureGain;
@@ -303,7 +315,7 @@
         function stopShuffle() {
             document.getElementById('shuffle-deck').style.display = "none";
             document.getElementById('stop-shuffle-btn').style.display = "none";
-            document.getElementById('draw-info').innerText = "感應完畢，請選取三張牌";
+            document.getElementById('draw-info').innerText = "感應完畢，請連點兩下選取三張牌";
             const fan = document.getElementById('fan-spread'); fan.style.display = "flex";
             document.getElementById('fan-hint').classList.remove('hidden'); fan.innerHTML = "";
             for(let i=0; i<22; i++) {
@@ -328,17 +340,18 @@
             const dx = (frameRect.left + frameRect.width/2) - (cardRect.left + cardRect.width/2);
             const dy = (frameRect.top + frameRect.height/2) - (cardRect.top + cardRect.height/2);
             
+            // 建立圖檔並設定備援機制
             const img = document.createElement('img');
             img.src = `tarot_${rid}.jpg`;
             if(isReversed) img.className = "reversed-img";
             img.onerror = () => { 
-                img.src = `https://via.placeholder.com/150x240/111/d4af37?text=${tarotNames[rid]}`;
+                img.src = `https://via.placeholder.com/150x240/111/d4af37?text=${tarotNames[rid] || 'TAROT'}`;
             };
             el.appendChild(img);
 
             el.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(1.1)`;
             targetFrame.style.border = "2px solid white";
-            targetFrame.innerText = ""; // 清除 ✦
+            targetFrame.innerText = "";
             document.getElementById('picked-count').innerText = pickedCards.length;
             if (pickedCards.length === 3) setTimeout(() => nextStage(5), 1800);
         }
@@ -349,13 +362,16 @@
                 const revClass = c.isReversed ? "reversed-img" : "", label = c.isReversed ? "[反位]" : "[正位]";
                 const container = document.createElement('div');
                 container.className = "card-result";
+                
                 const img = document.createElement('img');
                 img.src = `tarot_${c.id}.jpg`;
                 img.className = revClass;
-                img.onerror = () => { img.src = `https://via.placeholder.com/150x240/111/d4af37?text=${tarotNames[c.id]}`; };
-                container.appendChild(img);
+                img.onerror = () => { img.src = `https://via.placeholder.com/180x300/111/d4af37?text=${tarotNames[c.id]}`; };
+                
                 const p = document.createElement('p');
                 p.innerText = `${label} ${tarotNames[c.id]}`;
+                
+                container.appendChild(img);
                 container.appendChild(p);
                 row.appendChild(container);
             });
@@ -364,7 +380,7 @@
         function copyResult() {
             const cardStr = pickedCards.map(c => (c.isReversed ? "[反位]" : "[正位]") + tarotNames[c.id]).join('、');
             const context = document.getElementById('custom-context').value.trim();
-            const prompt = `核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n背景：${context}\n抽出牌組：${cardStr}\n\n啟動深度思考模式，運用神祕學與榮格心理學深度解析並給予具備策略性的具體建議。`;
+            const prompt = `核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n背景補充：${context}\n抽出牌組：${cardStr}\n\n啟動深度思考/多維解構模式。請結合提問內容與牌組正逆位狀態，運用神祕學與榮格心理學深度解析，並給予具備策略性的具體建議。`;
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast'); t.style.visibility = 'visible';
                 setTimeout(() => t.style.visibility = 'hidden', 3000);
