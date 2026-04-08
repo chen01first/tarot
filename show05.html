@@ -1,404 +1,528 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aura Tarot: 實現路徑與技術原型</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg-dark: #050510;
-    --accent-cyan: #00f2fe;
-    --accent-magenta: #c026d3;
-    --accent-gold: #fcd34d;
-}
-body {
-    font-family: 'Space Grotesk', 'Noto Sans TC', sans-serif;
-    background-color: var(--bg-dark);
-    color: #e2e8f0;
-    overflow-x: hidden;
-}
-.step-container {
-    display: none;
-    min-height: 80vh;
-}
-.step-active {
-    display: flex;
-    animation: fadeIn 0.8s ease-out forwards;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.glass-panel {
-    background: rgba(15, 15, 35, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 242, 254, 0.2);
-    border-radius: 1.5rem;
-}
-.chart-container {
-    position: relative;
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    height: 300px;
-    max-height: 400px;
-}
-/* 用於模擬幾何牌面的 Canvas 容器 */
-#tarotCanvas {
-    width: 100%;
-    height: 400px;
-    border-radius: 1rem;
-    cursor: pointer;
-    background: radial-gradient(circle at center, #1a1a3a 0%, #050510 100%);
-}
-.neon-button {
-    transition: all 0.3s ease;
-    border: 1px solid var(--accent-cyan);
-    box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-}
-.neon-button:hover {
-    background: var(--accent-cyan);
-    color: var(--bg-dark);
-    box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aura Tarot: 響應式靈魂共振儀式系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05050a;
+            --accent-violet: #8b5cf6;
+            --accent-cyan: #22d3ee;
+            --accent-gold: #fbbf24;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            overflow-x: hidden;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .serif-font { font-family: 'Cinzel', serif; }
+        
+        /* 全螢幕階段切換 */
+        .page-stage {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+            padding: 1.5rem;
+        }
+        .stage-active { opacity: 1; pointer-events: auto; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+        }
+
+        /* 呼吸球體 RWD 尺寸 */
+        .orb-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+        }
+        @media (min-width: 768px) { .orb-wrapper { width: 350px; height: 350px; } }
+        canvas#breathCanvas { width: 100%; height: 100%; }
+
+        /* 3D 牌陣 RWD */
+        .arc-container {
+            position: relative;
+            width: 100%;
+            height: 45vh;
+            perspective: 1200px;
+        }
+        @media (min-width: 768px) { .arc-container { height: 55vh; } }
+        canvas#arcCanvas { width: 100%; height: 100%; touch-action: none; }
+
+        .typing::after { content: '|'; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .btn-ritual {
+            transition: all 0.5s ease;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .btn-ritual:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        /* 自適應圖表高度 */
+        .chart-wrapper { position: relative; height: 280px; width: 100%; }
+        @media (min-width: 768px) { .chart-wrapper { height: 350px; } }
+    </style>
+    <!-- Chosen Palette: High-Fashion Midnight (Black, Violet, Cyan) -->
+    <!-- Application Structure Plan:
+        Stage 0: Landing - Responsive Grid for steps.
+        Stage 1: Alignment - Responsive Canvas Orb.
+        Stage 2: Intention - Stacked layout for mobile inputs.
+        Stage 3: The Arc - Card size scaling based on window width.
+        Stage 4: Revelation - Grid to column switch for mobile reports.
+    -->
+    <!-- CONFIRMATION: NO SVG used. NO Mermaid JS used. -->
 </head>
-<body class="p-4 md:p-8">
+<body class="antialiased">
 
-<!-- 
-    技術規劃總覽：
-    1. 敘事結構：採用狀態機 (State Machine) 控制四個步驟的切換。
-    2. 視覺策略：使用 HTML5 Canvas 取代 SVG，實現高性能的流體與幾何粒子動畫 (Step 2)。
-    3. 資料邏輯：
-       - Step 1 & 3: 使用響應式表單與模組化卡片。
-       - Step 4: 使用 Chart.js 渲染雷達圖與折線圖，並強制執行標籤折行與工具提示優化。
-    4. 顏色方案：選用 "Mystic Neon" 高對比調色盤 (#050510, #00f2fe, #c026d3, #fcd34d)。
-    5. 聲明：本文件完全未使用 SVG 或 Mermaid JS。
--->
-
-<nav class="max-w-4xl mx-auto mb-12 flex justify-between items-center">
-    <div class="text-2xl font-bold tracking-tighter text-cyan-400">AURA TAROT <span class="text-xs font-light text-gray-500">v1.0 PROTOTYPE</span></div>
-    <div class="flex gap-2">
-        <div id="dot1" class="w-3 h-3 rounded-full bg-cyan-400"></div>
-        <div id="dot2" class="w-3 h-3 rounded-full bg-gray-700"></div>
-        <div id="dot3" class="w-3 h-3 rounded-full bg-gray-700"></div>
-        <div id="dot4" class="w-3 h-3 rounded-full bg-gray-700"></div>
+    <!-- 動態背景 -->
+    <div class="fixed inset-0 -z-10 opacity-20">
+        <div class="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-violet-900/20 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-cyan-900/20 rounded-full blur-[100px]"></div>
     </div>
-</nav>
 
-<main class="max-w-4xl mx-auto">
-
-    <!-- Step 1: 沉浸式提問 -->
-    <section id="step1" class="step-container step-active flex-col items-center justify-center text-center">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">設定你的心靈頻率</h2>
-        <p class="text-gray-400 mb-8">深呼吸，閉上眼。在下方輸入你今日的困惑或想探索的領域。</p>
-        <div class="w-full glass-panel p-8 space-y-6">
-            <div>
-                <label class="block text-left text-sm font-medium text-cyan-300 mb-2">當前情緒狀態</label>
-                <div class="grid grid-cols-3 gap-3">
-                    <button class="p-3 rounded-lg border border-gray-700 hover:border-cyan-400 focus:bg-cyan-900/30 transition-all">焦慮</button>
-                    <button class="p-3 rounded-lg border border-gray-700 hover:border-cyan-400 focus:bg-cyan-900/30 transition-all">平靜</button>
-                    <button class="p-3 rounded-lg border border-gray-700 hover:border-cyan-400 focus:bg-cyan-900/30 transition-all">困惑</button>
-                </div>
-            </div>
-            <div>
-                <label class="block text-left text-sm font-medium text-cyan-300 mb-2">你想探詢的問題</label>
-                <textarea class="w-full bg-black/40 border border-gray-700 rounded-xl p-4 focus:border-cyan-400 outline-none h-32" placeholder="例如：關於下週的職涯變動，我有什麼需要注意的？"></textarea>
-            </div>
-            <button onclick="goToStep(2)" class="w-full py-4 neon-button rounded-xl font-bold uppercase tracking-widest">開始感應能量</button>
+    <!-- 導航列 RWD -->
+    <nav class="fixed top-0 left-0 w-full p-6 md:p-8 flex justify-between items-center z-50">
+        <div class="text-xl md:text-2xl font-black tracking-tighter serif-font">AURA <span class="font-normal text-white/30">TRINITY</span></div>
+        <div id="stepDots" class="flex gap-1.5 md:gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-white transition-all"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-white/20 transition-all"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-white/20 transition-all"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-white/20 transition-all"></div>
         </div>
-        <div class="mt-8 text-xs text-gray-500 italic">系統已自動開啟模擬白噪音 (Brownian Noise)</div>
-    </section>
+    </nav>
 
-    <!-- Step 2: 幾何動態抽牌 -->
-    <section id="step2" class="step-container flex-col items-center justify-center text-center">
-        <h2 class="text-3xl font-bold mb-4 text-white">能量凝結中</h2>
-        <p class="text-gray-400 mb-8">當感覺對了，點擊下方的能量場進行抽牌。</p>
-        <div class="w-full max-w-md mx-auto">
-            <canvas id="tarotCanvas"></canvas>
-            <div id="drawStatus" class="mt-4 text-cyan-400 font-bold animate-pulse">點擊上方區域以連結</div>
-        </div>
-        <button id="nextToStep3" onclick="goToStep(3)" class="mt-8 px-12 py-3 border border-gray-700 rounded-full opacity-0 pointer-events-none transition-all">查看解析</button>
-    </section>
-
-    <!-- Step 3: 模組化解析 -->
-    <section id="step3" class="step-container flex-col">
-        <div class="mb-8 text-center">
-            <h2 class="text-3xl font-bold text-white">啟示：[ 命運之輪 · 幾何化身 ]</h2>
-            <p class="text-cyan-400">當前相位：上升趨勢</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="glass-panel p-6 border-l-4 border-magenta-500">
-                <h3 class="text-lg font-bold text-magenta-400 mb-3">核心關鍵字</h3>
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 bg-magenta-900/30 border border-magenta-500/50 rounded-full text-xs">週期性轉變</span>
-                    <span class="px-3 py-1 bg-magenta-900/30 border border-magenta-500/50 rounded-full text-xs">外部機遇</span>
-                    <span class="px-3 py-1 bg-magenta-900/30 border border-magenta-500/50 rounded-full text-xs">順勢而為</span>
-                </div>
+    <!-- Stage 0: 登陸頁面 -->
+    <section id="stage0" class="page-stage stage-active">
+        <div class="max-w-4xl w-full text-center space-y-10 md:space-y-16">
+            <div class="space-y-4">
+                <div class="text-[9px] md:text-[10px] tracking-[0.4em] text-violet-400 font-bold uppercase">Digital Zen Protocol v5.0</div>
+                <h1 class="text-5xl md:text-8xl font-black serif-font leading-none tracking-tight">靈魂<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-cyan-400 to-amber-400">共振儀式</span></h1>
             </div>
-            <div class="glass-panel p-6 border-l-4 border-cyan-500">
-                <h3 class="text-lg font-bold text-cyan-400 mb-3">行動建議</h3>
-                <p class="text-sm text-gray-300 leading-relaxed">
-                    目前的混亂只是更高維度秩序的一部分。建議在未來 72 小時內停止過度分析，專注於接納意外的邀請。
-                </p>
-            </div>
-            <div class="md:col-span-2 glass-panel p-6">
-                <h3 class="text-lg font-bold text-gold-400 mb-3 text-center" style="color:#fcd34d">深度解析</h3>
-                <p class="text-sm text-gray-400 text-center">
-                    你的潛意識正在經歷一場「解構」。就像這張牌的幾何架構一樣，舊的方框正在破碎，以便重新結合成更穩固的結構。不需要抗拒不安感。
-                </p>
-            </div>
-        </div>
-        <button onclick="goToStep(4)" class="mt-8 w-full py-4 bg-white text-black rounded-xl font-bold hover:bg-cyan-400 transition-all">寫入靈魂記錄並查看趨勢</button>
-    </section>
-
-    <!-- Step 4: 數據儀表板 -->
-    <section id="step4" class="step-container flex-col space-y-8">
-        <div class="text-center">
-            <h2 class="text-3xl font-bold text-white">靈魂數據儀表板</h2>
-            <p class="text-gray-400">追蹤你的靈性成長與元素平衡</p>
-        </div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass-panel p-6">
-                <h3 class="text-center text-cyan-300 mb-4 font-bold">本月元素平衡雷達</h3>
-                <div class="chart-container">
-                    <canvas id="elementChart"></canvas>
-                </div>
-                <p class="text-xs text-gray-500 mt-4">反映了你近期占卜結果中風、火、水、地的能量分佈。</p>
-            </div>
-            <div class="glass-panel p-6">
-                <h3 class="text-center text-magenta-300 mb-4 font-bold">情緒與能量趨勢</h3>
-                <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
-                </div>
-                <p class="text-xs text-gray-500 mt-4">紫色線代表情緒波動，藍色柱狀代表覺察力指數。</p>
-            </div>
-        </div>
-
-        <div class="glass-panel p-8 text-center bg-gradient-to-r from-cyan-900/20 to-magenta-900/20">
-            <h3 class="text-xl font-bold mb-2">本月建議：穩定地元素</h3>
-            <p class="text-sm text-gray-400 mb-6">你的數據顯示火元素過旺，導致決策過於衝動。多親近大自然或進行冥想以平衡地能量。</p>
-            <button onclick="location.reload()" class="px-8 py-2 border border-cyan-400 text-cyan-400 rounded-full text-xs">再次檢測</button>
-        </div>
-    </section>
-
-</main>
-
-<script>
-/**
- * 核心狀態控制
- */
-function goToStep(step) {
-    document.querySelectorAll('.step-container').forEach(el => el.classList.remove('step-active'));
-    document.getElementById('step' + step).classList.add('step-active');
-    
-    // 更新導航點
-    for(let i=1; i<=4; i++) {
-        const dot = document.getElementById('dot' + i);
-        if(i === step) {
-            dot.className = "w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_#00f2fe]";
-        } else if (i < step) {
-            dot.className = "w-3 h-3 rounded-full bg-cyan-900";
-        } else {
-            dot.className = "w-3 h-3 rounded-full bg-gray-700";
-        }
-    }
-
-    if(step === 2) initCanvas();
-    if(step === 4) initCharts();
-}
-
-/**
- * Step 2: Canvas 幾何動畫實現
- */
-function initCanvas() {
-    const canvas = document.getElementById('tarotCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let isDrawn = false;
-
-    function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    resize();
-
-    class Particle {
-        constructor() {
-            this.reset();
-        }
-        reset() {
-            this.x = canvas.width / 2;
-            this.y = canvas.height / 2;
-            this.size = Math.random() * 2 + 1;
-            this.speedX = (Math.random() - 0.5) * 2;
-            this.speedY = (Math.random() - 0.5) * 2;
-            this.color = `rgba(0, 242, 254, ${Math.random()})`;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.1) this.size -= 0.01;
-        }
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
-
-    function animate() {
-        ctx.fillStyle = 'rgba(5, 5, 16, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        if(!isDrawn) {
-            if(particles.length < 100) particles.push(new Particle());
-        }
-
-        particles.forEach((p, i) => {
-            p.update();
-            p.draw();
-            if(p.size <= 0.1) p.reset();
-        });
-
-        requestAnimationFrame(animate);
-    }
-    animate();
-
-    canvas.addEventListener('click', () => {
-        if(isDrawn) return;
-        isDrawn = true;
-        document.getElementById('drawStatus').innerText = "能量已鎖定";
-        document.getElementById('drawStatus').classList.remove('animate-pulse');
-        document.getElementById('drawStatus').style.color = '#c026d3';
-        
-        // 模擬幾何卡牌生成
-        setTimeout(() => {
-            ctx.strokeStyle = '#fcd34d';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(canvas.width/2 - 60, canvas.height/2 - 90, 120, 180);
-            ctx.beginPath();
-            ctx.moveTo(canvas.width/2, canvas.height/2 - 40);
-            ctx.lineTo(canvas.width/2 + 40, canvas.height/2 + 40);
-            ctx.lineTo(canvas.width/2 - 40, canvas.height/2 + 40);
-            ctx.closePath();
-            ctx.stroke();
             
-            const btn = document.getElementById('nextToStep3');
-            btn.classList.remove('opacity-0', 'pointer-events-none');
-            btn.classList.add('opacity-100', 'pointer-events-auto', 'bg-cyan-400', 'text-black');
-        }, 500);
-    });
-}
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-[8px] md:text-[10px] tracking-widest text-white/30 uppercase font-bold">
+                <div class="p-3 border border-white/5 rounded-lg">A. 調呼吸</div>
+                <div class="p-3 border border-white/5 rounded-lg">B. 同頻</div>
+                <div class="p-3 border border-white/5 rounded-lg">C. 整理問題</div>
+                <div class="p-3 border border-white/5 rounded-lg">D. 抽三張</div>
+                <div class="p-3 border border-white/5 rounded-lg hidden md:block">E. 深度解讀</div>
+            </div>
 
-/**
- * Step 4: 資料視覺化實現 (符合規範)
- */
-function wrapLabel(label, maxLength) {
-    if (label.length <= maxLength) return label;
-    const words = label.split('');
-    const lines = [];
-    let currentLine = '';
-    for (let i = 0; i < words.length; i++) {
-        if (currentLine.length >= maxLength) {
-            lines.push(currentLine);
-            currentLine = words[i];
-        } else {
-            currentLine += words[i];
+            <button onclick="nextStage(1)" class="btn-ritual px-10 md:px-16 py-4 md:py-5 rounded-full font-bold text-[10px] md:text-xs">
+                讓我們開始 (Let's Begin)
+            </button>
+        </div>
+    </section>
+
+    <!-- Stage 1: 校準 -->
+    <section id="stage1" class="page-stage">
+        <div class="text-center space-y-10 md:space-y-16">
+            <div class="space-y-2">
+                <h2 id="ritualTitle" class="text-3xl md:text-4xl font-bold">同步您的呼吸</h2>
+                <p class="text-gray-500 text-[10px] md:text-xs tracking-[0.3em] uppercase">與牌神達成能量共振</p>
+            </div>
+
+            <div class="orb-wrapper mx-auto">
+                <canvas id="breathCanvas"></canvas>
+                <div id="breathLabel" class="absolute inset-0 flex items-center justify-center text-3xl md:text-4xl font-black text-white/10 uppercase tracking-tighter pointer-events-none transition-all">Wait</div>
+            </div>
+
+            <div class="flex flex-col items-center gap-4">
+                <div id="freqIndicator" class="text-[9px] md:text-[10px] font-mono text-cyan-400 tracking-[0.3em] opacity-0 transition-opacity">432Hz Synced</div>
+                <button id="startAlignment" class="btn-ritual px-10 py-3 rounded-full text-[10px] font-bold">啟動能量校準</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stage 2: 問題意圖 -->
+    <section id="stage2" class="page-stage">
+        <div class="max-w-2xl w-full space-y-8 md:space-y-12">
+            <div class="text-center space-y-2">
+                <h2 class="text-3xl md:text-4xl font-bold">整理您的問題</h2>
+                <p class="text-gray-500 text-xs">在腦海中勾勒清晰的意圖</p>
+            </div>
+
+            <div class="space-y-4">
+                <textarea id="questionInput" class="w-full bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 text-white focus:outline-none focus:border-violet-500 transition-all h-32 md:h-40 text-base md:text-lg" placeholder="請在此輸入或思考您的問題..."></textarea>
+                
+                <div class="space-y-3">
+                    <p class="text-[8px] md:text-[10px] text-white/20 uppercase tracking-widest font-bold">或是從這些切入點開始</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setPreset('關於目前的感情發展，我應該注意什麼？')" class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] hover:bg-white/10 transition-all">感情發展</button>
+                        <button onclick="setPreset('下半年的事業轉機在哪裡？')" class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] hover:bg-white/10 transition-all">事業轉機</button>
+                        <button onclick="setPreset('我內心目前的迷茫來源於什麼？')" class="px-4 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] hover:bg-white/10 transition-all">自我提升</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="nextStage(3)" class="w-full btn-ritual py-4 rounded-xl font-bold text-[10px]">
+                問題已整理，進入牌陣
+            </button>
+        </div>
+    </section>
+
+    <!-- Stage 3: 發牌與抽牌 -->
+    <section id="stage3" class="page-stage px-0 pt-20">
+        <div class="w-full h-full flex flex-col">
+            <div class="text-center space-y-1 px-6">
+                <h2 class="text-xl md:text-2xl font-bold">感應靈魂之弧</h2>
+                <div id="drawCount" class="text-[9px] md:text-[10px] text-cyan-400 font-bold tracking-[0.4em] uppercase">Picked 0 / 3</div>
+            </div>
+
+            <div class="arc-container flex-1" id="arcTable">
+                <canvas id="arcCanvas"></canvas>
+                <div class="absolute inset-x-0 top-1/4 flex justify-center pointer-events-none px-6">
+                    <div id="drawHint" class="text-[9px] md:text-[10px] text-white/20 italic animate-bounce text-center">滑過牌陣，感應最強的三張牌</div>
+                </div>
+            </div>
+            
+            <div class="flex justify-center pb-20 px-6">
+                <button id="showResultsBtn" onclick="nextStage(4)" class="w-full md:w-auto px-12 py-4 btn-ritual rounded-full font-bold text-[10px] hidden">
+                    解讀啟示 (Reveal Oracle)
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stage 4: 解讀報告 -->
+    <section id="stage4" class="page-stage overflow-y-auto block pt-24 md:pt-32 pb-24 px-6 md:px-8">
+        <div class="max-w-6xl mx-auto space-y-16 md:space-y-24">
+            <div class="text-center space-y-3">
+                <div class="text-[9px] md:text-[10px] text-amber-500 font-bold tracking-[0.5em] uppercase">The Revelation</div>
+                <h2 class="text-4xl md:text-5xl font-black serif-font">三牌解析報告</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="glass-panel p-6 md:p-8 space-y-4">
+                    <div class="text-[9px] text-violet-400 font-bold uppercase">Node 01: Past</div>
+                    <h3 id="cardName0" class="text-lg md:text-xl font-bold text-white">--</h3>
+                    <p id="cardStory0" class="text-gray-400 text-xs md:text-sm leading-relaxed typing"></p>
+                </div>
+                <div class="glass-panel p-6 md:p-8 space-y-4 border-t-2 md:border-t-0 md:border-l-2 border-cyan-500/30">
+                    <div class="text-[9px] text-cyan-400 font-bold uppercase">Node 02: Present</div>
+                    <h3 id="cardName1" class="text-lg md:text-xl font-bold text-white">--</h3>
+                    <p id="cardStory1" class="text-gray-400 text-xs md:text-sm leading-relaxed typing"></p>
+                </div>
+                <div class="glass-panel p-6 md:p-8 space-y-4 border-t-2 md:border-t-0 md:border-l-2 border-amber-500/30">
+                    <div class="text-[9px] text-amber-400 font-bold uppercase">Node 03: Future</div>
+                    <h3 id="cardName2" class="text-lg md:text-xl font-bold text-white">--</h3>
+                    <p id="cardStory2" class="text-gray-400 text-xs md:text-sm leading-relaxed typing"></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center bg-white/5 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12">
+                <div class="space-y-6">
+                    <h3 class="text-2xl md:text-3xl font-bold">心理能量映射</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        根據您在儀式中的呼吸數據與抽牌元素，這張圖表反映了您當前的意識狀態。這不僅是占卜，更是一次自我的數據透視。
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 md:gap-4">
+                        <div class="p-3 md:p-4 rounded-xl border border-white/5 bg-black/40">
+                            <div class="text-[8px] md:text-[9px] text-white/30 mb-1 uppercase">主導元素</div>
+                            <div id="domEl" class="text-base md:text-lg font-bold text-cyan-400">---</div>
+                        </div>
+                        <div class="p-3 md:p-4 rounded-xl border border-white/5 bg-black/40">
+                            <div class="text-[8px] md:text-[9px] text-white/30 mb-1 uppercase">穩定指數</div>
+                            <div id="stabIdx" class="text-base md:text-lg font-bold text-violet-400">---</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="location.reload()" class="text-[10px] text-white/20 underline underline-offset-8 tracking-widest hover:text-white transition-all uppercase">
+                    重新校準靈魂頻率
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentStage = 0;
+        let audioCtx, osc, gain;
+        let selectedCards = [];
+        
+        const deck = [];
+        const majorNames = ["愚者", "魔術師", "女祭司", "女皇", "皇帝", "教皇", "戀人", "戰車", "力量", "隱士", "命運之輪", "正義", "倒吊人", "死神", "節制", "惡魔", "高塔", "星星", "月亮", "太陽", "審判", "世界"];
+        const suits = [{n:"權杖",e:"Fire",c:"#f97316"},{n:"聖杯",e:"Water",c:"#3b82f6"},{n:"寶劍",e:"Air",c:"#06b6d4"},{n:"錢幣",e:"Earth",c:"#10b981"}];
+        majorNames.forEach(n => deck.push({n, e:"Spirit", c:"#8b5cf6"}));
+        suits.forEach(s => { for(let i=1; i<=14; i++) deck.push({n:`${s.n}${i}`, e:s.e, c:s.c}); });
+
+        function nextStage(stage) {
+            document.getElementById(`stage${currentStage}`).classList.remove('stage-active');
+            currentStage = stage;
+            document.getElementById(`stage${currentStage}`).classList.add('stage-active');
+            
+            const dots = document.querySelectorAll('#stepDots div');
+            dots.forEach((d, i) => {
+                d.style.background = i <= stage ? 'white' : 'rgba(255,255,255,0.2)';
+                if(i === stage) d.style.transform = 'scale(1.5)';
+                else d.style.transform = 'scale(1)';
+            });
+
+            if(stage === 1) initAlignment();
+            if(stage === 3) initArc();
+            if(stage === 4) initReveal();
         }
-    }
-    if (currentLine) lines.push(currentLine);
-    return lines;
-}
 
-const tooltipConfig = {
-    callbacks: {
-        title: function(tooltipItems) {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            } else {
-                return label;
+        function setPreset(txt) { document.getElementById('questionInput').value = txt; }
+
+        // --- Stage 1: RWD Breath Canvas ---
+        function initAlignment() {
+            const canvas = document.getElementById('breathCanvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, time = 0;
+
+            function resize() {
+                w = canvas.width = canvas.offsetWidth;
+                h = canvas.height = canvas.offsetHeight;
             }
-        }
-    }
-};
+            window.addEventListener('resize', resize);
+            resize();
 
-function initCharts() {
-    const ctxElement = document.getElementById('elementChart').getContext('2d');
-    new Chart(ctxElement, {
-        type: 'radar',
-        data: {
-            labels: ['火元素 (意志力)', '水元素 (情感)', '風元素 (智性)', '地元素 (物質)', '以太 (靈魂)'].map(l => wrapLabel(l, 8)),
-            datasets: [{
-                label: '當前平衡',
-                data: [85, 45, 70, 30, 90],
-                backgroundColor: 'rgba(0, 242, 254, 0.2)',
-                borderColor: '#00f2fe',
-                pointBackgroundColor: '#00f2fe',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                r: {
-                    angleLines: { color: 'rgba(255,255,255,0.1)' },
-                    grid: { color: 'rgba(255,255,255,0.1)' },
-                    pointLabels: { color: '#94a3b8', font: { size: 10 } },
-                    ticks: { display: false }
+            function animate() {
+                if(currentStage !== 1) return;
+                time += 0.02;
+                ctx.clearRect(0,0,w,h);
+                
+                const breath = Math.sin(time * 0.8);
+                const maxScale = w < 768 ? 1.2 : 1.5;
+                const scale = 1 + (breath + 1) * maxScale;
+                const alpha = (breath + 1) / 2;
+                
+                const label = document.getElementById('breathLabel');
+                label.innerText = breath > 0 ? "Inhale" : "Exhale";
+                label.style.opacity = alpha * 0.3;
+
+                const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, (w/8) * scale);
+                grad.addColorStop(0, `rgba(139, 92, 246, ${0.4 * alpha})`);
+                grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(w/2, h/2, (w/4) * scale, 0, Math.PI*2);
+                ctx.fill();
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            document.getElementById('startAlignment').onclick = function() {
+                if(!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    osc = audioCtx.createOscillator();
+                    osc.frequency.setValueAtTime(432, audioCtx.currentTime);
+                    gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 3);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
+                    document.getElementById('freqIndicator').style.opacity = '1';
+                    this.innerText = "頻率同步中...";
+                    setTimeout(() => nextStage(2), 5000);
                 }
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: tooltipConfig
+            };
+        }
+
+        // --- Stage 3: RWD 3D Arc ---
+        function initArc() {
+            const canvas = document.getElementById('arcCanvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, cards = [];
+            let mouse = {x:-1000, y:-1000};
+
+            function resize() {
+                w = canvas.width = canvas.offsetWidth;
+                h = canvas.height = canvas.offsetHeight;
+                initCards();
+            }
+            window.addEventListener('resize', resize);
+            
+            class TarotCard {
+                constructor(i) {
+                    this.i = i;
+                    this.picked = false;
+                    this.alpha = 0;
+                    this.updateSize();
+                }
+                updateSize() {
+                    const isMobile = window.innerWidth < 768;
+                    this.width = isMobile ? 35 : 50;
+                    this.height = isMobile ? 60 : 90;
+                    this.radius = isMobile ? w * 0.8 : 400;
+                    this.angle = ((this.i/77)-0.5) * (Math.PI * (isMobile ? 0.9 : 0.8));
+                }
+                update() {
+                    this.alpha = Math.min(1, this.alpha + 0.01);
+                    const cx = w/2;
+                    const cy = h + (window.innerWidth < 768 ? 100 : 150);
+                    this.px = cx + Math.sin(this.angle) * this.radius;
+                    this.py = cy - Math.cos(this.angle) * this.radius;
+
+                    const dx = mouse.x - this.px;
+                    const dy = mouse.y - this.py;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    const hoverDist = window.innerWidth < 768 ? 50 : 80;
+                    if(dist < hoverDist && !this.picked) {
+                        this.yOff = (hoverDist - dist) * 0.6;
+                    } else {
+                        this.yOff = (this.yOff || 0) * 0.8;
+                    }
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.px, this.py);
+                    ctx.rotate(this.angle);
+                    ctx.translate(0, -this.yOff);
+                    ctx.beginPath();
+                    ctx.roundRect(-this.width/2, -this.height/2, this.width, this.height, 4);
+                    ctx.fillStyle = this.picked ? 'white' : 'rgba(15,15,30,0.95)';
+                    ctx.fill();
+                    ctx.strokeStyle = this.picked ? '#22d3ee' : 'rgba(139,92,246,0.3)';
+                    ctx.lineWidth = this.picked ? 2 : 1;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            function initCards() {
+                cards = [];
+                for(let i=0; i<78; i++) cards.push(new TarotCard(i));
+            }
+            resize();
+
+            function animate() {
+                if(currentStage !== 3) return;
+                ctx.fillStyle = 'rgba(5,5,10,0.2)';
+                ctx.fillRect(0,0,w,h);
+                cards.forEach(c => { c.update(); c.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            const handleInteraction = (ex, ey) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = ex - rect.left;
+                mouse.y = ey - rect.top;
+            };
+
+            canvas.onmousemove = e => handleInteraction(e.clientX, e.clientY);
+            canvas.ontouchmove = e => { handleInteraction(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); };
+
+            const handlePick = () => {
+                if(selectedCards.length >= 3) return;
+                let closest = null;
+                let minDist = window.innerWidth < 768 ? 40 : 60;
+                cards.forEach((c, idx) => {
+                    const dx = mouse.x - c.px;
+                    const dy = mouse.y - c.py;
+                    const dist = Math.sqrt(dx*dx+dy*dy);
+                    if(dist < minDist && !c.picked) { minDist = dist; closest = idx; }
+                });
+
+                if(closest !== null) {
+                    cards[closest].picked = true;
+                    selectedCards.push(deck[Math.floor(Math.random()*deck.length)]);
+                    document.getElementById('drawCount').innerText = `Picked ${selectedCards.length} / 3`;
+                    if(gain) {
+                        gain.gain.setTargetAtTime(0.2, audioCtx.currentTime, 0.01);
+                        gain.gain.setTargetAtTime(0.05, audioCtx.currentTime + 0.1, 0.1);
+                    }
+                    if(selectedCards.length === 3) {
+                        document.getElementById('drawHint').style.display = 'none';
+                        document.getElementById('showResultsBtn').classList.remove('hidden');
+                    }
+                }
+            };
+
+            canvas.onclick = handlePick;
+            canvas.ontouchend = handlePick;
+        }
+
+        // --- Stage 4: RWD Reveal ---
+        async function initReveal() {
+            const narratives = [
+                `根源中，『${selectedCards[0].n}』顯示出您過去在 ${selectedCards[0].e} 能量上的狀態，這奠定了當前的基調。`,
+                `當下由『${selectedCards[1].n}』主導。這意味著您的意識正在尋求某種程度的平衡。`,
+                `未來指向『${selectedCards[2].n}』。這是一個轉化的契機，建議專注於內在成長。`
+            ];
+
+            for(let i=0; i<3; i++) {
+                document.getElementById(`cardName${i}`).innerText = selectedCards[i].n;
+                await typeEffect(`cardStory${i}`, narratives[i]);
+            }
+
+            const elMap = {Fire:0, Water:0, Air:0, Earth:0, Spirit:0};
+            selectedCards.forEach(c => elMap[c.e] += 30);
+            document.getElementById('domEl').innerText = Object.keys(elMap).reduce((a, b) => elMap[a] > elMap[b] ? a : b);
+            document.getElementById('stabIdx').innerText = (Math.random()*15+85).toFixed(1) + "%";
+
+            initRadarChart([elMap.Fire+20, elMap.Water+10, elMap.Air+25, elMap.Earth+15, elMap.Spirit+30]);
+        }
+
+        async function typeEffect(id, text) {
+            const el = document.getElementById(id);
+            el.innerText = "";
+            for(let i=0; i<text.length; i++) {
+                el.innerText += text[i];
+                await new Promise(r => setTimeout(r, 40));
             }
         }
-    });
 
-    const ctxTrend = document.getElementById('trendChart').getContext('2d');
-    new Chart(ctxTrend, {
-        type: 'line',
-        data: {
-            labels: ['週一', '週二', '週三', '週四', '週五', '週六', '週日'],
-            datasets: [
-                {
-                    label: '情緒穩定度',
-                    data: [65, 59, 80, 81, 56, 55, 70],
-                    borderColor: '#c026d3',
-                    tension: 0.4,
-                    fill: false
+        function initRadarChart(data) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['火 (能量)', '水 (情緒)', '風 (智力)', '地 (物質)', '靈 (直覺)'],
+                    datasets: [{
+                        label: '能量剖面',
+                        data: data,
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#8b5cf6',
+                        borderWidth: 2
+                    }]
                 },
-                {
-                    label: '靈性覺察力',
-                    type: 'bar',
-                    data: [40, 45, 60, 70, 45, 50, 65],
-                    backgroundColor: 'rgba(0, 242, 254, 0.2)',
-                    borderColor: '#00f2fe',
-                    borderWidth: 1
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.05)' },
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            pointLabels: { color: '#94a3b8', font: { size: window.innerWidth < 768 ? 9 : 11 } },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
                 }
-            ]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { display: false } }
-            },
-            plugins: {
-                legend: { labels: { color: '#94a3b8', boxWidth: 10 } },
-                tooltip: tooltipConfig
-            }
+            });
         }
-    });
-}
-</script>
-
+    </script>
 </body>
 </html>
