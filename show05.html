@@ -11,6 +11,7 @@
             --bg-deep: #05050a;
             --accent-violet: #8b5cf6;
             --primary-gold: #fbbf24;
+            --accent-cyan: #22d3ee;
             --glow: 0 0 30px rgba(251, 191, 36, 0.4);
             --nav-height: 70px;
         }
@@ -70,8 +71,9 @@
         .category-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 0.2rem; border-radius: 0.8rem; cursor: pointer; text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.5); transition: 0.3s; }
         .category-card.active { background: var(--primary-gold); color: black; font-weight: bold; }
 
+        /* 子項目清單捲軸優化 */
         .sub-theme-list { max-height: 250px; overflow-y: auto; margin-top: 1rem; padding-right: 5px; }
-        @media (max-width: 768px) { .sub-theme-list { max-height: none; overflow-y: visible; } }
+        @media (max-width: 768px) { .sub-theme-list { max-height: none; overflow-y: visible; padding-right: 0; } }
 
         .theme-item { padding: 0.7rem 1rem; margin-bottom: 0.4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer; text-align: left; line-height: 1.4; color: rgba(255,255,255,0.6); }
         .theme-item.active { border-color: var(--primary-gold); color: white; background: rgba(251, 191, 36, 0.1); }
@@ -92,6 +94,7 @@
         .progress-container { margin-top: 1.5rem; display: flex; justify-content: center; gap: 12px; }
         .p-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.5s ease; border: 1px solid rgba(251, 191, 36, 0.2); }
 
+        /* 結果呈現 */
         #result-row { display: flex; flex-direction: row; justify-content: center; gap: 10px; width: 100%; margin: 1.5rem 0; }
         .card-result { text-align: center; width: 30%; max-width: 150px; }
         .card-result img { width: 100%; border-radius: 0.5rem; border: 1px solid var(--primary-gold); box-shadow: 0 0 15px rgba(251, 191, 36, 0.2); }
@@ -100,15 +103,21 @@
         .btn-main { background: var(--primary-gold); color: black; font-weight: 900; border-radius: 3rem; transition: 0.3s; }
         .btn-main:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; box-shadow: none; }
 
-        .step-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.7rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; width: 100%; max-width: 400px; }
-        .step-hint { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-align: left; }
-        #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: black; padding: 10px 20px; border-radius: 2rem; font-weight: bold; z-index: 9999; }
+        /* 步驟按鈕樣式 (優化版) */
+        .step-container { width: 100%; max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+        .step-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; text-align: center; }
+        .btn-copy { background: white; color: black; font-weight: 900; border-radius: 12px; width: 100%; padding: 1rem; transition: 0.3s; box-shadow: 0 5px 15px rgba(255,255,255,0.1); border: none; cursor: pointer; }
+        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.2); }
+        .btn-link { display: block; text-align: center; border: 1.5px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; border-radius: 12px; width: 100%; padding: 1rem; transition: 0.3s; text-decoration: none; }
+        .btn-link:hover { background: rgba(34, 211, 238, 0.1); transform: translateY(-2px); }
 
         #confirm-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;
             backdrop-filter: blur(10px);
         }
+
+        #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: black; padding: 10px 20px; border-radius: 2rem; font-weight: bold; z-index: 9999; }
 
         @keyframes pulseShadow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     </style>
@@ -119,13 +128,11 @@
     <div id="confirm-overlay">
         <div class="content-wrapper max-w-xl text-center space-y-6">
             <h3 class="serif-font text-2xl text-amber-500 font-bold tracking-widest">能量覆核</h3>
-            <div class="bg-white/5 border border-white/10 p-6 rounded-2xl text-left space-y-4">
-                <div><span class="text-white/40 text-[10px] uppercase block mb-1">核心領域</span><p id="confirm-cat" class="text-white font-bold"></p></div>
-                <div><span class="text-white/40 text-[10px] uppercase block mb-1">提問內容</span><p id="confirm-ques" class="text-amber-200 italic"></p></div>
+            <div class="bg-white/5 border border-white/10 p-6 rounded-2xl text-left space-y-4 shadow-2xl">
+                <div><span class="text-white/40 text-[10px] uppercase block mb-1">當前核心領域</span><p id="confirm-cat" class="text-white font-bold"></p></div>
+                <div><span class="text-white/40 text-[10px] uppercase block mb-1">觀想提問內容</span><p id="confirm-ques" class="text-amber-200 italic"></p></div>
                 <div id="confirm-ctx-wrap"><span class="text-white/40 text-[10px] uppercase block mb-1">背景補充</span><p id="confirm-ctx" class="text-white/70 text-sm"></p></div>
-                <div id="both-warning" class="hidden py-3 px-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-xs italic">
-                    ⚠️ 偵測到「自主」與「導引」皆有內容，建議擇一保留。
-                </div>
+                <div id="both-warning" class="hidden py-3 px-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-xs italic">⚠️ 偵測到「自主」與「導引」皆有內容，建議擇一保留以聚焦能量。</div>
             </div>
             <div class="flex flex-col sm:flex-row gap-4">
                 <button onclick="hideConfirm()" class="flex-1 px-8 py-4 border border-white/20 rounded-full text-xs font-bold text-white/50 hover:text-white transition-all">返回修改</button>
@@ -135,7 +142,7 @@
     </div>
 
     <nav class="fixed top-0 left-0 w-full p-4 md:p-8 flex justify-between items-center z-50 bg-gradient-to-b from-[var(--bg-deep)] to-transparent">
-        <div class="text-lg md:text-2xl font-black serif-font">開運萬事通 <span class="font-light text-white/40 ml-1">開運姐姐</span></div>
+        <div class="text-lg md:text-2xl font-black serif-font">開運萬事通 <span class="font-light text-white/30 ml-1">開運姐姐</span></div>
         <div id="stepDots" class="flex gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-white transition-all scale-150"></div>
             <div class="w-1.5 h-1.5 rounded-full bg-white/20 transition-all"></div>
@@ -152,22 +159,10 @@
                 <p class="text-white/60 text-xs md:text-xl italic font-light tracking-[0.2em]">—— 探索 78 張塔羅原型的啟示藍圖 ——</p>
             </div>
             <div class="grid grid-cols-4 gap-2 w-full mt-4 max-w-2xl mx-auto">
-                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">01</span>
-                    <span class="text-[10px] md:text-xs font-bold text-white/80">靜心調頻</span>
-                </div>
-                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">02</span>
-                    <span class="text-[10px] md:text-xs font-bold text-white/80">釐清意圖</span>
-                </div>
-                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">03</span>
-                    <span class="text-[10px] md:text-xs font-bold text-white/80">啟示顯化</span>
-                </div>
-                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">04</span>
-                    <span class="text-[10px] md:text-xs font-bold text-white/80">靈魂對話</span>
-                </div>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5"><span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">01</span><span class="text-[10px] md:text-xs font-bold text-white/80">靜心調頻</span></div>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5"><span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">02</span><span class="text-[10px] md:text-xs font-bold text-white/80">釐清意圖</span></div>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5"><span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">03</span><span class="text-[10px] md:text-xs font-bold text-white/80">啟示顯化</span></div>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5"><span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">04</span><span class="text-[10px] md:text-xs font-bold text-white/80">靈魂對話</span></div>
             </div>
             <button onclick="nextStage(1)" class="px-12 py-4 md:px-16 md:py-5 rounded-full font-black text-sm border border-amber-500/30 hover:bg-white hover:text-black mt-8 md:mt-16 tracking-[0.3em] transition-all">開啟儀式</button>
         </div>
@@ -197,9 +192,7 @@
 
             <div id="mode-guided" class="w-full hidden">
                 <div class="category-grid" id="category-selector"></div>
-                <div id="sub-theme-list" class="sub-theme-list">
-                    <p class="p-8 text-center text-white/20 text-[10px] md:text-xs italic">請先選擇領域主題...</p>
-                </div>
+                <div id="sub-theme-list" class="sub-theme-list"><p class="p-8 text-center text-white/20 text-[10px] md:text-xs italic">請先選擇領域主題...</p></div>
                 <textarea class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-xs md:text-sm mt-4 focus:outline-none focus:border-amber-500/40 transition-all" id="context-guided" rows="2" placeholder="選取子類別後，可在此補充背景 (選填)..."></textarea>
             </div>
 
@@ -216,7 +209,7 @@
                     <div class="card-face card-front"><img src="" id="front-img"></div>
                 </div>
             </div>
-            <div class="progress-container" id="progress-dots"><div class="p-dot"></div><div class="p-dot"></div><div class="p-dot"></div></div>
+            <div class="progress-container" id="progress-dots" style="display:flex; justify-content:center; gap:12px; margin-top:2rem;"><div class="p-dot"></div><div class="p-dot"></div><div class="p-dot"></div></div>
         </div>
     </section>
 
@@ -224,11 +217,19 @@
         <div class="content-wrapper text-center max-w-5xl pb-20">
             <h2 class="text-2xl md:text-5xl font-black serif-font text-amber-500 mb-6 md:mb-8 tracking-[0.2em]">顯化</h2>
             <div id="result-row"></div>
-            <div class="space-y-4 w-full flex flex-col items-center mt-8 md:mt-12">
-                <div class="step-box"><button class="px-5 py-2.5 bg-white text-black font-black rounded-lg text-[10px]" onclick="copyResult()">步驟 1</button><span class="step-hint text-[10px] md:text-xs">複製占卜指令</span></div>
-                <div class="step-box"><a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="px-5 py-2.5 bg-white/10 text-white font-black rounded-lg text-[10px] border border-white/20">步驟 2</a><span class="step-hint text-[10px] md:text-xs">前往 Gemini <span class="text-cyan-400 font-bold underline">對話框貼上指令</span></span></div>
+            
+            <div class="space-y-8 w-full flex flex-col items-center mt-10 md:mt-16">
+                <div class="step-container">
+                    <span class="step-label">步驟 1： 點擊按鈕自動複製 3 張塔羅牌名</span>
+                    <button onclick="copyResult()" class="btn-copy tracking-widest text-sm">[ 一鍵複製牌名 ]</button>
+                </div>
+                <div class="step-container">
+                    <span class="step-label">步驟 2： 前往對話框貼上指令並開始解析</span>
+                    <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="btn-link tracking-widest text-sm">[ 前往 Gemini 貼上 ]</a>
+                </div>
             </div>
-            <button onclick="location.reload()" class="mt-12 md:mt-16 opacity-30 text-[9px] underline uppercase tracking-[0.3em]">重啟共振儀式</button>
+            
+            <button onclick="location.reload()" class="mt-12 md:mt-20 opacity-30 text-[9px] underline uppercase tracking-[0.3em]">重啟共振儀式</button>
         </div>
     </section>
 
@@ -263,9 +264,16 @@
             document.getElementById('mode-guided').style.display = mode === 'guided' ? 'block' : 'none';
             document.getElementById('tab-self').classList.toggle('active', mode === 'self');
             document.getElementById('tab-guided').classList.toggle('active', mode === 'guided');
+            
             const fateBtn = document.getElementById('start-fate-btn');
-            if(mode === 'self') { selectedQuestion = "自主冥想"; selectedCategory = "內在中心"; fateBtn.disabled = false; } 
-            else { if(!selectedQuestion || selectedQuestion === "自主冥想") { selectedQuestion = ""; fateBtn.disabled = true; } }
+            if(mode === 'self') {
+                selectedQuestion = "自主冥想"; selectedCategory = "內在中心";
+                fateBtn.disabled = false;
+            } else {
+                if(!selectedQuestion || selectedQuestion === "自主冥想") {
+                    selectedQuestion = ""; fateBtn.disabled = true;
+                }
+            }
         }
 
         function initIntentionUI() {
@@ -277,7 +285,7 @@
                 const div = document.createElement('div'); div.className = 'category-card'; div.innerText = cat;
                 div.onclick = () => {
                     selectedCategory = cat; selectedQuestion = ""; fateBtn.disabled = true; gTextarea.value = ""; 
-                    gTextarea.placeholder = `⚠️ 主類別已切換至 [${cat}]，請重新選擇子項並補充背景...`;
+                    gTextarea.placeholder = `⚠️ 主類別已切換至 [${cat}]，請重新選擇子項...`;
                     document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
                     div.classList.add('active');
                     const list = document.getElementById('sub-theme-list'); list.innerHTML = "";
@@ -332,7 +340,7 @@
                 setTimeout(() => {
                     card.classList.remove('flipped');
                     if (pickedData.length === 3) { setTimeout(() => nextStage(4), 800); } 
-                    else { document.getElementById('draw-label').innerText = `已感受第 ${pickedData.length} 張牌，請點擊卡牌抽下一張...`; picking = false; }
+                    else { document.getElementById('draw-label').innerText = `已感受第 ${pickedData.length} 張牌，請抽下一張...`; picking = false; }
                 }, 1500);
             }, 800);
         }
