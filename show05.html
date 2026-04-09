@@ -61,18 +61,23 @@
         @keyframes breathCycle { 0%, 100% { transform: scale(0.85); opacity: 0.3; } 50% { transform: scale(1.3); opacity: 0.9; box-shadow: 0 0 60px var(--primary-gold); } }
         @keyframes textFade { 0%, 48% { content: "吸氣..."; opacity: 1; } 49%, 51% { opacity: 0; } 52%, 100% { content: "吐氣..."; opacity: 1; } }
 
-        /* 意圖選取 */
+        /* 意圖選擇區 */
+        .tab-container { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
         .tab-btn { padding: 0.6rem 1.2rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.3); font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: rgba(139, 92, 246, 0.2); border-color: var(--accent-violet); color: white; }
+        
+        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .category-grid { grid-template-columns: repeat(5, 1fr); gap: 0.75rem; } }
         .category-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem 0.2rem; border-radius: 0.8rem; cursor: pointer; text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.5); transition: 0.3s; }
         .category-card.active { background: var(--primary-gold); color: black; font-weight: bold; }
-        
+
         .sub-theme-list { max-height: 250px; overflow-y: auto; margin-top: 1rem; padding-right: 5px; }
         @media (max-width: 768px) { .sub-theme-list { max-height: none; overflow-y: visible; padding-right: 0; } }
+
         .theme-item { padding: 0.7rem 1rem; margin-bottom: 0.4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer; text-align: left; line-height: 1.4; color: rgba(255,255,255,0.6); }
         .theme-item.active { border-color: var(--primary-gold); color: white; background: rgba(251, 191, 36, 0.1); }
 
-        /* 抽牌視覺 */
+        /* 抽牌視覺系統 */
         .card-zone { height: 340px; display: flex; flex-direction: column; justify-content: center; align-items: center; perspective: 1500px; }
         @media (min-width: 768px) { .card-zone { height: 420px; } }
         .tarot-card { width: 160px; height: 280px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
@@ -94,13 +99,11 @@
         .btn-main { background: var(--primary-gold); color: black; font-weight: 900; border-radius: 3rem; transition: 0.3s; }
         .btn-main:disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); cursor: not-allowed; box-shadow: none; }
         
-        /* 步驟區域優化 - 置中且 RWD */
+        /* 步驟區域優化 */
         .step-container { width: 100%; max-width: 450px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
         .step-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px; text-align: center; }
         .btn-copy { background: white; color: black; font-weight: 900; border-radius: 12px; width: 100%; padding: 1.1rem; transition: 0.3s; box-shadow: 0 5px 15px rgba(255,255,255,0.1); border: none; cursor: pointer; }
-        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,255,255,0.2); }
         .btn-link { display: block; text-align: center; border: 1.5px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; border-radius: 12px; width: 100%; padding: 1.1rem; transition: 0.3s; text-decoration: none; }
-        .btn-link:hover { background: rgba(34, 211, 238, 0.1); transform: translateY(-2px); }
 
         #confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; backdrop-filter: blur(10px); }
         #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: black; padding: 10px 20px; border-radius: 2rem; font-weight: bold; z-index: 9999; }
@@ -114,10 +117,10 @@
         <div class="content-wrapper max-w-xl text-center space-y-6">
             <h3 class="serif-font text-2xl text-amber-500 font-bold tracking-widest">能量覆核</h3>
             <div class="bg-white/5 border border-white/10 p-6 rounded-2xl text-left space-y-4 shadow-2xl">
-                <div><span class="text-white/40 text-[10px] uppercase block mb-1">核心領域</span><p id="confirm-cat" class="text-white font-bold"></p></div>
-                <div><span class="text-white/40 text-[10px] uppercase block mb-1">提問內容</span><p id="confirm-ques" class="text-amber-200 italic"></p></div>
+                <div><span class="text-white/40 text-[10px] uppercase block mb-1">當前核心領域</span><p id="confirm-cat" class="text-white font-bold"></p></div>
+                <div><span class="text-white/40 text-[10px] uppercase block mb-1">觀想提問內容</span><p id="confirm-ques" class="text-amber-200 italic"></p></div>
                 <div id="confirm-ctx-wrap"><span class="text-white/40 text-[10px] uppercase block mb-1">背景補充</span><p id="confirm-ctx" class="text-white/70 text-sm"></p></div>
-                <div id="both-warning" class="hidden py-3 px-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-xs italic">⚠️ 偵測到「自主」與「導引」皆有內容，建議擇一保留以聚焦能量。</div>
+                <div id="both-warning" class="hidden py-3 px-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-xs italic">⚠️ 偵測到「自主」與「導引」皆有內容，建議擇一保留。</div>
             </div>
             <div class="flex flex-col sm:flex-row gap-4">
                 <button onclick="hideConfirm()" class="flex-1 px-8 py-4 border border-white/20 rounded-full text-xs font-bold text-white/50 hover:text-white transition-all">返回修改</button>
@@ -232,7 +235,7 @@
             "感情與關係": ["能量狀態： 我們目前互動的能量流向與心理動力處於什麼樣的階段？", "對方感受： 對方內心對我的定位，以及他對這段關係的真實想法為何？", "核心問題： 阻礙我們關係深入發展的最關鍵瓶頸（或潛在衝突點）是什麼？", "聯絡發展： 若我採取主動聯絡，雙方的互動頻率與未來走向可能產生什麼質變？", "關係功課： 這段關係目前正引領我面對哪些個人成長的課題或靈魂契機？", "優化關係： 為了讓這段關係邁向更健康的循環，我現在最需要調整的行為或觀點是什麼？", "心理盲點： 在這段感情中，有哪些我一直選擇忽視或尚未察覺的真實狀況？", "關係角色： 在彼此的生命藍圖中，我們各自正扮演著什麼樣的心理投射角色？", "執著根源： 分手後這份難以釋懷的執念，背後揭示了我內在哪些尚未滿足的需求？", "下段準備： 在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？", "模式根源： 我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？", "溝通盲點： 在溝通失準的背後，我們各自存在著什麼樣的認知偏見或防衛機制？", "未來走向： 基於目前的互動基調，這段關係在可預見的未來最可能的演變路徑為何？", "家庭能量： 對方家人的態度背後隱藏著什麼樣的家族動力？我該如何保持自我中心而不受干擾？", "同質吸引： 我反覆吸引到類似特質的人，這反映了我內在哪些尚未整合的心理陰影或特質？"],
             "工作與職涯": ["離職轉型： 離開現有職位對我的生命路徑會產生什麼樣的結構性影響？", "優勢定位： 結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖是什麼？", "現況啟示： 近期職場上的挑戰，是為了訓練我具備哪種更高階的職涯能力？", "轉職注意： 針對目前的轉職計畫，有哪些隱藏的風險或關鍵機會是我需要留意的？", "主管關係： 我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？", "創業評估： 在創業這條路上，我的優勢動能與待補足的專業缺口分別是什麼？", "成就感缺失： 排除外在回報，我在工作中感到枯竭的核心心理因素為何？", "機會對比： 面前這兩個職涯選項，分別代表了哪兩種不同的生命擴張方向？", "副業潛力： 我目前的副業模型在市場競爭力與可持續性發展上的潛力如何？", "阻礙覺察： 排除努力程度，是什麼樣的潛意識限制或思維框架讓我感覺原地踏步？", "自由工作： 轉向自由職業前，我應如何建立足夠的心理韌性與系統化支持？", "斜槓切入點： 根據我現有的資源組合，哪個方向是目前阻力最小且回收最高的切入點？"],
             "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在引領我覺察哪些生命課題？", "原生家庭： 父母的金錢觀如何形塑了我現在對財富的處理方式與限制？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "不夠用的信念： 「錢永遠不夠」這個念頭背後，隱藏著什麼樣的自我匱乏信念？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？", "消費對映： 我的金錢支出模式，反映了我內在哪些情感補償或心理防禦？", "收入提升： 為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？", "配得感： 我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？", "財富課題： 在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？", "半年預測： 若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"],
-            "人際關係": ["關係演變： 與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？", "過度付出： 這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？", "界線建立： 我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？", "社交能量： 在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？", "父母療癒： 我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？", "群體格格不入： 這種疏離感是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？", "推開善意： 當他人展現善意時我本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？", "長期關係： 難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？", "關係天賦： 我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？", "收回付出： 為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"],
+            "人際關係": ["關係演變： 與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？", "過度付出： 這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？", "界線建立： 我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？", "社交能量： 在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？", "父母療癒： 我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？", "群體格格不入： 這種疏離感是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？", "推開善意： 當他人展現善意時本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？", "長期關係： 難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？", "關係天賦： 我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？", "收回付出： 為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"],
             "自我探索": ["我最近一直覺得很迷惘，我的內在到底在渴望什麼？", "我覺得人生卡住了，這個「卡住」的背後是什麼能量？", "人生卡住了，那個突破點是什麼？", "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？", "關於人生方向，此刻的我最需要看見什麼？", "我一直感覺有什麼東西在召喚我，那是什麼？", "在這個人生階段，我的核心課題是什麼？", "「我不夠好」這個念頭一直跟著我，它的根源是什麼？", "我的靈魂最想讓我知道的一件事是什麼？", "我的高我想對我說的一句話？", "從高我的角度來看，我的天賦是什麼？", "我的指導靈個性？祂擅長用什麼方式引導我？"]
         };
 
@@ -252,15 +255,24 @@
             if(stage === 4) initReveal();
         }
 
+        // --- 核心模式切換與類別邏輯 ---
         function switchIntentionMode(mode) {
             currentIntentionMode = mode;
             document.getElementById('mode-self').style.display = mode === 'self' ? 'block' : 'none';
             document.getElementById('mode-guided').style.display = mode === 'guided' ? 'block' : 'none';
             document.getElementById('tab-self').classList.toggle('active', mode === 'self');
             document.getElementById('tab-guided').classList.toggle('active', mode === 'guided');
+            
             const fateBtn = document.getElementById('start-fate-btn');
-            if(mode === 'self') { selectedQuestion = "自主冥想"; selectedCategory = "內在中心"; fateBtn.disabled = false; } 
-            else { if(!selectedQuestion || selectedQuestion === "自主冥想") { selectedQuestion = ""; fateBtn.disabled = true; } }
+            if(mode === 'self') {
+                selectedQuestion = "自主冥想"; selectedCategory = "內在中心";
+                fateBtn.disabled = false;
+            } else {
+                if(!selectedQuestion || selectedQuestion === "自主冥想") {
+                    selectedQuestion = "";
+                    fateBtn.disabled = true;
+                }
+            }
         }
 
         function initIntentionUI() {
@@ -281,7 +293,8 @@
                         item.onclick = () => {
                             document.querySelectorAll('.theme-item').forEach(i => i.classList.remove('active'));
                             item.classList.add('active');
-                            selectedQuestion = q; fateBtn.disabled = false;
+                            selectedQuestion = q;
+                            fateBtn.disabled = false;
                             gTextarea.placeholder = "請針對此提問補充具體背景 (選填)...";
                         };
                         list.appendChild(item);
