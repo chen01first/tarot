@@ -84,16 +84,26 @@
         .theme-item.active { border-color: var(--primary-gold); color: white; background: rgba(251, 191, 36, 0.1); }
 
         /* 抽牌系統 */
-        .card-placeholders { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem; }
-        .placeholder-box { width: 60px; height: 95px; border: 1px dashed rgba(251, 191, 36, 0.3); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); position: relative; overflow: hidden; color: var(--primary-gold); }
-        .placeholder-box img { width: 100%; height: 100%; object-fit: cover; }
+        .card-placeholders { display: flex; justify-content: center; gap: 0.8rem; margin-bottom: 2rem; position: relative; z-index: 50; }
+        .placeholder-box { width: 70px; height: 110px; border: 1.5px dashed rgba(251, 191, 36, 0.4); border-radius: 0.6rem; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); color: var(--primary-gold); position: relative; }
+        @media (min-width: 768px) { .placeholder-box { width: 100px; height: 160px; } }
         
         .shuffle-zone { position: relative; height: 180px; width: 100%; display: flex; justify-content: center; align-items: center; }
         .deck-card { position: absolute; width: 60px; height: 95px; background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 1px solid var(--primary-gold); border-radius: 4px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
         
-        .fan-spread { position: relative; height: 180px; width: 100%; display: none; justify-content: center; align-items: flex-end; }
-        .fan-card { position: absolute; width: 50px; height: 85px; background: #111; border: 1px solid rgba(251, 191, 36, 0.4); border-radius: 4px; transform-origin: bottom center; cursor: pointer; transition: transform 0.4s; left: 50%; bottom: 10px; margin-left: -25px; }
-        .fan-card.picked-anim { position: fixed !important; z-index: 1000 !important; pointer-events: none; border-color: white; box-shadow: 0 0 30px white; transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .fan-spread { position: relative; height: 200px; width: 100%; display: none; justify-content: center; align-items: flex-end; }
+        .fan-card { position: absolute; width: 60px; height: 95px; background: linear-gradient(135deg, #1e1e30, #0a0a14); border: 1px solid rgba(251, 191, 36, 0.6); border-radius: 6px; transform-origin: bottom center; cursor: pointer; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); left: 50%; bottom: 20px; margin-left: -30px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .fan-card:hover { transform: translateY(-20px) scale(1.1) !important; z-index: 100 !important; border-color: white; }
+        
+        /* 抽牌飛行動畫核心 */
+        .picked-anim { 
+            position: fixed !important; 
+            z-index: 9999 !important; 
+            pointer-events: none; 
+            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.8);
+            border: 2px solid white !important;
+        }
 
         .reversed-img { transform: rotate(180deg); }
 
@@ -306,7 +316,6 @@
                 fateBtn.disabled = false;
                 fateBtn.classList.remove('disabled');
             } else {
-                // 切換回 Guided 時，重設按鈕狀態為關閉
                 selectedQuestion = "";
                 fateBtn.disabled = true;
                 fateBtn.classList.add('disabled');
@@ -316,7 +325,6 @@
         function initIntentionUI() {
             const selector = document.getElementById('category-selector'); selector.innerHTML = "";
             const fateBtn = document.getElementById('start-fate-btn');
-            // 初始狀態設為 Self 模式
             switchIntentionMode('self');
 
             Object.keys(themes).forEach(cat => {
@@ -355,42 +363,72 @@
         function stopShuffle() {
             document.getElementById('shuffle-deck').style.display = "none";
             document.getElementById('stop-shuffle-btn').style.display = "none";
-            document.getElementById('draw-info').innerText = "請傾聽直覺，連點兩下選取三張牌";
+            document.getElementById('draw-info').innerText = "請傾聽直覺，雙擊選取三張牌";
             const fan = document.getElementById('fan-spread'); fan.style.display = "flex";
             document.getElementById('fan-hint').classList.remove('hidden'); fan.innerHTML = "";
             for(let i=0; i<20; i++) {
                 const card = document.createElement('div'); card.className = "fan-card";
-                const angle = (i - 9.5) * 5, offsetX = (i - 9.5) * 10;
+                const angle = (i - 9.5) * 5, offsetX = (i - 9.5) * 12;
                 card.style.transform = `translateX(${offsetX}px) rotate(${angle}deg)`;
+                card.dataset.initTransform = `translateX(${offsetX}px) rotate(${angle}deg)`;
                 let lastClick = 0;
                 card.onclick = () => { if(Date.now() - lastClick < 350) pickCard(card); lastClick = Date.now(); };
                 fan.appendChild(card);
             }
         }
 
+        // --- 核心優化：重新計算抽牌飛入框內的座標 ---
         function pickCard(el) {
             if (pickedCards.length >= 3 || el.classList.contains('used')) return;
-            const index = pickedCards.length, targetFrame = document.getElementById(`frame-${index}`);
+            
+            const index = pickedCards.length;
+            const targetFrame = document.getElementById(`frame-${index}`);
+            
+            // 隨機抽牌內容
             let rid; do { rid = Math.floor(Math.random()*78).toString().padStart(2, '0'); } while (pickedCards.some(c => c.id === rid));
             const isReversed = Math.random() > 0.5;
             pickedCards.push({ id: rid, isReversed: isReversed });
             
+            // 1. 取得當前元素在視窗中的絕對位置 (Viewport coordinates)
+            const rect = el.getBoundingClientRect();
+            const targetRect = targetFrame.getBoundingClientRect();
+
+            // 2. 鎖定元素狀態
             el.classList.add('used', 'picked-anim');
-            const cardRect = el.getBoundingClientRect(), frameRect = targetFrame.getBoundingClientRect();
-            const dx = (frameRect.left + frameRect.width/2) - (cardRect.left + cardRect.width/2);
-            const dy = (frameRect.top + frameRect.height/2) - (cardRect.top + cardRect.height/2);
             
+            // 3. 將牌面「瞬間」轉化為固定定位，避免父容器 transform 干擾
+            el.style.left = rect.left + 'px';
+            el.style.top = rect.top + 'px';
+            el.style.margin = '0';
+            el.style.transform = 'none'; // 先重設所有 transform
+
+            // 4. 計算位移差 (目標框中心點 - 牌面當前中心點)
+            const dx = (targetRect.left + targetRect.width / 2) - (rect.left + rect.width / 2);
+            const dy = (targetRect.top + targetRect.height / 2) - (rect.top + rect.height / 2);
+
+            // 5. 執行飛行與縮放動畫 (適配不同框的大小)
+            const scaleX = targetRect.width / rect.width;
+            const scaleY = targetRect.height / rect.height;
+            
+            // 為了讓牌完美覆蓋框，我們使用 transform translate
+            setTimeout(() => {
+                el.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX})`;
+            }, 10);
+
+            // 渲染圖片
             const img = document.createElement('img');
             img.src = `tarot_${rid}.jpg`;
-            if(isReversed) img.className = "reversed-img";
-            img.onerror = () => { img.src = `https://via.placeholder.com/150x240/111/d4af37?text=${tarotNames[rid].split('-')[1]}`; };
+            img.className = isReversed ? "reversed-img w-full h-full object-cover rounded" : "w-full h-full object-cover rounded";
+            img.onerror = () => { 
+                el.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-[8px] font-bold text-amber-500">${tarotNames[rid].split('-')[1]}</div>`;
+            };
             el.appendChild(img);
 
-            el.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(1.1)`;
-            targetFrame.style.border = "2px solid white";
-            targetFrame.innerText = "";
+            targetFrame.style.borderColor = "white";
+            targetFrame.innerHTML = "";
             document.getElementById('picked-count').innerText = pickedCards.length;
-            if (pickedCards.length === 3) setTimeout(() => nextStage(5), 1800);
+            
+            if (pickedCards.length === 3) setTimeout(() => nextStage(5), 1500);
         }
 
         function initReveal() {
