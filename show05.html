@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>開運萬事通：開運姐姐靈魂共振儀式系統</title>
+    <title>開運萬事通：開運姐姐靈靈魂共振儀式系統</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -79,7 +79,7 @@
         .theme-item { padding: 0.7rem 1rem; margin-bottom: 0.4rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; font-size: 0.8rem; cursor: pointer; text-align: left; line-height: 1.4; color: rgba(255,255,255,0.6); }
         .theme-item.active { border-color: var(--primary-gold); color: white; background: rgba(251, 191, 36, 0.1); }
 
-        /* 抽牌系統 (RWD) */
+        /* 抽牌系統 */
         .card-placeholders { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; width: 100%; }
         .placeholder-box { 
             width: 22vw; height: 32vw; max-width: 100px; max-height: 150px; 
@@ -100,7 +100,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
-        /* 抽牌飛行動畫核心：像素級對齊 */
+        /* 抽牌飛行動畫核心 */
         .picked-anim { 
             position: fixed !important; 
             z-index: 9999 !important; 
@@ -126,6 +126,15 @@
         .step-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 0.7rem; border-radius: 1rem; display: flex; align-items: center; gap: 1rem; width: 100%; max-width: 400px; }
         .step-hint { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-align: left; }
         #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: black; padding: 10px 20px; border-radius: 2rem; font-weight: bold; z-index: 9999; }
+
+        /* 塔羅步驟卡片美化 */
+        .step-tarot-card { 
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 8px;
+            padding: 12px 4px;
+            transition: all 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -145,19 +154,35 @@
 
     <section id="stage0" class="page-stage stage-active">
         <div class="content-wrapper text-center">
-            <div class="space-y-4">
-                <div class="text-[10px] tracking-[0.5em] text-amber-500 font-bold uppercase">幸運頻率通訊協議 v7.0</div>
-                <h1 class="text-5xl md:text-8xl font-black serif-font leading-tight">靈魂<br class="md:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200">共振儀式</span></h1>
-                <p class="text-white/60 text-sm md:text-xl italic">—— 探索 78 張塔羅原型的啟示藍圖 ——</p>
+            <div class="space-y-4 py-8">
+                <h1 class="text-5xl md:text-9xl font-black serif-font leading-tight">靈魂<br class="md:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200">共振儀式</span></h1>
+                <p class="text-white/60 text-sm md:text-xl italic font-light tracking-[0.2em]">—— 探索 78 張塔羅原型的啟示藍圖 ——</p>
             </div>
-            <div class="grid grid-cols-5 gap-2 w-full mt-8">
-                <div class="p-2 border border-white/10 rounded-lg bg-white/5"><span class="text-[8px] block text-amber-500/50">01</span><span class="text-[10px] font-bold">靜心</span></div>
-                <div class="p-2 border border-white/10 rounded-lg bg-white/5"><span class="text-[8px] block text-amber-500/50">02</span><span class="text-[10px] font-bold">調頻</span></div>
-                <div class="p-2 border border-white/10 rounded-lg bg-white/5"><span class="text-[8px] block text-amber-500/50">03</span><span class="text-[10px] font-bold">意圖</span></div>
-                <div class="p-2 border border-white/10 rounded-lg bg-white/5"><span class="text-[8px] block text-amber-500/50">04</span><span class="text-[10px] font-bold">顯化</span></div>
-                <div class="p-2 border border-white/10 rounded-lg bg-white/5"><span class="text-[8px] block text-amber-500/50">05</span><span class="text-[10px] font-bold">對話</span></div>
+            
+            <div class="grid grid-cols-5 gap-2 w-full mt-12 max-w-2xl mx-auto">
+                <div class="step-tarot-card">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black mb-1">01</span>
+                    <span class="text-xs md:text-sm font-bold tracking-widest text-white/80">靜心</span>
+                </div>
+                <div class="step-tarot-card">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black mb-1">02</span>
+                    <span class="text-xs md:text-sm font-bold tracking-widest text-white/80">調頻</span>
+                </div>
+                <div class="step-tarot-card">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black mb-1">03</span>
+                    <span class="text-xs md:text-sm font-bold tracking-widest text-white/80">意圖</span>
+                </div>
+                <div class="step-tarot-card">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black mb-1">04</span>
+                    <span class="text-xs md:text-sm font-bold tracking-widest text-white/80">顯化</span>
+                </div>
+                <div class="step-tarot-card">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black mb-1">05</span>
+                    <span class="text-xs md:text-sm font-bold tracking-widest text-white/80">對話</span>
+                </div>
             </div>
-            <button onclick="nextStage(1)" class="btn-ritual px-16 py-4 rounded-full font-black text-sm border-amber-500/30 hover:bg-white hover:text-black mt-10">開啟儀式</button>
+
+            <button onclick="nextStage(1)" class="btn-ritual px-16 py-5 rounded-full font-black text-sm border-amber-500/30 hover:bg-white hover:text-black mt-16 tracking-[0.3em]">開啟儀式</button>
         </div>
     </section>
 
@@ -165,18 +190,24 @@
         <div class="content-wrapper text-center">
             <h2 class="text-3xl font-black serif-font">靜心歸位</h2>
             <div class="breath-wrapper"><div class="breath-circle"></div><div class="breath-text"></div></div>
-            <p class="text-amber-400 font-bold text-sm animate-pulse">深呼吸，感受內在中心...</p>
-            <button id="startAlignment" class="btn-ritual px-12 py-4 bg-white/5 mt-8">對齊呼吸節奏</button>
+            <p class="text-amber-400 font-bold text-sm animate-pulse tracking-widest">深呼吸，感受內在中心...</p>
+            <button id="startAlignment" class="btn-ritual px-12 py-4 bg-white/5 border border-white/10 mt-8 text-xs font-black">
+                [ 點擊 ] 啟動對齊呼吸節奏
+            </button>
         </div>
     </section>
 
     <section id="stage2" class="page-stage">
         <div class="content-wrapper text-center">
-            <h2 class="text-3xl font-black serif-font">能量調頻</h2>
+            <h2 class="text-3xl font-black serif-font mb-2">能量調頻</h2>
+            <p class="text-white/40 text-[10px] tracking-widest mb-6 uppercase">Calibration</p>
             <canvas id="waveCanvas" class="my-6"></canvas>
-            <input type="range" id="tuningSlider" class="tuning-slider" min="0" max="1000" value="150">
-            <div id="resonanceStatus" class="mt-4 text-amber-500 font-bold italic">感應場域中...</div>
-            <button id="btnIntention" onclick="nextStage(3)" class="hidden px-12 py-4 btn-main mt-6 rounded-full font-black">準備接收</button>
+            <div class="max-w-md mx-auto w-full px-4">
+                <input type="range" id="tuningSlider" class="tuning-slider" min="0" max="1000" value="150">
+                <p class="mt-4 text-white/40 text-[11px] italic tracking-widest">點擊或移動滑槓來校準頻率</p>
+            </div>
+            <div id="resonanceStatus" class="mt-8 text-amber-500 font-black text-lg italic tracking-widest">感應場域中...</div>
+            <button id="btnIntention" onclick="nextStage(3)" class="hidden px-12 py-4 btn-main mt-8 rounded-full font-black text-sm">準備接收啟示</button>
         </div>
     </section>
 
@@ -189,7 +220,7 @@
             </div>
             
             <div id="mode-self" class="w-full text-center py-4">
-                <div class="p-6 italic text-white/70 text-sm bg-white/5 border border-white/10 rounded-2xl">
+                <div class="p-6 italic text-white/70 text-sm bg-white/5 border border-white/10 rounded-2xl leading-relaxed">
                     「請閉上雙眼，在腦海中勾勒您的問題核心。」
                 </div>
             </div>
@@ -201,8 +232,8 @@
                 </div>
             </div>
 
-            <textarea class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm mt-4 focus:outline-none" id="custom-context" rows="2" placeholder="補充背景 (選填)..."></textarea>
-            <button class="btn-main mx-auto mt-6 px-10 py-4 rounded-full text-sm font-black" id="start-fate-btn" disabled onclick="nextStage(4)">開啟命運之門</button>
+            <textarea class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm mt-4 focus:outline-none focus:border-amber-500/40 transition-all" id="custom-context" rows="2" placeholder="若有特定對象或細節，請在此補充 (選填)..."></textarea>
+            <button class="btn-main mx-auto mt-8 px-12 py-4 rounded-full text-sm font-black tracking-widest" id="start-fate-btn" disabled onclick="nextStage(4)">開啟命運之門</button>
         </div>
     </section>
 
@@ -213,25 +244,37 @@
                 <div class="placeholder-box" id="frame-1"></div>
                 <div class="placeholder-box" id="frame-2"></div>
             </div>
-            <h3 id="draw-info" class="text-sm font-bold italic mb-4 text-amber-500">正在凝聚能量...</h3>
+            <h3 id="draw-info" class="text-sm font-bold italic mb-4 text-amber-500 tracking-widest">正在凝聚能量...</h3>
             <div id="shuffle-deck" class="shuffle-zone"></div>
             <div id="fan-spread" class="fan-spread"></div>
-            <div class="mt-6">
+            <div class="mt-8">
                 <button class="btn-ritual px-10 py-4 text-xs btn-main" id="stop-shuffle-btn" onclick="stopShuffle()">停止洗牌</button>
-                <p id="fan-hint" class="hidden text-[10px] text-white/30 tracking-widest mt-4">✦ 雙擊選取三張牌 (已抽 <span id="picked-count" class="text-white">0</span>/3) ✦</p>
+                <p id="fan-hint" class="hidden text-[10px] text-white/30 tracking-widest mt-4 animate-pulse">✦ 請傾聽直覺 雙擊選取三張牌 (已抽 <span id="picked-count" class="text-white">0</span>/3) ✦</p>
             </div>
         </div>
     </section>
 
     <section id="stage5" class="page-stage">
         <div class="content-wrapper text-center max-w-5xl pb-20">
-            <h2 class="text-2xl font-black serif-font text-amber-500 mb-6">命運的倒影</h2>
+            <h2 class="text-3xl md:text-5xl font-black serif-font text-amber-500 mb-8 tracking-[0.2em]">顯化</h2>
+            
             <div id="result-row"></div>
-            <div class="space-y-3 w-full flex flex-col items-center mt-6">
-                <div class="step-box"><button class="px-5 py-2.5 bg-white text-black font-black rounded-lg text-[10px]" onclick="copyResult()">步驟 1</button><span class="step-hint">複製占卜結果指令</span></div>
-                <div class="step-box"><a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="px-5 py-2.5 bg-white/10 text-white font-black rounded-lg text-[10px] border border-white/20">步驟 2</a><span class="step-hint">前往 Gemini 貼上指令</span></div>
+
+            <div class="space-y-4 w-full flex flex-col items-center mt-12">
+                <p class="text-[10px] text-white/30 tracking-[0.3em] uppercase mb-2">啟動解讀步驟</p>
+                
+                <div class="step-box">
+                    <button class="px-5 py-2.5 bg-white text-black font-black rounded-lg text-[10px] whitespace-nowrap" onclick="copyResult()">步驟 1</button>
+                    <span class="step-hint">點選步驟 1 <span class="text-white">複製占卜結果指令</span></span>
+                </div>
+
+                <div class="step-box">
+                    <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="px-5 py-2.5 bg-white/10 text-white font-black rounded-lg text-[10px] border border-white/20 whitespace-nowrap">步驟 2</a>
+                    <span class="step-hint">點選步驟 2 前往 Gemini <span class="text-cyan-400 font-bold underline decoration-cyan-400/30">對話框貼上指令</span> 並送出</span>
+                </div>
             </div>
-            <button onclick="location.reload()" class="mt-12 opacity-30 text-[9px] underline uppercase tracking-widest">重啟儀式</button>
+            
+            <button onclick="location.reload()" class="mt-16 opacity-30 text-[9px] underline uppercase tracking-[0.3em]">重啟共振儀式</button>
         </div>
     </section>
 
@@ -264,7 +307,7 @@
 
         function initAlignment() {
             document.getElementById('startAlignment').onclick = function() {
-                this.innerText = "對齊中..."; setTimeout(() => nextStage(2), 2000);
+                this.innerText = "正在對齊中..."; setTimeout(() => nextStage(2), 2000);
             };
         }
 
@@ -281,7 +324,7 @@
                 ctx.beginPath(); ctx.strokeStyle = resonance > 0.98 ? "white" : "rgba(139, 92, 246, 0.6)"; ctx.lineWidth = resonance > 0.98 ? 3 : 1;
                 for(let x=0; x<w; x++) ctx.lineTo(x, h/2 + Math.sin(x*(0.01 + val*0.00002) + Date.now()*0.005) * 20);
                 ctx.stroke();
-                status.innerText = resonance > 0.98 ? "達成共振！" : "調頻中...";
+                status.innerText = resonance > 0.98 ? "達成共振！" : "能量感應中...";
                 if(resonance > 0.98) btn.classList.remove('hidden'); else btn.classList.add('hidden');
                 requestAnimationFrame(render);
             }
@@ -351,45 +394,33 @@
             }
         }
 
-        // --- 核心優化：絕對座標映射 ---
         function pickCard(el) {
             if (pickedCards.length >= 3 || el.classList.contains('used')) return;
-            
             const index = pickedCards.length;
             const targetFrame = document.getElementById(`frame-${index}`);
-            
             let rid; do { rid = Math.floor(Math.random()*78).toString().padStart(2, '0'); } while (pickedCards.some(c => c.id === rid));
             const isReversed = Math.random() > 0.5;
             pickedCards.push({ id: rid, isReversed: isReversed });
-            
-            // 1. 取得當前牌與目標框的視窗座標
             const sourceRect = el.getBoundingClientRect();
             const destRect = targetFrame.getBoundingClientRect();
-
-            // 2. 將牌面轉化為 Fixed 定位，確保不受父層影響
             el.classList.add('picked-anim', 'used');
             el.style.left = sourceRect.left + 'px';
             el.style.top = sourceRect.top + 'px';
             el.style.width = sourceRect.width + 'px';
             el.style.height = sourceRect.height + 'px';
-            el.style.margin = "0"; // 移除原本的居中 offset
-            el.style.transform = "rotate(0deg)"; // 飛行前先回正
-
-            // 3. 觸發動畫：強制座標映射
+            el.style.margin = "0";
+            el.style.transform = "rotate(0deg)";
             setTimeout(() => {
                 el.style.left = destRect.left + 'px';
                 el.style.top = destRect.top + 'px';
                 el.style.width = destRect.width + 'px';
                 el.style.height = destRect.height + 'px';
             }, 10);
-
-            // 填入內容
             const img = document.createElement('img');
             img.src = `tarot_${rid}.jpg`;
             img.className = isReversed ? "reversed-img w-full h-full object-cover rounded" : "w-full h-full object-cover rounded";
             img.onerror = () => { el.innerHTML = `<div class='h-full flex items-center justify-center text-[10px] font-bold text-amber-500'>${tarotNames[rid].split('-')[1]}</div>`; };
             el.appendChild(img);
-
             targetFrame.style.border = "none";
             document.getElementById('picked-count').innerText = pickedCards.length;
             if (pickedCards.length === 3) setTimeout(() => nextStage(5), 1200);
@@ -410,7 +441,7 @@
 
         function copyResult() {
             const cardStr = pickedCards.map(c => (c.isReversed ? "[反位]" : "[正位]") + tarotNames[c.id]).join('、');
-            const prompt = `核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n背景：${document.getElementById('custom-context').value}\n抽出牌組：${cardStr}\n\n啟動深度思考/多維解構模式。運用神祕學與榮格心理學深度解析並給予建議。`;
+            const prompt = `核心領域：${selectedCategory}\n占卜提問：${selectedQuestion}\n背景補充：${document.getElementById('custom-context').value}\n抽出牌組：${cardStr}\n\n啟動深度思考/多維解構模式。運用神祕學與榮格心理學，針對這三張牌的象徵意涵，深度解析此提問背後的潛意識動能，並給予當下最精確的行動建議。`;
             navigator.clipboard.writeText(prompt).then(() => {
                 const t = document.getElementById('toast'); t.style.visibility = 'visible';
                 setTimeout(() => t.style.visibility = 'hidden', 3000);
