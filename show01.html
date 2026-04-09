@@ -114,12 +114,6 @@
         .card-result { width: 120px; text-align: center; font-size: 0.85rem; }
         .card-result img { width: 100%; border-radius: 8px; border: 1px solid gold; margin-bottom: 10px; }
 
-        .mode-box {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 15px; border-radius: 12px; margin: 20px 0;
-        }
-
         .btn {
             background: transparent; border: 1.5px solid var(--primary-gold);
             color: var(--primary-gold); padding: 14px 30px; border-radius: 50px;
@@ -132,6 +126,7 @@
         #toast {
             visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--primary-gold); color: #000; padding: 12px 30px; border-radius: 8px; font-weight: bold;
+            z-index: 999;
         }
 
         @media (max-width: 600px) {
@@ -190,15 +185,8 @@
             <h2 style="color: var(--primary-gold);">揭曉：命運的倒影</h2>
             <div class="result-row" id="result-row"></div>
 
-            <div class="mode-box">
-                <p style="margin-top:0; font-weight:bold; color:var(--primary-gold);">選擇分析深度</p>
-                <label style="cursor:pointer;"><input type="radio" name="mode" value="normal" checked> 一般分析模式</label>
-                &nbsp;&nbsp;&nbsp;
-                <label style="cursor:pointer;"><input type="radio" name="mode" value="think"> 🧠 深度思考/推理模式</label>
-            </div>
-
             <div class="action-steps">
-                <button class="btn btn-main" onclick="copyResult()">步驟 1：複製牌名</button>
+                <button class="btn btn-main" onclick="copyResult()">步驟 1：複製分析指令</button>
                 <br>
                 <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" 
                    target="_blank" class="btn">步驟 2：進行分析</a>
@@ -208,7 +196,7 @@
         </div>
     </div>
 
-    <div id="toast">牌組名稱已複製</div>
+    <div id="toast">分析指令已複製</div>
 
     <script>
         const tarotNames = {
@@ -222,10 +210,9 @@
         let pickedIds = [];
         let picking = false;
 
-        // 呼吸文字切換邏輯
         setInterval(() => {
             const bt = document.getElementById('b-text');
-            bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
+            if(bt) bt.innerText = bt.innerText === "吸氣..." ? "吐氣..." : "吸氣...";
         }, 4000);
 
         function nextScreen(id) {
@@ -241,11 +228,16 @@
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedIds.includes(rid));
 
             const img = document.getElementById('front-img');
+            const card = document.getElementById('tarot-card');
+
+            // 修正點 1: 先更新圖片路徑，再觸發翻牌動畫
             img.src = `tarot_${rid}.jpg`;
             img.onerror = () => { img.src = `https://via.placeholder.com/180x310/222/d4af37?text=${tarotNames[rid]}`; };
 
-            const card = document.getElementById('tarot-card');
-            card.classList.add('flipped');
+            // 稍微延遲 50ms 確保瀏覽器已處理 src 變更再翻面，避免看到舊圖
+            setTimeout(() => {
+                card.classList.add('flipped');
+            }, 50);
 
             setTimeout(() => {
                 pickedIds.push(rid);
@@ -253,12 +245,17 @@
                 
                 setTimeout(() => {
                     card.classList.remove('flipped');
-                    if (pickedIds.length === 3) {
-                        setTimeout(showFinal, 800);
-                    } else {
-                        document.getElementById('draw-label').innerText = `已感受第 ${pickedIds.length} 張牌，請抽下一張...`;
-                        picking = false;
-                    }
+                    
+                    // 修正點 2: 在牌面翻轉回去的動畫期間，非同步清空 src，確保下次抽牌是乾淨的狀態
+                    setTimeout(() => {
+                        img.src = ""; 
+                        if (pickedIds.length === 3) {
+                            showFinal();
+                        } else {
+                            document.getElementById('draw-label').innerText = `已感受第 ${pickedIds.length} 張牌，請抽下一張...`;
+                            picking = false;
+                        }
+                    }, 800); // 這裡的 800ms 對應 CSS 的 transition 時間
                 }, 1500);
             }, 800);
         }
@@ -277,14 +274,8 @@
 
         function copyResult() {
             const names = pickedIds.map(id => tarotNames[id]).join('、');
-            const isThink = document.querySelector('input[name="mode"]:checked').value === 'think';
-            
-            let prompt = "";
-            if (isThink) {
-                prompt = `請啟動【深度思考/推理模式】。我觀想的問題已具象化，抽出的牌組為：【${names}】。請運用占星對應、象徵主義與行為心理學，進行多維度的邏輯推演，並給予我突破性的分析與指引。`;
-            } else {
-                prompt = `我抽到了三張塔羅牌：【${names}】。請針對我腦海中觀想的問題，提供解析與溫暖的指引。`;
-            }
+            // 修正點 3: 固定使用深度思考模式的 Prompt 開頭
+            const prompt = `請啟動【深度思考/推理模式】。我觀想的問題已具象化，抽出的牌組為：【${names}】。請運用占星對應、象徵主義與行為心理學，進行多維度的邏輯推演，並給予我突破性的分析與指引。`;
 
             navigator.clipboard.writeText(prompt).then(() => {
                 const toast = document.getElementById('toast');
