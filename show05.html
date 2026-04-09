@@ -12,6 +12,7 @@
             --accent-violet: #8b5cf6;
             --primary-gold: #fbbf24;
             --glow: 0 0 30px rgba(251, 191, 36, 0.4);
+            --nav-height: 80px; /* 定義導航高度基準 */
         }
 
         body {
@@ -25,19 +26,25 @@
 
         .serif-font { font-family: 'Cinzel', serif; }
 
+        /* --- 修正佈局重疊問題 --- */
         .page-stage {
             position: fixed;
             inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 4vh 1rem; 
+            /* 手機端保留更多頂部空間，避免與導航列重疊 */
+            padding: var(--nav-height) 1rem 2rem 1rem; 
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
             pointer-events: none;
             z-index: 10;
             overflow-y: auto;
         }
+        @media (min-width: 768px) {
+            .page-stage { padding-top: 12vh; }
+        }
+        
         .stage-active { opacity: 1; pointer-events: auto; }
 
         .content-wrapper {
@@ -73,58 +80,55 @@
 
         /* --- 抽牌視覺系統 --- */
         .card-zone { 
-            height: 400px; 
+            height: 340px; /* 手機端縮減高度 */
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
             perspective: 1500px; 
         }
+        @media (min-width: 768px) {
+            .card-zone { height: 420px; }
+        }
+
         .tarot-card {
-            width: 180px; 
-            height: 310px; 
+            width: 160px; height: 280px; /* 手機端微調比例 */
             position: relative;
             transform-style: preserve-3d; 
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
         }
+        @media (min-width: 768px) {
+            .tarot-card { width: 180px; height: 310px; }
+        }
+
         .card-face {
-            position: absolute; 
-            width: 100%; 
-            height: 100%;
-            backface-visibility: hidden; 
-            border-radius: 12px;
-            border: 2px solid var(--primary-gold); 
-            background: #111;
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 12px;
+            border: 2px solid var(--primary-gold); background: #111;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .card-back {
             background: linear-gradient(135deg, #1a1a2e 0%, #4a148c 100%);
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
         .card-back::after { 
-            content: "◈"; 
-            color: var(--primary-gold); 
-            font-size: 3.5rem; 
+            content: "◈"; color: var(--primary-gold); font-size: 3rem; 
             text-shadow: 0 0 20px var(--primary-gold);
             animation: pulseShadow 2s infinite ease-in-out;
         }
         .card-front { transform: rotateY(180deg); overflow: hidden; }
         .card-front img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: opacity 0.3s ease; /* 影像淡入淡出 */
-            opacity: 0; /* 預設隱藏，避免閃現舊圖 */
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: opacity 0.3s ease;
+            opacity: 0;
         }
-        .tarot-card.flipped { transform: rotateY(180deg) scale(1.15) translateZ(50px); }
+        .tarot-card.flipped { transform: rotateY(180deg) scale(1.1) translateZ(50px); }
         .reversed-img { transform: rotate(180deg); }
 
-        .progress-container { margin-top: 2rem; display: flex; justify-content: center; gap: 12px; }
+        .progress-container { margin-top: 1.5rem; display: flex; justify-content: center; gap: 12px; }
         .p-dot { 
-            width: 12px; height: 12px; border-radius: 50%; 
+            width: 10px; height: 10px; border-radius: 50%; 
             background: rgba(255,255,255,0.1); 
             transition: all 0.5s ease; 
             border: 1px solid rgba(251, 191, 36, 0.2);
@@ -143,18 +147,13 @@
         #toast { visibility: hidden; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary-gold); color: black; padding: 10px 20px; border-radius: 2rem; font-weight: bold; z-index: 9999; }
 
         @keyframes pulseShadow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-        
-        @media (max-width: 600px) {
-            .tarot-card { width: 150px; height: 260px; }
-            .tarot-card.flipped { transform: rotateY(180deg) scale(1.1); }
-        }
     </style>
 </head>
 <body>
     <div id="toast">指令已複製，啟動深度思考</div>
 
-    <nav class="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-50">
-        <div class="text-xl font-black serif-font">開運萬事通 <span class="font-light text-white/30 ml-1">開運姐姐</span></div>
+    <nav class="fixed top-0 left-0 w-full p-4 md:p-8 flex justify-between items-center z-50 bg-gradient-to-b from-[var(--bg-deep)] to-transparent">
+        <div class="text-lg md:text-2xl font-black serif-font">開運萬事通 <span class="font-light text-white/30 ml-1">開運姐姐</span></div>
         <div id="stepDots" class="flex gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-white transition-all scale-150"></div>
             <div class="w-1.5 h-1.5 rounded-full bg-white/20 transition-all"></div>
@@ -167,39 +166,39 @@
     <section id="stage0" class="page-stage stage-active">
         <div class="content-wrapper text-center">
             <div class="space-y-4 py-8">
-                <h1 class="text-5xl md:text-9xl font-black serif-font leading-tight">靈魂<br class="md:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200">共振儀式</span></h1>
-                <p class="text-white/60 text-sm md:text-xl italic font-light tracking-[0.2em]">—— 探索 78 張塔羅原型的啟示藍圖 ——</p>
+                <h1 class="text-4xl md:text-9xl font-black serif-font leading-tight">靈魂<br class="md:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-500 to-amber-200">共振儀式</span></h1>
+                <p class="text-white/60 text-xs md:text-xl italic font-light tracking-[0.2em]">—— 探索 78 張塔羅原型的啟示藍圖 ——</p>
             </div>
             
-            <div class="grid grid-cols-4 gap-2 w-full mt-12 max-w-2xl mx-auto">
-                <div class="border border-white/10 p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-xl block text-amber-500 font-black">01</span>
-                    <span class="text-xs font-bold text-white/80">靜心調頻</span>
+            <div class="grid grid-cols-4 gap-2 w-full mt-4 md:mt-12 max-w-2xl mx-auto">
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">01</span>
+                    <span class="text-[10px] md:text-xs font-bold text-white/80">靜心調頻</span>
                 </div>
-                <div class="border border-white/10 p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-xl block text-amber-500 font-black">02</span>
-                    <span class="text-xs font-bold text-white/80">釐清意圖</span>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">02</span>
+                    <span class="text-[10px] md:text-xs font-bold text-white/80">釐清意圖</span>
                 </div>
-                <div class="border border-white/10 p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-xl block text-amber-500 font-black">03</span>
-                    <span class="text-xs font-bold text-white/80">啟示顯化</span>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">03</span>
+                    <span class="text-[10px] md:text-xs font-bold text-white/80">啟示顯化</span>
                 </div>
-                <div class="border border-white/10 p-4 rounded-lg bg-white/5">
-                    <span class="serif-font text-xl block text-amber-500 font-black">04</span>
-                    <span class="text-xs font-bold text-white/80">靈魂對話</span>
+                <div class="border border-white/10 p-2 md:p-4 rounded-lg bg-white/5">
+                    <span class="serif-font text-lg md:text-2xl block text-amber-500 font-black">04</span>
+                    <span class="text-[10px] md:text-xs font-bold text-white/80">靈魂對話</span>
                 </div>
             </div>
 
-            <button onclick="nextStage(1)" class="px-16 py-5 rounded-full font-black text-sm border border-amber-500/30 hover:bg-white hover:text-black mt-16 tracking-[0.3em] transition-all">開啟儀式</button>
+            <button onclick="nextStage(1)" class="px-12 py-4 md:px-16 md:py-5 rounded-full font-black text-sm border border-amber-500/30 hover:bg-white hover:text-black mt-8 md:mt-16 tracking-[0.3em] transition-all">開啟儀式</button>
         </div>
     </section>
 
     <section id="stage1" class="page-stage">
         <div class="content-wrapper text-center">
-            <h2 class="text-3xl font-black serif-font">靜心調頻</h2>
+            <h2 class="text-2xl md:text-3xl font-black serif-font">靜心調頻</h2>
             <div class="breath-wrapper"><div class="breath-circle"></div><div class="breath-text"></div></div>
-            <p class="text-amber-400 font-bold text-sm animate-pulse tracking-widest">深呼吸，讓能量與系統同步...</p>
-            <button onclick="nextStage(2)" class="px-12 py-4 bg-white/5 border border-white/10 mt-8 text-xs font-black rounded-full hover:bg-white/10 transition-all">
+            <p class="text-amber-400 font-bold text-xs md:text-sm animate-pulse tracking-widest px-4">深呼吸，讓能量與系統同步...</p>
+            <button onclick="nextStage(2)" class="px-10 py-4 bg-white/5 border border-white/10 mt-8 text-xs font-black rounded-full hover:bg-white/10 transition-all">
                 [ 點擊 ] 啟動校準與共振
             </button>
         </div>
@@ -207,14 +206,14 @@
 
     <section id="stage2" class="page-stage">
         <div class="content-wrapper max-w-4xl">
-            <h2 class="text-2xl font-black text-center serif-font mb-4">釐清您的意圖</h2>
+            <h2 class="text-xl md:text-2xl font-black text-center serif-font mb-4">釐清您的意圖</h2>
             <div class="tab-container">
                 <div class="tab-btn active" id="tab-self" onclick="switchIntentionMode('self')">自主冥想</div>
                 <div class="tab-btn" id="tab-guided" onclick="switchIntentionMode('guided')">靈魂導引</div>
             </div>
             
             <div id="mode-self" class="w-full text-center py-4">
-                <div class="p-6 italic text-white/70 text-sm bg-white/5 border border-white/10 rounded-2xl leading-relaxed">
+                <div class="p-4 md:p-6 italic text-white/70 text-xs md:text-sm bg-white/5 border border-white/10 rounded-2xl leading-relaxed">
                     「請閉上雙眼，在腦海中勾勒您的問題核心。」
                 </div>
             </div>
@@ -222,18 +221,18 @@
             <div id="mode-guided" class="w-full hidden">
                 <div class="category-grid" id="category-selector"></div>
                 <div id="sub-theme-list" class="sub-theme-list">
-                    <p class="p-8 text-center text-white/20 text-xs italic">請先選擇領域主題...</p>
+                    <p class="p-8 text-center text-white/20 text-[10px] md:text-xs italic">請先選擇領域主題...</p>
                 </div>
             </div>
 
-            <textarea class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-sm mt-4 focus:outline-none focus:border-amber-500/40" id="custom-context" rows="2" placeholder="補充背景背景 (選填)..."></textarea>
-            <button class="btn-main mx-auto mt-8 px-12 py-4 rounded-full text-sm font-black tracking-widest" id="start-fate-btn" disabled onclick="nextStage(3)">開啟命運之門</button>
+            <textarea class="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-xs md:text-sm mt-4 focus:outline-none focus:border-amber-500/40" id="custom-context" rows="2" placeholder="補充背景背景 (選填)..."></textarea>
+            <button class="btn-main mx-auto mt-6 md:mt-8 px-12 py-4 rounded-full text-xs md:text-sm font-black tracking-widest" id="start-fate-btn" disabled onclick="nextStage(3)">開啟命運之門</button>
         </div>
     </section>
 
     <section id="stage3" class="page-stage">
         <div class="content-wrapper text-center">
-            <h3 id="draw-label" class="text-lg font-bold italic mb-6 text-amber-500 tracking-widest">感受腦海中的觀想，點擊卡牌</h3>
+            <h3 id="draw-label" class="text-sm md:text-lg font-bold italic mb-4 md:mb-8 text-amber-500 tracking-widest px-2">感受腦海中的觀想，點擊卡牌</h3>
             <div class="card-zone">
                 <div class="tarot-card" id="tarot-card" onclick="doPick()">
                     <div class="card-face card-back"></div>
@@ -252,25 +251,25 @@
 
     <section id="stage4" class="page-stage">
         <div class="content-wrapper text-center max-w-5xl pb-20">
-            <h2 class="text-3xl md:text-5xl font-black serif-font text-amber-500 mb-8 tracking-[0.2em]">顯化</h2>
+            <h2 class="text-2xl md:text-5xl font-black serif-font text-amber-500 mb-6 md:mb-8 tracking-[0.2em]">顯化</h2>
             
             <div id="result-row"></div>
 
-            <div class="space-y-4 w-full flex flex-col items-center mt-12">
-                <p class="text-[10px] text-white/30 tracking-[0.3em] uppercase mb-2">啟動解讀步驟</p>
+            <div class="space-y-4 w-full flex flex-col items-center mt-8 md:mt-12">
+                <p class="text-[10px] text-white/30 tracking-[0.3em] uppercase mb-1 md:mb-2">啟動解讀步驟</p>
                 
                 <div class="step-box">
                     <button class="px-5 py-2.5 bg-white text-black font-black rounded-lg text-[10px]" onclick="copyResult()">步驟 1</button>
-                    <span class="step-hint">複製占卜指令</span>
+                    <span class="step-hint text-[10px] md:text-xs">複製占卜指令</span>
                 </div>
 
                 <div class="step-box">
                     <a href="https://gemini.google.com/gem/18WL9EmeoeViSQzbawESUo6s9dyVFC2e8?usp=sharing" target="_blank" class="px-5 py-2.5 bg-white/10 text-white font-black rounded-lg text-[10px] border border-white/20">步驟 2</a>
-                    <span class="step-hint">前往 Gemini <span class="text-cyan-400 font-bold underline">對話框貼上指令</span></span>
+                    <span class="step-hint text-[10px] md:text-xs">前往 Gemini <span class="text-cyan-400 font-bold underline">對話框貼上指令</span></span>
                 </div>
             </div>
             
-            <button onclick="location.reload()" class="mt-16 opacity-30 text-[9px] underline uppercase tracking-[0.3em]">重啟共振儀式</button>
+            <button onclick="location.reload()" class="mt-12 md:mt-16 opacity-30 text-[9px] underline uppercase tracking-[0.3em]">重啟共振儀式</button>
         </div>
     </section>
 
@@ -278,7 +277,7 @@
         const themes = {
             "感情與關係": ["能量狀態： 我們目前互動的能量流向與心理動力處於什麼樣的階段？", "對方感受： 對方內心對我的定位，以及他對這段關係的真實想法為何？", "核心問題： 阻礙我們關係深入發展的最關鍵瓶頸（或潛在衝突點）是什麼？", "聯絡發展： 若我採取主動聯絡，雙方的互動頻率與未來走向可能產生什麼質變？", "關係功課： 這段關係目前正引領我面對哪些個人成長的課題或靈魂契機？", "優化關係： 為了讓這段關係邁向更健康的循環，我現在最需要調整的行為或觀點是什麼？", "心理盲點： 在這段感情中，有哪些我選擇忽視或尚未察覺的真實狀況？", "關係角色： 在彼此的生命藍圖中，我們各自正扮演著什麼樣的心理投射角色？", "執著根源： 分手後這份難以釋懷的執念，背後揭示了我內在哪些尚未滿足的需求？", "下段準備： 在迎接下一段良緣之前，我需要先完成哪些自我修復或能量清理？", "模式根源： 我在感情中重複循環的慣性模式，根植於我過去的哪些核心信念？", "溝通盲點： 在溝通失準的背後，我們各自存在著什麼樣的認知偏見或防衛機制？", "未來走向： 基於目前的互動基調，這段關係在可預見的未來最可能的演變路徑為何？", "家庭能量： 對方家人的態度背後隱藏著什麼樣的家族動力？我該如何保持自我中心而不受干擾？", "同質吸引： 我反覆吸引到類似特質的人，這反映了我內在哪些尚未整合的心理陰影或特質？"],
             "工作與職涯": ["離職轉型： 離開現有職位對我的生命路徑會產生什麼樣的結構性影響？", "優勢定位： 結合我的核心天賦與市場趨勢，最能發揮我價值的工作藍圖是什麼？", "現況啟示： 近期職場上的挑戰，是為了訓練我具備哪種更高階的職涯能力？", "轉職注意： 針對目前的轉職計畫，有哪些隱藏的風險或關鍵機會是我需要留意的？", "主管關係： 我與主管間的張力來源為何？我該如何優化溝通以達成雙贏？", "創業評估： 在創業這條路上，我的優勢動能與待補足的專業缺口分別是什麼？", "成就感缺失： 排除外在回報，我在工作中感到枯竭的核心心理因素為何？", "機會對比： 面前這兩個職涯選項，分別代表了哪兩種不同的生命擴張方向？", "副業潛力： 我目前的副業模型在市場競爭力與可持續性發展上的潛力如何？", "阻礙覺察： 排除努力程度，是什麼樣的潛意識限制或思維框架讓我感覺原地踏步？", "自由工作： 轉向自由職業前，我應如何建立足夠的心理韌性與系統化支持？", "斜槓切入點： 根據我現有的資源組合，哪個方向是目前阻力最小且回收最高的切入點？"],
-            "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在恐懼什麼樣的人生狀態？", "原生家庭： 父母的金錢觀如何形塑了我現在對財富的處理方式與限制？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "不夠用的信念： 「錢永遠不夠」這個念頭背後，隱藏著什麼樣的自我匱乏信念？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？", "消費對映： 我的金錢支出模式，反映了我內在哪些情感補償或心理防禦？", "收入提升： 為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？", "配得感： 我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？", "財富課題： 在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？", "半年預測： 若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"],
+            "金錢與豐盛": ["金錢能量： 我目前的財務流動狀態與我的內在豐盛感是否達成一致？", "匱乏根源： 我對金錢的不安全感，本質上是在營造什麼樣的人生狀態？", "原生家庭： 父母的金錢觀如何形塑了我現在對財富的處理方式與限制？", "財務盲點： 在我的理財邏輯或消費習慣中，存在著什麼樣的盲區導致財富漏失？", "不夠用的信念： 「錢永遠不夠」這個念頭背後，隱藏著什麼樣的自我匱乏信念？", "調頻豐盛： 我可以如何優化內在頻率，讓金錢與資源更順暢地流向我？", "消費對映： 我的金錢支出模式，反映了我內在哪些情感補償或心理防衛？", "收入提升： 為了實現收入的階梯式成長，我目前的行動重心應鎖定在哪個核心？", "配得感： 我認為自己不值得擁有更多財富的這種不配得感，源於哪些生命經驗？", "財富課題： 在這個生命階段，金錢試圖教導我關於「價值」與「平衡」的什麼功課？", "半年預測： 若維持現有的財務決策慣性，未來半年我將面臨什麼樣的結果？"],
             "人際關係": ["關係演變： 與特定朋友間的距離感變化，反映了我們生命階段哪些價值觀的差異？", "過度付出： 這種「過度付出卻被忽視」的循環，正提醒我該如何重新定義自我價值？", "界線建立： 我該如何優雅且堅定地設立界線，以保護自己的能量不被過度消耗？", "社交能量： 在我目前的社交圈中，有哪些能量場正支持我，又有哪些正在拖累我？", "父母療癒： 我與父母間的連結中，還有哪些未竟之事需要透過覺察來獲得和解？", "群體格格不入： 這種疏離感是在提醒我尋找更合頻的圈子，還是要面對內在的被遺棄感？", "推開善意： 當他人展現善意時我本能地抗拒，這反映了我對「親密」或「虧欠」的什麼恐懼？", "長期關係： 難以維持長久連結的背後，是否存在著對「被看穿」或「失去自由」的憂慮？", "關係天賦： 我在一段關係中最獨特且能為他人帶來價值的「情緒勞務」是什麼？", "收回付出： 為了恢復生命力的平衡，我現在最應該停止哪些無謂的情感補貼？"],
             "自我探索": ["我最近一直覺得很迷惘，我的內在到底在渴望什麼？", "我覺得人生卡住了，這個「卡住」的背後是什麼能量？", "人生卡住了，那個突破點是什麼？", "我一直感到焦慮但說不出原因，這份焦慮想告訴我什麼？", "關於人生方向，此刻的我最需要看見什麼？", "我一直感覺有什麼東西在召喚我，那是什麼？", "在這個人生階段，我的核心課題是什麼？", "「我不夠好」這個念頭一直跟著我，它的根源是什麼？", "我的靈魂最想讓我知道的一件事是什麼？", "我的高我想對我說的一句話？", "從高我的角度來看，我的天賦是什麼？", "我的指導靈個性？祂擅長用什麼方式引導我？"]
         };
@@ -329,46 +328,32 @@
             });
         }
 
-        // --- 優化後的翻牌邏輯 ---
         function doPick() {
             if (picking || pickedData.length >= 3) return;
             picking = true;
-
             const card = document.getElementById('tarot-card');
             const img = document.getElementById('front-img');
-
-            // 1. 先將影像透明度歸零 (隱藏上一次的結果)
             img.style.opacity = '0';
-
-            // 2. 準備下一張牌的數據
             let rid;
             do { rid = Math.floor(Math.random() * 78).toString().padStart(2, '0'); } while (pickedData.some(p => p.id === rid));
             const isReversed = Math.random() > 0.5;
-
-            // 3. 在背後悄悄更換影像來源
             setTimeout(() => {
                 img.src = `tarot_${rid}.jpg`;
                 img.className = isReversed ? "reversed-img" : "";
                 img.onerror = () => { img.src = `https://via.placeholder.com/180x310/222/d4af37?text=${tarotNames[rid].split('-')[1]}`; };
             }, 100);
-
-            // 4. 開始翻牌動畫
             card.classList.add('flipped');
-
-            // 5. 動畫中段：當牌面翻轉到使用者看不見的時候，淡入新影像並更新進度
             setTimeout(() => {
                 img.style.opacity = '1';
                 pickedData.push({ id: rid, isReversed: isReversed });
                 document.querySelectorAll('.p-dot')[pickedData.length - 1].style.background = 'var(--primary-gold)';
                 document.querySelectorAll('.p-dot')[pickedData.length - 1].style.boxShadow = '0 0 15px var(--primary-gold)';
-                
-                // 6. 動畫結束：翻回背面，準備下一次抽牌或進入結果頁
                 setTimeout(() => {
                     card.classList.remove('flipped');
                     if (pickedData.length === 3) {
                         setTimeout(() => nextStage(4), 800);
                     } else {
-                        document.getElementById('draw-label').innerText = `已感受第 ${pickedData.length} 張牌，請點擊卡牌抽下一張...`;
+                        document.getElementById('draw-label').innerText = `已感受第 ${pickedData.length} 張牌，請抽下一張...`;
                         picking = false;
                     }
                 }, 1500);
