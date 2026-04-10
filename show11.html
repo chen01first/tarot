@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>開運姐姐 | 靈犀通界．天命八字</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;600;900&family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cinnabar-red: #b22222; /* 硃砂紅 */
+            --ink-black: #080808;     /* 墨黑 */
+            --sacred-gold: #c5a02e;   /* 乾坤金 */
+        }
+
+        body {
+            background-color: var(--ink-black);
+            color: #d4d4d4;
+            font-family: 'Noto Serif TC', serif;
+            overflow-x: hidden;
+            letter-spacing: 0.15em;
+        }
+
+        /* 毛筆草書體 */
+        .cursive-title { font-family: 'Ma Shan Zheng', cursive; }
+        .cursive-flow { font-family: 'Zhi+Mang+Xing', cursive; }
+
+        /* 金屬與硃砂的漸層文字 */
+        .gold-text {
+            background: linear-gradient(135deg, #c5a02e 0%, #f9e29f 50%, #c5a02e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* RWD 捲動動畫 */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* 煙霧繚繞背景效果 */
+        .ink-smoke {
+            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #080808 100%);
+            position: relative;
+        }
+
+        /* 垂直排版美學 */
+        .v-text { writing-mode: vertical-rl; text-orientation: mixed; }
+
+        /* 硃砂點綴 */
+        .cinnabar-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--cinnabar-red);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--cinnabar-red);
+        }
+    </style>
+</head>
+<body class="ink-smoke">
+
+    <nav class="fixed w-full z-50 p-8 flex justify-between items-center">
+        <div class="cursive-title text-4xl text-[#c5a02e] hover:scale-110 transition duration-500 cursor-pointer">開運姐姐</div>
+        <div class="hidden md:flex space-x-10 text-[10px] tracking-[0.5em] uppercase opacity-50">
+            <a href="#spirit" class="hover:text-red-600 transition">Spirit / 通靈</a>
+            <a href="#destiny" class="hover:text-red-600 transition">Destiny / 八字</a>
+            <a href="#consult" class="hover:text-red-600 transition">Enlighten / 諮詢</a>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex flex-col justify-center items-center px-6 relative overflow-hidden">
+        <div class="absolute text-[30rem] md:text-[50rem] cursive-title opacity-[0.03] select-none pointer-events-none -z-10 text-white">
+            靈
+        </div>
+        
+        <div class="reveal active text-center">
+            <div class="cinnabar-dot mx-auto mb-8"></div>
+            <h1 class="cursive-title text-7xl md:text-9xl mb-6 gold-text">
+                通靈<span class="text-white opacity-20 text-5xl md:text-7xl">入</span>命
+            </h1>
+            <p class="max-w-xl mx-auto text-sm md:text-lg opacity-40 leading-widest serif font-extralight italic">
+                「窺探天機之縫隙，指引命運之歸途。」
+            </p>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <div class="w-[1px] h-20 bg-gradient-to-b from-[#c5a02e] to-transparent"></div>
+        </div>
+    </header>
+
+    <section id="spirit" class="max-w-6xl mx-auto px-6 py-40 flex flex-col md:flex-row items-center gap-20">
+        <div class="w-full md:w-1/2 reveal">
+            <div class="relative group">
+                <div class="absolute -inset-2 border border-red-900/30 group-hover:inset-0 transition-all duration-700"></div>
+                <div class="aspect-[3/4] overflow-hidden grayscale brightness-50 hover:grayscale-0 transition duration-[2s]">
+                    <img src="https://images.unsplash.com/photo-1515405295579-ba7b45403062?auto=format&fit=crop&q=80&w=1000" alt="Mystical Smoke">
+                </div>
+                <div class="absolute top-4 left-4 v-text cursive-flow text-5xl text-[#c5a02e]/60">靈犀</div>
+            </div>
+        </div>
+        <div class="w-full md:w-1/2 space-y-10 reveal">
+            <span class="text-red-700 font-bold tracking-widest text-xs">PSYCHIC CONNECTION</span>
+            <h2 class="text-5xl md:text-6xl font-black serif leading-tight">超越维度的<br><span class="cursive-title text-red-600">深層感應</span></h2>
+            <p class="text-gray-500 leading-loose font-light text-justify">
+                開運姐姐作為跨越界線的傳遞者，透過純淨的靈覺，連結那些無法用肉眼看見的能量場。我們不談科技，只談感知。在寂靜中，聽見宇宙對你靈魂的私語，解開長久以來困擾你的無形枷鎖。
+            </p>
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-[1px] bg-red-800"></div>
+                <span class="cursive-flow text-2xl text-[#c5a02e]">看見看不見的力量</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="destiny" class="relative py-40 bg-[#050505]">
+        <div class="absolute top-0 right-0 p-20 opacity-[0.05] cursive-title text-9xl hidden md:block">
+            八字天命
+        </div>
+        
+        <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div class="reveal flex flex-col justify-center order-2 md:order-1">
+                <h2 class="text-4xl serif mb-8">精準八字<br><span class="text-[#c5a02e] cursive-title text-6xl">乾坤推演</span></h2>
+                <p class="text-gray-400 font-light leading-loose mb-10">
+                    出生那一刻的時間編碼，決定了你一生的五行能量。開運姐姐透過深厚的八字功底，為你解析格局、喜忌與運勢起伏。這是一場關於「時間」的精密診斷，幫助你順天而行，在正確的時間做正確的決擇。
+                </p>
+                <ul class="space-y-4 text-sm tracking-widest text-[#c5a02e]/70">
+                    <li>● 流年運勢分析</li>
+                    <li>● 五行能量補償</li>
+                    <li>● 感情與事業合盤</li>
+                </ul>
+            </div>
+            <div class="reveal order-1 md:order-2 flex justify-center">
+                <div class="relative w-80 h-80 flex items-center justify-center">
+                    <div class="absolute inset-0 border border-[#c5a02e]/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
+                    <div class="absolute inset-4 border border-red-900/20 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                    <div class="cursive-title text-8xl text-red-800">命</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal py-32 text-center px-6">
+        <h3 class="cursive-title text-5xl md:text-8xl text-white opacity-90 leading-relaxed">
+            萬物皆有<span class="text-red-700">定數</span><br>
+            轉念即是<span class="text-[#c5a02e]">開運</span>
+        </h3>
+    </section>
+
+    <footer id="consult" class="py-40 bg-black text-center border-t border-red-950/30">
+        <div class="reveal">
+            <span class="cursive-flow text-3xl text-[#c5a02e] mb-4 block">開運姐姐</span>
+            <h2 class="serif text-2xl md:text-3xl mb-12 tracking-[0.3em]">開啟你的靈性導航</h2>
+            <div class="max-w-md mx-auto px-6">
+                <button class="w-full border border-red-900 py-4 text-[10px] tracking-[0.6em] hover:bg-red-900 hover:text-white transition duration-700 uppercase">
+                    立即預約 靈魂諮詢
+                </button>
+            </div>
+            <div class="mt-24 flex justify-center space-x-8 opacity-20 text-[10px] tracking-[0.5em]">
+                <span>ZHENSHAN</span>
+                <span>BAZI</span>
+                <span>PSYCHIC</span>
+            </div>
+            <p class="mt-8 text-[9px] opacity-10 tracking-widest uppercase">© 2026 KAI-YUN JIE-JIE | 靈性能量研究所</p>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
