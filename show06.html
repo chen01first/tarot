@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcana | 尋回光明的真命天子</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;600;900&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-blue: #0f172a;
+            --healing-gold: #d4af37;
+            --morning-sun: #fff9f2;
+            --pure-white: #ffffff;
+            --text-main: rgba(255, 255, 255, 0.9);
+            --transition-long: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--deep-blue);
+            color: var(--text-main);
+            font-family: 'Noto Serif TC', serif;
+            font-size: 20px; /* 基礎字體較大 */
+            line-height: 2;
+            overflow-x: hidden;
+            transition: var(--transition-long);
+        }
+
+        /* 響應式字體 1.5 倍感 */
+        @media (min-width: 768px) {
+            body { font-size: 28px; }
+        }
+
+        /* 覺醒後的明亮風格 */
+        body.awakened {
+            background-color: var(--morning-sun);
+            color: #443e38;
+        }
+
+        /* 背景流光意境 */
+        .glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 70% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
+            z-index: -1;
+            transition: var(--transition-long);
+        }
+
+        body.awakened .glow {
+            background: radial-gradient(circle at 30% 80%, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+        }
+
+        /* 全螢幕章節 */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 10%;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: var(--transition-long);
+        }
+
+        .container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 標題與視覺重心 */
+        .hero-title {
+            font-size: 1.2em;
+            font-weight: 900;
+            line-height: 1.4;
+            color: var(--healing-gold);
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--healing-gold);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .impact-quote {
+            font-size: 1.6em;
+            font-weight: 900;
+            color: #fff;
+            margin: 60px 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transition: var(--transition-long);
+        }
+
+        body.awakened .impact-quote {
+            color: #8a6d3b;
+            text-shadow: none;
+        }
+
+        /* 強調老師的話：光明的指引 */
+        .teacher-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin: 40px 0;
+        }
+
+        body.awakened .teacher-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--healing-gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        /* 互動按鈕 */
+        .btn-heal {
+            cursor: pointer;
+            padding: 25px 60px;
+            background: var(--healing-gold);
+            color: white;
+            border: none;
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            border-radius: 50px;
+            transition: 0.5s;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            margin-top: 40px;
+        }
+
+        .btn-heal:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        /* RWD 調整 */
+        @media (max-width: 600px) {
+            section { padding: 40px 5%; }
+            .hero-title { font-size: 1em; }
+            .impact-quote { font-size: 1.2em; }
+            .teacher-box { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow"></div>
+
+    <section>
+        <div class="container">
+            <span class="hero-title">情感諮詢：真命天子</span>
+            <p>去年為了感情的事很煩悶，室友介紹我去找蔡老師諮詢。</p>
+            <p>老師看了我，問我要不要清場，我搖搖頭，沒想到這成了我人生轉向的起點。</p>
+            <div class="impact-quote">「妳是人家的小三，妳覺的會有結局嗎？」</div>
+            <p>當下的我很錯愕，室友也很尷尬。這是我守了多年的秘密，在老師面前無法隱瞞。</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <p>我和男友認識 10 幾年了，大家都以為我很幸福，她們羨慕我。我們合租一間房子，大家共處在一個屋簷下……</p>
+            <p>我難過的問老師，我該怎麼辦？沒想到老師反問我：</p>
+            <div class="impact-quote" style="font-size: 1.3em;">「妳想怎麼辦？」</div>
+            <p>是啊！我想怎麼辦？我也不想男友為我離婚，雖然他老婆是日本人，時常要帶著小孩回日本，就因為大部分的時間不在台灣，男友才會一直要我不要離開他。</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="teacher-box">
+                <p style="color: var(--healing-gold); font-weight: 900; margin-bottom: 20px;">蔡老師告訴我：</p>
+                <p style="font-size: 1.2em;">「答案在妳心中，妳是如此的善良，千萬不要為了一段沒結果的愛，耗了自己最寶貴的青春。」</p>
+            </div>
+            <p>只要我敞開心扉去接受，我也可以找到屬於我的幸福。</p>
+            <button class="btn-heal" onclick="transformLife()">點擊：開啟真命天子門戶</button>
+        </div>
+    </section>
+
+    <section id="final-act">
+        <div class="container">
+            <div class="impact-quote">今年，我結婚了！</div>
+            <p>我聽了蔡老師的話，她說的沒有錯，我敞開了心扉，也真的找到了屬於我的【真命天子】。</p>
+            <p style="font-weight: 900; color: var(--healing-gold); margin-top: 40px;">現在的我，過的很幸福！謝謝蔡老師！很幸運的可以認識您！</p>
+            <div style="font-size: 4rem; margin-top: 40px; text-align: center;">☀️💍</div>
+        </div>
+    </section>
+
+    <script>
+        // 1. 捲動揭示效果
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.container').forEach(c => observer.observe(c));
+
+        // 2. 生命轉換動畫
+        function transformLife() {
+            document.body.classList.add('awakened');
+            
+            // 延遲滾動，讓變色動畫先跑
+            setTimeout(() => {
+                document.getElementById('final-act').scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+            
+            // 隱藏按鈕
+            event.target.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
