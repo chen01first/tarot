@@ -3,205 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcana | 找回身心的清明</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>如釋重負的轉機 - 蔡老師紀實</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --misty-blue: #ebeef5;
-            --deep-peace: #2c3e50;
-            --healing-gold: #d4af37;
-            --soft-light: rgba(255, 255, 255, 0.8);
-            --transition: all 2s cubic-bezier(0.2, 1, 0.3, 1);
+            --bg-color: #f9f7f2; /* 溫潤米色 */
+            --text-main: #3a3530; /* 深木色，比純黑柔和 */
+            --accent-color: #8c7654; /* 沉穩金棕 */
+            --highlight-bg: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
-            background: linear-gradient(180deg, #cfd9df 0%, #e2ebf0 100%);
-            color: var(--deep-peace);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             font-family: 'Noto Serif TC', serif;
-            font-size: 20px;
             line-height: 2.2;
-            overflow-x: hidden;
-            transition: var(--transition);
+            letter-spacing: 0.05em;
+            word-break: break-all;
         }
 
-        /* 響應式 1.5 倍大字體 */
-        @media (min-width: 768px) {
-            body { font-size: 28px; }
-        }
-
-        /* 治療系背景：流動的雲霧 */
-        .aura-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8) 0%, transparent 80%);
-            z-index: -1;
-            filter: blur(60px);
-            opacity: 0.5;
-        }
-
-        /* 故事區域 */
-        section {
-            min-height: 100vh;
+        /* 頂部留白視覺 */
+        .header-space {
+            height: 30vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 10vh 10vw;
-            position: relative;
+            align-items: flex-end;
+            padding-bottom: 50px;
+            background: radial-gradient(circle at center, #ffffff 0%, #f9f7f2 70%);
         }
 
-        .card {
-            background: var(--soft-light);
-            backdrop-filter: blur(20px);
-            padding: 60px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-            max-width: 1000px;
-            width: 100%;
-            border: 1px solid rgba(255,255,255,0.4);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: var(--transition);
+        .title-area {
+            text-align: center;
         }
 
-        .card.show {
-            opacity: 1;
-            transform: translateY(0);
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 10px;
         }
 
-        h2 {
-            font-size: 1.4em;
-            color: var(--healing-gold);
-            margin-bottom: 40px;
-            font-weight: 700;
-            letter-spacing: 4px;
-        }
-
-        /* 關鍵描述：溫柔的強調 */
-        .highlight {
-            color: #8a7d6a;
+        .sub-tag {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            letter-spacing: 5px;
             font-weight: 500;
-            background: linear-gradient(120deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 30%;
-            background-position: 0 80%;
         }
 
-        /* 淨化按鈕 */
-        .btn-cleanse {
-            margin-top: 50px;
-            padding: 20px 60px;
-            background: var(--healing-gold);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
-            transition: 0.5s;
+        /* 文章容器 */
+        .article-container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 0 25px 100px;
         }
 
-        .btn-cleanse:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+        .content-wrap {
+            background: var(--highlight-bg);
+            padding: 60px 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border-radius: 2px;
         }
 
-        /* 轉換後的「神清氣爽」風格 */
-        body.pure {
-            background: linear-gradient(135deg, #fffcf5 0%, #f7f3e9 100%);
+        /* 語氣加重設計 */
+        .emph-heavy {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #1a1a1a;
+            display: block;
+            margin: 30px 0;
+            padding-left: 15px;
+            border-left: 3px solid var(--accent-color);
         }
 
-        .ripple {
-            position: absolute;
-            border: 2px solid var(--healing-gold);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: ripple-effect 1s ease-out;
+        .emph-bold {
+            font-weight: 700;
+            color: #000;
         }
 
-        @keyframes ripple-effect {
-            from { width: 0; height: 0; opacity: 0.5; }
-            to { width: 500px; height: 500px; opacity: 0; }
+        .quote-block {
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--accent-color);
+            margin: 50px 0;
+            line-height: 1.6;
         }
 
+        p {
+            margin-bottom: 2rem;
+            font-weight: 300; /* 平時用輕量級字體 */
+        }
+
+        /* 分隔符 */
+        .dot-divider {
+            text-align: center;
+            margin: 40px 0;
+            color: var(--accent-color);
+            letter-spacing: 15px;
+        }
+
+        /* 結尾溫暖區塊 */
+        .footer-note {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px dashed #d1cdc7;
+            font-size: 0.95rem;
+            color: #777;
+            text-align: center;
+        }
+
+        /* RWD */
         @media (max-width: 600px) {
-            .card { padding: 30px; border-radius: 15px; }
-            h2 { font-size: 1.2em; }
+            .content-wrap { padding: 40px 20px; }
+            .main-title { font-size: 2rem; }
+            .quote-block { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="aura-bg"></div>
-
-    <section>
-        <div class="card">
-            <h2>那些無法用理性解釋的沉重，<br>終將在光中消散。</h2>
-            <p>暑假期間帶孩子去美國玩，我們在美國租短期的房子待了快 2 個月。</p>
-            <p>在那段日子，明明孩子都睡了，客廳卻總傳來<span class="highlight">莫名的走動聲</span>。燈火忽明忽暗，甚至連孩子都做了同樣的夢……</p>
-            <p style="font-style: italic; opacity: 0.6;">「媽，夢裡有兩個黑人小朋友，每天都來找我們玩。」</p>
+    <header class="header-space">
+        <div class="title-area">
+            <div class="sub-tag">真實經歷分享</div>
+            <h1 class="main-title">犯 沖</h1>
         </div>
-    </section>
+    </header>
 
-    <section>
-        <div class="card">
-            <p>回到台灣後，平靜並未降臨。兒子的個性變得暴躁易怒，眼神中透著疲憊。身為受美式教育、虔誠信仰上帝的我，曾試過醫療，也試過教會，但心裡的陰影始終揮之不去。</p>
-            <p>那是一種<span class="highlight">頭重腳輕、無力抵抗的負擔</span>。直到先生的大姐安排，我遇見了蔡老師。</p>
-        </div>
-    </section>
-
-    <section>
-        <div class="card" style="text-align: center;">
-            <p>老師進門後第一句話就點破了困局：<br><span style="font-size: 1.3em; color: var(--healing-gold);">「妳家有外國朋友喔！」</span></p>
-            <p style="margin-top: 30px;">
-                那是一場溫柔的洗禮。蔡老師對我和兒子的拍打，不帶一絲痛楚，反而像是在剝離身上厚重的灰塵。
+    <main class="article-container">
+        <div class="content-wrap">
+            
+            <p>
+                暑假期間帶孩子去美國玩，我們在美國租短期的房子待了快2個月。 在美國時，我和同學時常感覺到客廳在晚上11點後，明明小孩都已睡了，<span class="emph-bold">但總有人在走動...</span> 甚至客廳的燈總是忽明忽暗的，換了燈泡還是一樣。
             </p>
-            <button class="btn-cleanse" onclick="cleanse(event)">點擊：感受神清氣爽的瞬間</button>
+
+            <p>
+                我們很開心用很便宜的租金租到這間房子，但是孩子們跟我說：<br>
+                <span class="emph-heavy">「媽，我睡著以後都做同樣的一個夢，有2個黑人小朋友會來找我們玩，這夢幾乎每天都有。」</span>
+            </p>
+
+            <p>
+                回到台灣後，兒子個性變的很沒耐心，暴躁易怒，他跟我說在家裡時常看到黑影，頭也昏昏沉沉的。我帶他去看了醫生後還是沒用。 先生的姐姐跟我說，兒子應該是去<span class="emph-bold">沖犯到什麼</span>，要我帶他去找老師處理。
+            </p>
+
+            <div class="quote-block">
+                「可是我是受美式教育的人，我信仰上帝！」
+            </div>
+
+            <p>
+                但帶兒子去幾次教會後還是沒什麼改變... 我接受了先生大姐的安排，請了蔡老師來家裡看看，她進門後就直接跟我說：<br>
+                <span class="emph-bold" style="font-size: 1.2rem;">「妳家有外國朋友喔！」</span>
+            </p>
+
+            <div class="dot-divider">...</div>
+
+            <p>
+                看她做了一些淨化的動作後，又對我和兒子拍打身體。好神奇的是，我這陣子總是感覺頭重腳輕，為什麼蔡老師對我拍打時，我不但不痛，還感覺<span class="emph-bold">神輕氣爽</span>。
+            </p>
+
+            <p class="quote-block" style="color: #4a6741;">
+                兒子也這麼說：「媽，我感覺如釋重負耶！」
+            </p>
+
+            <p>
+                我是虔誠的基督徒，但是經過這個事情後，我還是認為，<span class="emph-bold">如果看醫生後還是沒法改善的事，或許你們也可以找蔡老師處理。</span>
+            </p>
+
+            <div class="footer-note">
+                這是一份關於平靜與跨越信仰的紀實故事。
+            </div>
         </div>
-    </section>
+    </main>
 
-    <section id="final">
-        <div class="card">
-            <h2>「媽，我感覺如釋重負耶！」</h2>
-            <p>看著兒子重拾純真的笑臉，我也感覺神清氣爽。雖然我依然信仰上帝，但我學會了——當科學與醫學都束手無策時，或許有一種神祕的力量，能幫我們<span class="highlight">溫柔地排除那些不屬於我們的重量</span>。</p>
-            <p style="margin-top: 40px; font-weight: 700; color: var(--healing-gold);">謝謝蔡老師，讓陽光重新照進我們家。</p>
-        </div>
-    </section>
-
-    <script>
-        // 1. 平滑揭示
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        }, { threshold: 0.2 });
-
-        document.querySelectorAll('.card').forEach(c => observer.observe(c));
-
-        // 2. 淨化互動效果
-        function cleanse(e) {
-            document.body.classList.add('pure');
-            
-            // 創造水波紋效果
-            const ripple = document.createElement('div');
-            ripple.classList.add('ripple');
-            ripple.style.left = e.clientX + 'px';
-            ripple.style.top = e.clientY + 'px';
-            document.body.appendChild(ripple);
-            
-            // 移除舊按鈕，平滑捲動
-            setTimeout(() => {
-                ripple.remove();
-                document.getElementById('final').scrollIntoView({ behavior: 'smooth' });
-            }, 600);
-            
-            e.target.innerText = "已恢復清明";
-        }
-    </script>
 </body>
 </html>
