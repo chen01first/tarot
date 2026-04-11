@@ -1,178 +1,328 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>如釋重負 - 蔡老師的奇蹟小故事</title>
-    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>犯沖 - 現代神祕主義敘事</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Cinzel:wght@700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-mono-tc-webfont@1.0.0/style.css" />
+    
     <style>
         :root {
-            --bg-color: #fffaf0; /* 奶油色 */
-            --main-text: #5d5245; /* 暖咖啡色 */
-            --accent-pink: #ffb7b2; /* 櫻花粉 */
-            --accent-green: #b2e2f2; /* 蘇打藍 */
-            --highlight-yellow: #fff2cc;
+            --bg-color: #0a0b14;
+            --accent-gold: #D4AF37;
+            --text-white: #e0e0e0;
+            --soft-gold: rgba(212, 175, 55, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.03);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--main-text);
-            /* 使用內建圓體或 Noto Sans 作為基礎 */
-            font-family: 'ZCOOL KuaiLe', "Microsoft JhengHei", "微軟正黑體", sans-serif;
+            color: var(--text-white);
+            font-family: 'LXGW WenKai Mono TC', 'Montserrat', sans-serif;
             line-height: 1.8;
+            overflow-x: hidden;
+            letter-spacing: 0.05em;
         }
 
-        /* 可愛的大標題 */
-        .hero-section {
-            padding: 60px 20px;
-            text-align: center;
-            background: linear-gradient(135deg, #fff2cc 0%, #fffaf0 100%);
-            border-bottom: 5px dashed var(--accent-pink);
+        /* 星光背景動畫 */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1c2c 0%, #0a0b14 100%);
+            overflow: hidden;
         }
 
-        .main-title {
-            font-size: 4rem;
-            color: #ef8383;
-            text-shadow: 3px 3px 0px #fff;
-            margin-bottom: 10px;
-        }
-
-        .sub-tag {
-            font-size: 1.2rem;
-            background: var(--accent-pink);
-            color: white;
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-        }
-
-        /* 內容區塊 */
-        .container {
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .content-card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 30px;
-            box-shadow: 0 10px 0px #e6e0d4;
-            position: relative;
-        }
-
-        /* 語氣加重：可愛粗體 */
-        .emph-bold {
-            font-weight: 900;
-            color: #d9534f;
-            font-size: 1.2rem;
-            background: linear-gradient(transparent 60%, var(--highlight-yellow) 0);
-        }
-
-        /* 重點泡泡對話框 */
-        .bubble {
-            background: var(--accent-green);
-            padding: 20px;
-            border-radius: 20px;
-            margin: 30px 0;
-            font-weight: 700;
-            position: relative;
-            color: #2c5d6d;
-        }
-
-        .bubble::after {
-            content: '';
+        .star {
             position: absolute;
-            bottom: -15px;
-            left: 30px;
-            border-width: 15px 15px 0;
-            border-style: solid;
-            border-color: var(--accent-green) transparent;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: flicker var(--duration) infinite ease-in-out;
         }
 
-        p {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
+        @keyframes flicker {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.2); }
         }
 
-        .emoji-icon {
-            font-size: 1.5rem;
-            vertical-align: middle;
+        /* 滾動淡入效果 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 結尾按鈕風 */
-        .footer-cta {
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero 區塊 */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 20px;
-            border: 3px dashed var(--accent-pink);
+            padding: 20px;
+            position: relative;
         }
 
-        .cta-text {
-            font-weight: 900;
-            font-size: 1.3rem;
-            color: #ef8383;
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
-        /* RWD */
-        @media (max-width: 600px) {
-            .main-title { font-size: 2.8rem; }
-            .content-card { padding: 30px 20px; }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            color: rgba(224, 224, 224, 0.8);
+            font-style: italic;
+        }
+
+        /* 重點焦點框 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .focus-box {
+            border: 1px solid var(--accent-gold);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            margin: 60px 0;
+            position: relative;
+            font-style: italic;
+            transition: transform 0.4s ease;
+        }
+
+        .focus-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        .focus-box::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--accent-gold);
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* 震撼診斷區塊 */
+        .impact-row {
+            margin: 100px -50vw;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            position: relative;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+            padding: 80px 0;
+            border-top: 1px double var(--accent-gold);
+            border-bottom: 1px double var(--accent-gold);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .impact-row h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .totem {
+            font-size: 2rem;
+            color: var(--accent-gold);
+            opacity: 0.8;
+        }
+
+        /* 一般故事文字 */
+        .story-text {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: rgba(224, 224, 224, 0.9);
+            text-align: justify;
+        }
+
+        /* 翻牌效果組件 (裝飾用) */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 200px;
+            perspective: 1000px;
+            margin: 40px 0;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-front, .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--glass-bg);
+            padding: 20px;
+        }
+
+        .flip-back {
+            transform: rotateY(180deg);
+            color: var(--accent-gold);
+        }
+
+        /* 結尾感悟 */
+        .resolution {
+            margin-top: 100px;
+            padding: 60px;
+            text-align: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .impact-row {
+                flex-direction: column;
+                padding: 60px 20px;
+            }
+            .totem { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <header class="hero-section">
-        <h1 class="main-title">犯 沖 👻</h1>
-        <div class="sub-tag">一個「如釋重負」的真實小故事</div>
+    <div class="stars-container" id="stars"></div>
+
+    <header class="hero">
+        <h1 class="reveal">犯沖</h1>
+        <p class="reveal">暑假期間帶孩子去美國玩，我們在美國租短期的房子待了快2個月。便宜的租金背後，是兩個月如影隨形的視線。</p>
     </header>
 
-    <main class="container">
-        <div class="content-card">
-            
-            <p>
-                暑假期間帶孩子去美國玩，我們租了間房待了快兩個月。在那邊，我和同學時常感覺到客廳在晚上11點後，<span class="emph-bold">總有人在走動...</span> 連燈泡都忽明忽暗的，怎麼換都一樣！
-            </p>
+    <div class="container">
+        <section class="story-text reveal">
+            在美國時，我和同學時常感覺到客廳在晚上11點後，明明小孩都已睡了，但總有人在走動...甚至客廳的燈總是忽明忽暗的，換了燈泡還是一樣。我們很開心用很便宜的租金租到這間房子，可以讓孩子們在短時間內學習美國的一些人文和生活型態。
+        </section>
 
-            <div class="bubble">
-                孩子說：「媽，每天都有 2 個黑人小朋友來找我們玩喔...」👶🏾👶🏾
-            </div>
+        <div class="focus-box reveal">
+            孩子們跟我說，媽：「我睡著以後都做同樣的一個夢，有 2 個黑人小朋友會來找我們玩，這夢幾乎每天都有。」
+        </div>
 
-            <p>
-                回台灣後，兒子的個性變得<span class="emph-bold">超級暴躁易怒</span>，還說時常看到黑影，頭也昏昏沉沉。我看醫生、去教會祈禱，但情況還是沒什麼改變。
-            </p>
+        <section class="story-text reveal">
+            回到台灣後，兒子個性變的很沒耐心，暴躁易怒，他跟我說在家裡時常看到黑影，頭也昏昏沉沉的，我帶他去看了醫生後還是沒用。先生的姐姐跟我說，兒子應該是去沖犯到什麼，要我帶他去找老師處理。
+        </section>
 
-            <p>
-                「可是我是受美式教育的人，我信仰上帝！」雖然這麼想，但我還是請來了蔡老師。沒想到她一進門就直接說：
-            </p>
-
-            <div class="bubble" style="background: var(--highlight-yellow); color: #856404;">
-                「妳家有外國朋友喔！」✨
-            </div>
-
-            <p>
-                老師對我和兒子拍打身體淨化。好神奇！我原本重重的頭，在拍打下竟然<span class="emph-bold">神輕氣爽</span>，一點都不痛！
-            </p>
-
-            <p style="text-align: center; font-size: 1.5rem; font-weight: 900; color: #ef8383;">
-                兒子也開心地說：<br>「媽，我感覺如釋重負耶！」💖
-            </p>
-
-            <div class="footer-cta">
-                <p class="cta-text">🌟 真心分享 🌟</p>
-                <p>如果你也遇到了看醫生沒法改善的事，<br><span class="emph-bold">或許也可以找蔡老師處理看看喔！</span></p>
+        <div class="flip-card reveal">
+            <div class="flip-card-inner">
+                <div class="flip-front">
+                    <span>信仰與現實的拉扯</span>
+                </div>
+                <div class="flip-back">
+                    <span>「我是受美式教育的人，我信仰上帝！」</span>
+                </div>
             </div>
         </div>
-    </main>
 
+        <section class="story-text reveal">
+            但帶兒子去幾次教會後還是沒什麼改變... 我接受了先生大姐的安排，請了蔡老師來家裡看看。
+        </section>
+
+        <section class="impact-row reveal">
+            <span class="totem">☼</span>
+            <h2>「妳家有外國朋友喔！」</h2>
+            <span class="totem">☾</span>
+        </section>
+
+        <section class="story-text reveal">
+            看她做了一些淨化的動作後，又對我和兒子拍打身體。好神奇的是，我這陣子總是感覺頭重腳輕，為什麼蔡老師對我拍打時，我不但不痛，還感覺神輕氣爽，兒子也這麼說：「媽，我感覺如釋重負耶！」
+        </section>
+
+        <footer class="resolution reveal">
+            我是虔誠的基督徒，但是經過這個事情後，我還是認為，如果看醫生後還是沒法改善的事，或許你們也可以找蔡老師處理。
+        </footer>
+    </div>
+
+    <footer>
+        &copy; 2026 MODERN MYSTICISM DESIGN.
+    </footer>
+
+    <script>
+        // 生成星光背景
+        const starsContainer = document.getElementById('stars');
+        const starCount = 150;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 1 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        // 滾動偵測動畫
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
